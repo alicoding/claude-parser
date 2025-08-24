@@ -94,8 +94,8 @@ class Test95PercentUseCases:
         conv = load(simple_jsonl)
         
         # These should all work without any setup
-        assistant_msgs = conv.assistant_messages()()
-        user_msgs = conv.user_messages()
+        assistant_msgs = conv.assistant_messages
+        user_msgs = conv.user_messages
         tools = conv.tool_messages()
         
         assert len(assistant_msgs) == 1

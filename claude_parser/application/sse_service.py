@@ -12,7 +12,7 @@ SOLID:
 
 from typing import AsyncGenerator, Optional, Callable, Dict, Any, Union
 from pathlib import Path
-import json
+import orjson
 from enum import Enum
 from loguru import logger
 
@@ -109,13 +109,13 @@ class StreamingService:
                         if format == StreamFormat.RAW:
                             yield formatted
                         elif format == StreamFormat.JSON:
-                            yield json.dumps(formatted)
+                            yield orjson.dumps(formatted).decode('utf-8')
                         elif format == StreamFormat.SSE:
                             # SSE format: "data: {json}\n\n"
-                            yield f"data: {json.dumps(formatted)}\n\n"
+                            yield f"data: {orjson.dumps(formatted).decode('utf-8')}\n\n"
                         elif format == StreamFormat.NDJSON:
                             # Newline-delimited JSON
-                            yield json.dumps(formatted) + "\n"
+                            yield orjson.dumps(formatted).decode('utf-8') + "\n"
                             
                     except Exception as e:
                         logger.error(f"Error formatting message: {e}")
@@ -129,11 +129,11 @@ class StreamingService:
             if format == StreamFormat.RAW:
                 yield error_data
             elif format == StreamFormat.JSON:
-                yield json.dumps(error_data)
+                yield orjson.dumps(error_data).decode('utf-8')
             elif format == StreamFormat.SSE:
-                yield f"data: {json.dumps(error_data)}\n\n"
+                yield f"data: {orjson.dumps(error_data).decode('utf-8')}\n\n"
             elif format == StreamFormat.NDJSON:
-                yield json.dumps(error_data) + "\n"
+                yield orjson.dumps(error_data).decode('utf-8') + "\n"
     
     async def stream_with_heartbeat(
         self,
@@ -170,11 +170,11 @@ class StreamingService:
                         timeout=float(heartbeat_interval)
                     )
                     formatted = formatter(msg)
-                    yield {"data": json.dumps(formatted)}
+                    yield {"data": orjson.dumps(formatted).decode('utf-8')}
                     
                 except asyncio.TimeoutError:
                     # Send heartbeat
-                    yield {"data": json.dumps({"type": "heartbeat"})}
+                    yield {"data": orjson.dumps({"type": "heartbeat"}).decode('utf-8')}
                     
         finally:
             task.cancel()

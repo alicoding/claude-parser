@@ -21,7 +21,8 @@ from .application.conversation_service import (
 from .discovery import find_current_transcript, find_transcript_for_cwd
 
 # Import domain entities
-from .domain.conversation import Conversation, ConversationMetadata
+from .domain.entities.conversation import Conversation
+from .domain.value_objects.metadata import ConversationMetadata
 
 # Import models
 from .models import (

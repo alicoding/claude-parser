@@ -1,7 +1,7 @@
 """Test that exit_success outputs proper JSON for Claude Code."""
 
 import pytest
-import json
+import orjson
 from claude_parser.hooks import exit_success
 
 
@@ -16,7 +16,7 @@ def test_exit_success_outputs_continue_json(capsys):
     
     # Should output {"continue": true} to stdout
     captured = capsys.readouterr()
-    output = json.loads(captured.out)
+    output = orjson.loads(captured.out)
     assert output == {"continue": True}
 
 
@@ -31,5 +31,5 @@ def test_exit_success_with_message_outputs_json(capsys):
     
     # Should output JSON with the message
     captured = capsys.readouterr()
-    output = json.loads(captured.out)
+    output = orjson.loads(captured.out)
     assert "continue" in output or "message" in output or "reason" in output

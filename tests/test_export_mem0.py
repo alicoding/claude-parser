@@ -69,7 +69,7 @@ def test_export_for_mem0_with_filters(sample_jsonl_file):
 
 def test_export_for_mem0_format():
     """Test that export format matches mem0 requirements."""
-    from claude_parser.domain.conversation import Conversation, ConversationMetadata
+    from claude_parser.domain.entities.conversation import Conversation, ConversationMetadata
     
     # Create minimal conversation
     messages = [
@@ -135,7 +135,7 @@ def test_export_for_mem0_format():
 
 def test_export_for_mem0_empty_conversation():
     """Test export with empty conversation."""
-    from claude_parser.domain.conversation import Conversation, ConversationMetadata
+    from claude_parser.domain.entities.conversation import Conversation, ConversationMetadata
     
     metadata = ConversationMetadata(
         session_id="empty",

@@ -132,6 +132,19 @@ class Conversation:
         start_idx = max(0, last_summary_idx - limit)
         return self._messages[start_idx:last_summary_idx]
     
+    # Alias methods for backward compatibility
+    def tool_messages(self) -> List[ToolUse | ToolResult]:
+        """Alias for tool_uses property for backward compatibility."""
+        return self.tool_uses
+    
+    def messages_with_errors(self) -> List[Message]:
+        """Alias for with_errors() for backward compatibility."""
+        return self.with_errors()
+    
+    def messages_before_summary(self, limit: int = 10) -> List[Message]:
+        """Alias for before_summary() for backward compatibility."""
+        return self.before_summary(limit)
+    
     # Collection interface
     def __len__(self) -> int:
         """Get number of messages."""

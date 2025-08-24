@@ -1,0 +1,65 @@
+{
+  "name": "@claude-parser/core",
+  "version": "2.0.0",
+  "description": "Core parsing engine for Claude Code JSONL files",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs", 
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist",
+    "test": "vitest run",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --ext .ts",
+    "bundle-analysis": "npx bundlesize"
+  },
+  "dependencies": {
+    "zod": "^3.22.0",
+    "ndjson": "^2.0.0",
+    "ky": "^1.7.0"
+  },
+  "devDependencies": {
+    "@types/ndjson": "^2.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0",
+    "eslint": "^8.57.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "bundlesize": "^0.18.0"
+  },
+  "bundlesize": [
+    {
+      "path": "./dist/index.mjs",
+      "maxSize": "50kb"
+    }
+  ],
+  "keywords": [
+    "claude",
+    "jsonl", 
+    "parser",
+    "typescript",
+    "zod",
+    "streaming"
+  ],
+  "author": "Claude Parser Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anthropics/claude-parser.git",
+    "directory": "packages/core"
+  }
+}

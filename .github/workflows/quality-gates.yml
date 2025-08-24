@@ -1,0 +1,79 @@
+name: Quality Gates
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  quality-checks:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e ".[dev]"
+        pip install pytest-cov ruff mypy
+        pip install mkdocs mkdocs-material mkdocstrings[python]
+    
+    - name: Run ruff linting
+      run: |
+        ruff check claude_parser tests
+        ruff format --check claude_parser tests
+    
+    - name: Run mypy type checking
+      run: mypy claude_parser --strict
+    
+    - name: Run tests with coverage
+      run: |
+        pytest tests/ --cov=claude_parser --cov-report=term-missing --cov-fail-under=80
+    
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.xml
+        fail_ci_if_error: true
+    
+    - name: Build documentation
+      run: mkdocs build --strict
+    
+    - name: Check SPECIFICATION compliance (95/5 Principle)
+      run: |
+        if [ -f scripts/verify_spec.py ]; then
+          python scripts/verify_spec.py
+        else
+          echo "Warning: verify_spec.py not found"
+        fi
+    
+    - name: Security check with bandit
+      run: |
+        pip install bandit
+        bandit -r claude_parser -ll
+
+  # This job MUST pass for merge to be allowed
+  quality-gate:
+    needs: quality-checks
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Quality Gate Decision
+        run: |
+          if [ "${{ needs.quality-checks.result }}" != "success" ]; then
+            echo "❌ Quality gates failed. Code cannot be merged."
+            echo "Fix all issues before attempting to merge."
+            exit 1
+          else
+            echo "✅ All quality gates passed!"
+          fi

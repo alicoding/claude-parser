@@ -20,7 +20,7 @@ import asyncio
 from watchfiles import awatch, Change
 from loguru import logger
 
-from ..domain.conversation import Conversation
+from ..domain.entities.conversation import Conversation
 from ..infrastructure.message_repository import JsonlMessageRepository
 from ..models import Message
 

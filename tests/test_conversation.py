@@ -3,7 +3,7 @@
 import pytest
 from pathlib import Path
 from claude_parser import load
-from claude_parser.domain.conversation import Conversation
+from claude_parser.domain.entities.conversation import Conversation
 from claude_parser.models import MessageType, AssistantMessage, UserMessage
 
 

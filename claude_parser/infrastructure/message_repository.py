@@ -22,7 +22,8 @@ from toolz import (
 )
 from more_itertools import partition as more_partition
 
-from ..domain.conversation import MessageRepository, ConversationMetadata
+from ..domain.interfaces.protocols import MessageRepository
+from ..domain.value_objects.metadata import ConversationMetadata
 from ..models import Message
 from ..models.parser import parse_message
 

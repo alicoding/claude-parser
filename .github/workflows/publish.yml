@@ -1,0 +1,60 @@
+name: Publish to PyPI
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g., 0.1.0)'
+        required: true
+        type: string
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        pip install poetry
+        pip install twine
+    
+    - name: Build package
+      run: |
+        poetry build
+        ls -la dist/
+    
+    - name: Check package
+      run: |
+        twine check dist/*
+    
+    - name: Publish to Test PyPI
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
+      run: |
+        twine upload --repository testpypi dist/* --skip-existing
+        echo "✅ Published to Test PyPI"
+        echo "Test with: pip install -i https://test.pypi.org/simple/ claude-parser"
+    
+    - name: Test installation from Test PyPI
+      run: |
+        pip install -i https://test.pypi.org/simple/ claude-parser
+        python -c "from claude_parser import load; print('✅ Import successful')"
+    
+    - name: Publish to PyPI
+      if: github.event_name == 'release' || github.event.inputs.version != ''
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+      run: |
+        twine upload dist/* --skip-existing
+        echo "✅ Published to PyPI"
+        echo "Install with: pip install claude-parser"
