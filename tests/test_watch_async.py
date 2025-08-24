@@ -8,7 +8,7 @@ import pytest
 import asyncio
 from pathlib import Path
 import tempfile
-import json
+import orjson
 from claude_parser.watch import watch_async
 from claude_parser.models import MessageType
 

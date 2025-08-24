@@ -13,9 +13,9 @@ import asyncio
 from watchfiles import awatch, Change
 from loguru import logger
 
-from .parser import parse_jsonl_streaming
+from .infrastructure.jsonl_parser import parse_jsonl_streaming
 from .models import Message, parse_message
-from .domain.conversation import Conversation, ConversationMetadata
+from .domain.entities.conversation import Conversation, ConversationMetadata
 from .infrastructure.message_repository import JsonlMessageRepository
 
 
@@ -141,7 +141,7 @@ async def stream_for_sse(
                 stream_for_sse("session.jsonl")
             )
     """
-    import json
+    import orjson
     
     if format_message is None:
         def format_message(msg: Message) -> dict:
@@ -158,7 +158,7 @@ async def stream_for_sse(
         for msg in new_messages:
             try:
                 formatted = format_message(msg)
-                yield {"data": json.dumps(formatted)}
+                yield {"data": orjson.dumps(formatted).decode('utf-8')}
             except Exception as e:
                 logger.error(f"Error formatting message: {e}")
                 continue
@@ -166,7 +166,7 @@ async def stream_for_sse(
     # Send heartbeats during quiet periods
     while True:
         await asyncio.sleep(30)
-        yield {"data": json.dumps({"type": "heartbeat"})}
+        yield {"data": orjson.dumps({"type": "heartbeat"}).decode('utf-8')}
 
 
 # 95/5 Principle: One-liner for SSE endpoints

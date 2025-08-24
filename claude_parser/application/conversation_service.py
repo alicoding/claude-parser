@@ -12,8 +12,11 @@ SOLID:
 
 from typing import List, Optional
 from pathlib import Path
+from toolz import map as toolz_map
 
-from ..domain.conversation import Conversation, ConversationMetadata, ConversationAnalyzer
+from ..domain.entities.conversation import Conversation
+from ..domain.value_objects.metadata import ConversationMetadata
+from ..domain.services.analyzer import ConversationAnalyzer
 from ..infrastructure.message_repository import JsonlMessageRepository
 from ..models.base import Message
 from ..models.assistant import AssistantMessage

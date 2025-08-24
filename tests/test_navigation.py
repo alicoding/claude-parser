@@ -5,7 +5,7 @@ import pytest
 from pathlib import Path
 from claude_parser import load
 from claude_parser.discovery import find_current_transcript
-from claude_parser.domain.conversation import Conversation
+from claude_parser.domain.entities.conversation import Conversation
 
 
 class TestNavigationFeatures:

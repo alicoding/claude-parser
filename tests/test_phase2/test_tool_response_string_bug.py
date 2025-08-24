@@ -6,7 +6,7 @@ but claude-parser only accepted Dict or List[Dict].
 This test validates the fix using real Claude output examples.
 """
 
-import json
+import orjson
 import pytest
 from claude_parser.hooks.models import HookData
 

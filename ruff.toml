@@ -1,0 +1,53 @@
+# Ruff Configuration - Enforces 95/5 Principle
+
+[lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # pyflakes
+    "I",      # isort
+    "N",      # pep8-naming
+    "UP",     # pyupgrade
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "DTZ",    # flake8-datetimez
+    "T10",    # flake8-debugger
+    "EXE",    # flake8-executable
+    "ISC",    # flake8-implicit-str-concat
+    "ICN",    # flake8-import-conventions
+    "PIE",    # flake8-pie
+    "PYI",    # flake8-pyi
+    "Q",      # flake8-quotes
+    "RSE",    # flake8-raise
+    "RET",    # flake8-return
+    "SIM",    # flake8-simplify
+    "TID",    # flake8-tidy-imports
+    "TCH",    # flake8-type-checking
+    "ERA",    # eradicate
+    "PGH",    # pygrep-hooks
+    "PL",     # pylint
+    "RUF",    # ruff-specific
+]
+
+ignore = [
+    "E501",   # line too long (handled by formatter)
+]
+
+# ENFORCE: No manual loops or comprehensions where high-level alternatives exist
+[lint.flake8-comprehensions]
+allow-dict-calls-with-keyword-arguments = false
+
+# ENFORCE: Banned modules - 95/5 principle
+[lint.flake8-tidy-imports]
+# Note: banned-api requires special format - using ban-relative-imports instead
+ban-relative-imports = "all"
+
+[lint.per-file-ignores]
+# Special exception: research.py can use asyncio for httpx
+"scripts/research.py" = ["TID251"]  # Allow asyncio in research.py only
+
+[format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"

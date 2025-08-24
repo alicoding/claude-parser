@@ -17,7 +17,7 @@ except ImportError:
     sys.exit(1)
 
 from ..models.base import Message
-from ..domain.conversation import Conversation
+from ..domain.entities.conversation import Conversation
 from .. import load
 
 

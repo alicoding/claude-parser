@@ -9,7 +9,7 @@ from dataclasses import dataclass, field
 from collections import defaultdict
 import re
 
-from ..domain.conversation import Conversation
+from ..domain.entities.conversation import Conversation
 from ..models import Message, AssistantMessage, UserMessage, ToolUse, ToolResult
 
 

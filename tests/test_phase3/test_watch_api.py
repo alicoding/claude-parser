@@ -19,9 +19,8 @@ Success Criteria:
 
 import pytest
 import tempfile
-import json
+import orjson
 import time
-import threading
 import shutil
 from pathlib import Path
 from unittest.mock import Mock, patch
@@ -135,7 +134,7 @@ class TestWatchDomainAPI:
                 # Mock the incremental reader to return some new lines
                 with patch('claude_parser.watch.watcher.IncrementalReader.get_new_lines') as mock_get_lines:
                     # Return one real message line
-                    mock_get_lines.return_value = [json.dumps(REAL_ASSISTANT_MESSAGE)]
+                    mock_get_lines.return_value = [orjson.dumps(REAL_ASSISTANT_MESSAGE).decode('utf-8')]
                     
                     # Run watch - should call callback once
                     watch(REAL_CLAUDE_JSONL, callback)
@@ -200,7 +199,7 @@ class TestWatchDomainAPI:
             
             with open(file_path, 'w') as new_f:
                 new_msg = {"type": "user", "content": "After rotation"}
-                new_f.write(json.dumps(new_msg) + '\n')
+                new_f.write(orjson.dumps(new_msg).decode('utf-8') + '\n')
             
             time.sleep(0.1)
             
@@ -223,7 +222,7 @@ class TestWatchDomainAPI:
                     "content": f"Message {i} " + "x" * 1000,
                     "timestamp": f"2024-08-20T10:{i:02d}:00Z"
                 }
-                f.write(json.dumps(msg) + '\n')
+                f.write(orjson.dumps(msg).decode('utf-8') + '\n')
             f.flush()
             
             def start_watch():
@@ -239,7 +238,7 @@ class TestWatchDomainAPI:
             # Add one more message
             with open(f.name, 'a') as append_f:
                 new_msg = {"type": "assistant", "content": "New message"}
-                append_f.write(json.dumps(new_msg) + '\n')
+                append_f.write(orjson.dumps(new_msg).decode('utf-8') + '\n')
                 append_f.flush()
             
             time.sleep(0.2)  # Should detect quickly
@@ -276,7 +275,7 @@ class TestWatchDomainAPI:
             # Add valid message after malformed one
             with open(f.name, 'a') as append_f:
                 valid_msg = {"type": "user", "content": "Valid message"}
-                append_f.write(json.dumps(valid_msg) + '\n')
+                append_f.write(orjson.dumps(valid_msg).decode('utf-8') + '\n')
                 append_f.flush()
             
             time.sleep(0.1)

@@ -7,7 +7,7 @@ Bug Report: https://github.com/anthropic/claude-code/issues/schema-mismatch
 """
 
 import pytest
-import json
+import orjson
 from claude_parser.hooks.models import HookData
 
 

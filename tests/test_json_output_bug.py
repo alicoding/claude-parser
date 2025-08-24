@@ -1,7 +1,7 @@
 """Test for json_output bug with dict_items."""
 
 import pytest
-import json
+import orjson
 import sys
 from io import StringIO
 from claude_parser.hooks.json_output import json_output
@@ -22,7 +22,7 @@ def test_json_output_with_kwargs(capsys):
     
     # Should output valid JSON
     captured = capsys.readouterr()
-    output = json.loads(captured.out)
+    output = orjson.loads(captured.out)
     assert output["decision"] == "continue"
 
 
@@ -33,5 +33,5 @@ def test_json_output_stop_event(capsys):
     
     assert exc_info.value.code == 0
     captured = capsys.readouterr()
-    output = json.loads(captured.out)
+    output = orjson.loads(captured.out)
     assert "decision" in output or "continue" in output
