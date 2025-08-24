@@ -13,7 +13,7 @@ from pathlib import Path
 import orjson
 
 # Import the async watch function
-from claude_parser.watch_async import watch_async, stream_for_sse
+from claude_parser.watch import watch_async, stream_for_sse
 
 app = FastAPI()
 
