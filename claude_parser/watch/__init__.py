@@ -20,10 +20,13 @@ Async Example:
 
 from .watcher import watch
 from .async_watcher import watch_async
+from .sse_helpers import stream_for_sse, create_sse_stream
 
 __all__ = [
     "watch",
     "watch_async",
+    "stream_for_sse",
+    "create_sse_stream",
 ]
 
 # Version
