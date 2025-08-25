@@ -3,11 +3,14 @@
 <system-critical>
 YOU HAVE NO MEMORY FROM PREVIOUS SESSIONS!
 85 classes, 140+ functions, 9 domains already exist.
+USE ctask NOT dstask - ENFORCED CONTEXT REQUIRED!
 </system-critical>
 
 ## 🔴 BEFORE ANY CODE - MANDATORY
 ```bash
-# RUN THIS FIRST - NO EXCEPTIONS
+# RUN THESE FIRST - NO EXCEPTIONS
+dstask show-open | head -20  # See existing tasks
+dstask <id> note             # READ FULL CONTEXT
 python scripts/codebase_inventory.py . --stats
 ```
 

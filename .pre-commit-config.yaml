@@ -63,3 +63,35 @@ repos:
         language: system
         files: claude_parser/features/.*\.py$
         pass_filenames: false
+        
+      # ENFORCEMENT: Complexity check
+      - id: check-complexity
+        name: Check Cyclomatic Complexity
+        entry: bash -c 'radon cc claude_parser -n B --total-average | grep -q "Average complexity. A (" || (echo "❌ Complexity too high! Max allowed is B" && exit 1)'
+        language: system
+        files: \.py$
+        pass_filenames: false
+        
+      # ENFORCEMENT: File size check
+      - id: check-file-size
+        name: Check File Size (<150 LOC)
+        entry: bash -c 'for f in $(find claude_parser -name "*.py" -type f); do lines=$(wc -l < "$f"); if [ $lines -gt 150 ]; then echo "❌ $f has $lines lines (max 150)"; exit 1; fi; done'
+        language: system
+        files: \.py$
+        pass_filenames: false
+        
+      # ENFORCEMENT: No manual loops
+      - id: check-no-loops
+        name: Check No Manual Loops
+        entry: bash -c 'violations=$(grep -r "for .* in" claude_parser --include="*.py" | grep -v toolz | grep -v funcy | wc -l); if [ $violations -gt 10 ]; then echo "❌ Found $violations manual loops without toolz/funcy"; exit 1; fi'
+        language: system
+        files: \.py$
+        pass_filenames: false
+        
+      # ENFORCEMENT: No forbidden imports
+      - id: check-imports
+        name: Check No Forbidden Imports
+        entry: bash -c 'if grep -r "^import json\|^from json import\|^import datetime\|^from datetime import" claude_parser --include="*.py" | grep -v noqa | grep -v test; then echo "❌ Forbidden imports found! Use orjson/pendulum"; exit 1; fi'
+        language: system
+        files: \.py$
+        pass_filenames: false
