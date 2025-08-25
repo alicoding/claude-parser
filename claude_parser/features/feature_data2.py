@@ -8,6 +8,48 @@ DRY: Reusable feature definitions
 from .models import Feature, FeatureStatus, FeatureCategory
 
 
+def get_todo_features():
+    """Get Todo domain features."""
+    return [
+        Feature(
+            name="TodoManager",
+            category=FeatureCategory.DOMAIN,
+            status=FeatureStatus.COMPLETE,
+            description="Manage Claude's TodoWrite format with Rich display",
+            api_method="TodoManager(session_id, agent_id=None)",
+            version_added="3.1.0",
+            tests_passing=14,
+            tests_total=14,
+            coverage_percent=100.0,
+            notes="SOLID/DRY/DDD implementation with Rich display"
+        ),
+        Feature(
+            name="TodoSwiper",
+            category=FeatureCategory.DOMAIN,
+            status=FeatureStatus.COMPLETE,
+            description="Tinder-like navigation through todo history",
+            api_method="TodoSwiper.from_transcript(path)",
+            version_added="3.1.0",
+            tests_passing=3,
+            tests_total=3,
+            coverage_percent=100.0,
+            notes="Timeline integration for todo history"
+        ),
+        Feature(
+            name="TodoParser",
+            category=FeatureCategory.PARSER,
+            status=FeatureStatus.COMPLETE,
+            description="Parse TodoWrite JSON format",
+            api_method="TodoParser.parse(data)",
+            version_added="3.1.0",
+            tests_passing=5,
+            tests_total=5,
+            coverage_percent=100.0,
+            notes="95% orjson library usage"
+        )
+    ]
+
+
 def get_watch_transport_features():
     """Get watch and transport features."""
     return [

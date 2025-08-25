@@ -9,6 +9,7 @@ from toolz import concat
 
 from .feature_data import get_parser_features, get_hooks_features
 from .feature_data2 import (
+    get_todo_features,
     get_watch_transport_features,
     get_filter_navigation_features,
     get_planned_features
@@ -21,6 +22,7 @@ def get_current_features():
     return list(concat([
         get_parser_features(),
         get_hooks_features(),
+        get_todo_features(),
         get_watch_transport_features(),
         get_filter_navigation_features(),
         get_planned_features()
