@@ -32,6 +32,7 @@ python-dotenv = "^1.0.0"
 networkx = "^3.0"
 lazy-object-proxy = "^1.10.0"
 watchfiles = "^0.21.0"
+aiofiles = "^23.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.0"
