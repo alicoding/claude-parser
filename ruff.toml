@@ -5,7 +5,6 @@
 select = [
     "F821",     # Undefined names (breaks code)
     "F401",     # Unused imports (cleanup)  
-    "E999",     # Syntax errors (breaks code)
     "W292",     # No newline at end (git issues)
 ]
 
