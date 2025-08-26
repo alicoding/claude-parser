@@ -7,7 +7,7 @@ DRY: Eliminate test duplication
 """
 
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Callable, Dict, Optional
 
 
 class TestDefaults:
@@ -51,25 +51,32 @@ class HookTestFactory:
     """Factory for creating hook test cases without duplication."""
     
     @staticmethod
-    def create_tool_response_test(tool_name: str, sample_output: str):
-        """Create a parameterized test for tool responses."""
+    def create_tool_response_test(tool_name: str, sample_output: str) -> Callable:
+        """Create a parameterized test for tool responses.
+        
+        This eliminates the 4x duplication found in hook-schemas.test.ts.
+        """
         def test_function():
-            from claude_parser.hooks.models import parseHookData
+            from claude_parser.hooks.models import HookData
             
-            response = TestDefaults.create_hook_data(
-                hookEventName='PostToolUse',
-                toolName=tool_name,
-                toolResponse=sample_output
-            )
+            response = {
+                'sessionId': TestDefaults.SESSION_ID,
+                'transcriptPath': str(TestDefaults.TRANSCRIPT_PATH),
+                'cwd': str(TestDefaults.PROJECT_PATH),
+                'hookEventName': 'PostToolUse',
+                'toolName': tool_name,
+                'toolResponse': sample_output
+            }
             
-            result = parseHookData(response)
-            assert result.success, f"Failed to parse {tool_name} response"
+            # Parse the hook data
+            data = HookData(**response)
             
-            if result.success:
-                data = result.data
-                assert data.tool_name == tool_name
-                assert isinstance(data.tool_response, str)
-                assert data.tool_response == sample_output
+            # Verify it parsed correctly
+            assert data.session_id == TestDefaults.SESSION_ID
+            assert data.tool_name == tool_name
+            assert isinstance(data.tool_response, str)
+            assert data.tool_response == sample_output
+            assert data.hook_event_name == 'PostToolUse'
                 
         return test_function
     
