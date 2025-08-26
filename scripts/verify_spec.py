@@ -43,7 +43,7 @@ def check_forbidden_imports() -> Tuple[bool, List[str]]:
     # Only check source files, not node_modules, research files, or generated code  
     py_files = [
         f for f in Path(".").rglob("*.py") 
-        if not any(part in str(f) for part in ["node_modules", "research", ".pytest_cache", "__pycache__", "verify_spec.py"])
+        if not any(part in str(f) for part in ["node_modules", "research", ".pytest_cache", "__pycache__", "verify_spec.py", ".venv", "venv", ".env"])
     ]
     ts_files = [
         f for f in list(Path(".").rglob("*.ts")) + list(Path(".").rglob("*.tsx"))
