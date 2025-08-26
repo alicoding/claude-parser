@@ -157,7 +157,7 @@ jobs:
         run: |
           pip install poetry
           poetry install
-          cd packages/core && npm ci && cd ../..
+          cd packages/core && npm ci && npm run build && cd ../..
       
       - name: Test Python-TypeScript interop
         run: |
@@ -185,7 +185,7 @@ jobs:
           const fs = require('fs');
           const { parseMessage } = require('./dist/index.js');
           
-          const messages = JSON.parse(fs.readFileSync('../test-output.json', 'utf8'));
+          const messages = JSON.parse(fs.readFileSync('../../test-output.json', 'utf8'));
           messages.forEach(msg => {
               const result = parseMessage(msg);
               if (!result.success) {
