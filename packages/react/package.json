@@ -29,7 +29,7 @@
     "react-dom": ">=16.8.0"
   },
   "dependencies": {
-    "@claude-parser/core": "workspace:*"
+    "@claude-parser/core": "2.0.0"
   },
   "devDependencies": {
     "@testing-library/react": "^14.0.0",
