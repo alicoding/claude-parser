@@ -5,7 +5,7 @@ SOLID: Single Responsibility - Parser and Hooks features
 DRY: Reusable feature definitions
 """
 
-from .models import Feature, FeatureStatus, FeatureCategory
+from .models import Feature, FeatureCategory, FeatureStatus
 
 
 def get_parser_features():
@@ -20,7 +20,7 @@ def get_parser_features():
             version_added="1.0.0",
             tests_passing=15,
             tests_total=15,
-            coverage_percent=100.0
+            coverage_percent=100.0,
         ),
         Feature(
             name="Conversation",
@@ -31,7 +31,7 @@ def get_parser_features():
             version_added="1.0.0",
             tests_passing=20,
             tests_total=20,
-            coverage_percent=100.0
+            coverage_percent=100.0,
         ),
     ]
 
@@ -48,7 +48,7 @@ def get_hooks_features():
             version_added="2.0.0",
             tests_passing=11,
             tests_total=11,
-            coverage_percent=100.0
+            coverage_percent=100.0,
         ),
         Feature(
             name="exit_success",
@@ -59,7 +59,7 @@ def get_hooks_features():
             version_added="2.0.0",
             tests_passing=10,
             tests_total=10,
-            coverage_percent=100.0
+            coverage_percent=100.0,
         ),
         Feature(
             name="exit_block",
@@ -70,7 +70,7 @@ def get_hooks_features():
             version_added="2.0.0",
             tests_passing=10,
             tests_total=10,
-            coverage_percent=100.0
+            coverage_percent=100.0,
         ),
         Feature(
             name="exit_error",
@@ -81,6 +81,6 @@ def get_hooks_features():
             version_added="2.0.0",
             tests_passing=10,
             tests_total=10,
-            coverage_percent=100.0
+            coverage_percent=100.0,
         ),
     ]

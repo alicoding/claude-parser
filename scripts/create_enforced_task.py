@@ -21,7 +21,7 @@ from pathlib import Path
 import orjson
 from typing import List, Dict, Tuple
 import re
-from datetime import datetime
+import pendulum
 
 
 def run_research(query: str) -> str:
@@ -136,7 +136,7 @@ def create_task_with_context(description: str) -> None:
         oversized.extend(get_file_sizes(keyword))
     
     # 5. Build the ENFORCED task note
-    note = f"""ENFORCED CONTEXT - GENERATED {datetime.now().isoformat()}
+    note = f"""ENFORCED CONTEXT - GENERATED {pendulum.now().to_iso8601_string()}
 ==================================================
 
 TASK: {description}

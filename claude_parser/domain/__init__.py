@@ -12,31 +12,31 @@ Following DDD with proper separation:
 # Entities
 from .entities import Conversation
 
-# Value Objects
-from .value_objects import ConversationMetadata
-
-# Services
-from .services import ConversationAnalyzer, NavigationService
-
 # Filters
-from .filters import ContentFilter, TypeFilter, ErrorFilter
+from .filters import ContentFilter, ErrorFilter, TypeFilter
 
 # Interfaces
 from .interfaces import MessageFilter, MessageRepository
 
+# Services
+from .services import ConversationAnalyzer, NavigationService
+
+# Value Objects
+from .value_objects import ConversationMetadata
+
 __all__ = [
     # Core entity
-    'Conversation',
+    "Conversation",
     # Value objects
-    'ConversationMetadata',
+    "ConversationMetadata",
     # Services
-    'ConversationAnalyzer',
-    'NavigationService',
+    "ConversationAnalyzer",
+    "NavigationService",
     # Filters
-    'ContentFilter',
-    'TypeFilter', 
-    'ErrorFilter',
+    "ContentFilter",
+    "TypeFilter",
+    "ErrorFilter",
     # Interfaces
-    'MessageFilter',
-    'MessageRepository',
+    "MessageFilter",
+    "MessageRepository",
 ]

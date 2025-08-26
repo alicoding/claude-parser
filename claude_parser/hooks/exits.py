@@ -5,12 +5,16 @@ Following 95/5 principle: Each function is ≤ 3 lines of code.
 
 import sys
 from typing import NoReturn
+
 import orjson
 
 
 def exit_success(message: str = "") -> NoReturn:
-    """Exit with success code 0 and JSON output for Claude Code."""
-    sys.stdout.buffer.write(orjson.dumps({"continue": True}))
+    """Exit with success code 0 and JSON output."""
+    out = {"continue": True}
+    if message:
+        out["message"] = message
+    sys.stdout.buffer.write(orjson.dumps(out))
     sys.exit(0)
 
 

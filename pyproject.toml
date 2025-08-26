@@ -28,6 +28,7 @@ plotly = "^5.24.0"
 typer = "^0.15.0"
 toolz = "^1.0.0"
 funcy = "^2.0"
+python-dotenv = "^1.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.0"

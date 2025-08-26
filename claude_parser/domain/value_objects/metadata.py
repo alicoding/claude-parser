@@ -5,14 +5,15 @@ SOLID: Single Responsibility - Only metadata representation.
 DDD: Value Object - Immutable, no identity.
 """
 
-from typing import Optional
-from pathlib import Path
 from dataclasses import dataclass
+from pathlib import Path
+from typing import Optional
 
 
 @dataclass(frozen=True)
 class ConversationMetadata:
     """Value object for conversation metadata."""
+
     session_id: Optional[str]
     filepath: Path
     current_dir: Optional[str]
