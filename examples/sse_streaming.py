@@ -7,7 +7,6 @@ with just a few lines of code. No manual threading needed!
 """
 
 from fastapi import FastAPI
-from fastapi.responses import StreamingResponse
 from sse_starlette.sse import EventSourceResponse
 from pathlib import Path
 import orjson
@@ -73,7 +72,7 @@ async def memory_project_stream(project_name: str, session_id: str = None):
                     }
                 }
                 
-                yield {"data": json.dumps(event_data)}
+                yield {"data": orjson.dumps(event_data).decode()}
     
     return EventSourceResponse(generate_events())
 
@@ -103,10 +102,10 @@ async def controlled_stream(session_id: str):
                 stop_event=stop_event
             ):
                 for msg in new_messages:
-                    yield {"data": json.dumps({
+                    yield {"data": orjson.dumps({
                         "type": msg.type.value,
                         "content": msg.text_content
-                    })}
+                    }).decode()}
         finally:
             # Clean up when done
             active_streams.pop(session_id, None)
@@ -148,7 +147,7 @@ async def stream_tool_operations():
                     "content": msg.text_content,
                     "timestamp": msg.timestamp
                 }
-                yield {"data": json.dumps(event)}
+                yield {"data": orjson.dumps(event).decode()}
     
     return EventSourceResponse(tool_events())
 
@@ -182,13 +181,13 @@ async def stream_with_heartbeat():
             try:
                 # Wait for message with timeout
                 msg = await asyncio.wait_for(queue.get(), timeout=30.0)
-                yield {"data": json.dumps({
+                yield {"data": orjson.dumps({
                     "type": msg.type.value,
                     "content": msg.text_content
-                })}
+                }).decode()}
             except asyncio.TimeoutError:
                 # Send heartbeat if no messages for 30s
-                yield {"data": json.dumps({"type": "heartbeat"})}
+                yield {"data": orjson.dumps({"type": "heartbeat"}).decode()}
     
     return EventSourceResponse(events_with_heartbeat())
 

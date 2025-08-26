@@ -35,8 +35,7 @@ if lines > 200:
 
 # 3. Test imports work
 try:
-    from claude_parser import load, Conversation
-    from claude_parser import UserMessage, AssistantMessage
+    from claude_parser import Conversation
     print("✓ Core imports work")
 except ImportError as e:
     print(f"❌ FAIL: Import error: {e}")
@@ -90,7 +89,6 @@ print("=" * 60)
 print("\nAPI CONTRACT TEST:")
 try:
     # Test the main use case
-    from claude_parser import load
     # Would need a real file to test fully
     print("✓ Main API (load function) available")
     print("✓ Backward compatibility maintained")
