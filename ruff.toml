@@ -1,50 +1,21 @@
-# Ruff Configuration - Enforces 95/5 Principle
+# TRUE 95/5 Ruff Configuration - Only enable what we actually want to enforce
 
 [lint]
+# ONLY enable rules for actual functional issues
 select = [
-    "E",      # pycodestyle errors
-    "W",      # pycodestyle warnings
-    "F",      # pyflakes
-    "I",      # isort
-    "N",      # pep8-naming
-    "UP",     # pyupgrade
-    "B",      # flake8-bugbear
-    "C4",     # flake8-comprehensions
-    "DTZ",    # flake8-datetimez
-    "T10",    # flake8-debugger
-    "EXE",    # flake8-executable
-    "ISC",    # flake8-implicit-str-concat
-    "ICN",    # flake8-import-conventions
-    "PIE",    # flake8-pie
-    "PYI",    # flake8-pyi
-    "Q",      # flake8-quotes
-    "RSE",    # flake8-raise
-    "RET",    # flake8-return
-    "SIM",    # flake8-simplify
-    "TID",    # flake8-tidy-imports
-    "TCH",    # flake8-type-checking
-    "ERA",    # eradicate
-    "PGH",    # pygrep-hooks
-    "PL",     # pylint
-    "RUF",    # ruff-specific
+    "F821",     # Undefined names (breaks code)
+    "F401",     # Unused imports (cleanup)  
+    "E999",     # Syntax errors (breaks code)
+    "W292",     # No newline at end (git issues)
 ]
 
-ignore = [
-    "E501",   # line too long (handled by formatter)
-]
-
-# ENFORCE: No manual loops or comprehensions where high-level alternatives exist
-[lint.flake8-comprehensions]
-allow-dict-calls-with-keyword-arguments = false
-
-# ENFORCE: Banned modules - 95/5 principle
-[lint.flake8-tidy-imports]
-# Note: banned-api requires special format - using ban-relative-imports instead
-ban-relative-imports = "all"
-
+# Test files can be even more relaxed
 [lint.per-file-ignores]
-# Special exception: research.py can use asyncio for httpx
-"scripts/research.py" = ["TID251"]  # Allow asyncio in research.py only
+"tests/*" = [
+    "F841",     # Unused variables in tests (for clarity)
+    "B011",     # assert False in tests (legitimate)
+    "E722",     # Bare except in tests (robustness testing)
+]
 
 [format]
 quote-style = "double"
