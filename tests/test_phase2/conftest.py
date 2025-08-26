@@ -10,11 +10,12 @@ from typing import Any, Dict, Optional
 
 import orjson
 import pytest
+from tests.constants import TestDefaults
 
 # Real hook JSON samples from Claude Code documentation
 HOOK_SAMPLES = {
     "PreToolUse": {
-        "session_id": "abc123",
+        "session_id": TestDefaults.SESSION_ID,
         "transcript_path": "/Users/test/.claude/projects/test/session.jsonl",
         "cwd": "/Users/test/project",
         "hook_event_name": "PreToolUse",
@@ -22,7 +23,7 @@ HOOK_SAMPLES = {
         "tool_input": {"file_path": "/test.txt", "content": "test content"},
     },
     "PostToolUse": {
-        "session_id": "abc123",
+        "session_id": TestDefaults.SESSION_ID,
         "transcript_path": "/Users/test/.claude/projects/test/session.jsonl",
         "cwd": "/Users/test/project",
         "hook_event_name": "PostToolUse",
@@ -31,42 +32,42 @@ HOOK_SAMPLES = {
         "tool_response": {"output": "file1.txt\nfile2.txt", "success": True},
     },
     "UserPromptSubmit": {
-        "session_id": "abc123",
+        "session_id": TestDefaults.SESSION_ID,
         "transcript_path": "/Users/test/.claude/projects/test/session.jsonl",
         "cwd": "/Users/test/project",
         "hook_event_name": "UserPromptSubmit",
         "prompt": "Write a function to calculate factorial",
     },
     "Stop": {
-        "session_id": "abc123",
+        "session_id": TestDefaults.SESSION_ID,
         "transcript_path": "/Users/test/.claude/projects/test/session.jsonl",
         "cwd": "/Users/test/project",
         "hook_event_name": "Stop",
         "stop_hook_active": False,
     },
     "SubagentStop": {
-        "session_id": "abc123",
+        "session_id": TestDefaults.SESSION_ID,
         "transcript_path": "/Users/test/.claude/projects/test/session.jsonl",
         "cwd": "/Users/test/project",
         "hook_event_name": "SubagentStop",
         "stop_hook_active": False,
     },
     "Notification": {
-        "session_id": "abc123",
+        "session_id": TestDefaults.SESSION_ID,
         "transcript_path": "/Users/test/.claude/projects/test/session.jsonl",
         "cwd": "/Users/test/project",
         "hook_event_name": "Notification",
         "message": "Claude needs your permission to use Bash",
     },
     "SessionStart": {
-        "session_id": "abc123",
+        "session_id": TestDefaults.SESSION_ID,
         "transcript_path": "/Users/test/.claude/projects/test/session.jsonl",
         "cwd": "/Users/test/project",
         "hook_event_name": "SessionStart",
         "source": "startup",
     },
     "PreCompact": {
-        "session_id": "abc123",
+        "session_id": TestDefaults.SESSION_ID,
         "transcript_path": "/Users/test/.claude/projects/test/session.jsonl",
         "cwd": "/Users/test/project",
         "hook_event_name": "PreCompact",
