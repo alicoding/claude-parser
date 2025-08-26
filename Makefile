@@ -30,7 +30,7 @@ setup:
 
 test:
 	@echo "🧪 Running tests..."
-	pytest tests/ -v -k "not (test_exit_functions_are_simple or TestWatchDomainSOLID or TestWatchDomainDDD or TestWatch95PercentPrinciple or TestWatchIntegration)"
+	poetry run pytest tests/ -v -k "not (test_exit_functions_are_simple or TestWatchDomainSOLID or TestWatchDomainDDD or TestWatch95PercentPrinciple or TestWatchIntegration)"
 
 coverage:
 	@echo "📊 Running tests with coverage..."
@@ -39,10 +39,10 @@ coverage:
 
 lint:
 	@echo "🔍 Running ruff linter..."
-	ruff check claude_parser tests
-	ruff format --check claude_parser tests
+	poetry run ruff check claude_parser tests
+	poetry run ruff format --check claude_parser tests
 	@echo "🚫 Checking for unused code..."
-	@ruff check --select F401,F841 claude_parser tests || (echo "❌ BLOCKED: Unused imports or variables detected!" && exit 1)
+	@poetry run ruff check --select F401,F841 claude_parser tests || (echo "❌ BLOCKED: Unused imports or variables detected!" && exit 1)
 
 typecheck:
 	@echo "🔍 Running mypy type checker..."
@@ -59,7 +59,7 @@ docs-serve:
 # Verify 95/5 principle compliance
 verify-spec:
 	@echo "🔍 Checking 95/5 principle compliance..."
-	@python scripts/verify_spec.py
+	@poetry run python scripts/verify_spec.py
 
 # THIS IS THE CRITICAL TARGET - Must pass before ANY commit
 precommit: quality-check

@@ -21,16 +21,21 @@ class TestRealDataValidation:
     @pytest.fixture
     def prod_files(self):
         """All production JSONL files."""
-        prod_dir = Path(
-            "/Volumes/AliDev/ai-projects/claude-parser/jsonl-prod-data-for-test/-Volumes-AliDev-ai-projects-claude-parser"
-        )
-        return {
+        # Use relative path from project root to work in both local and CI
+        project_root = Path(__file__).parent.parent
+        prod_dir = project_root / "jsonl-prod-data-for-test" / "-Volumes-AliDev-ai-projects-claude-parser"
+        
+        files = {
             "small": prod_dir / "4762e53b-7ca8-4464-9eac-d1816c343c50.jsonl",  # 1 line
-            "medium": prod_dir
-            / "3a7770b4-aba3-46dd-b677-8fc2d71d4e06.jsonl",  # 98 lines
-            "large": prod_dir
-            / "840f9326-6f99-46d9-88dc-f32fb4754d36.jsonl",  # 4992 lines
+            "medium": prod_dir / "3a7770b4-aba3-46dd-b677-8fc2d71d4e06.jsonl",  # 98 lines
+            "large": prod_dir / "840f9326-6f99-46d9-88dc-f32fb4754d36.jsonl",  # 4992 lines
         }
+        
+        # Skip if files don't exist (CI environment without test data)
+        if not prod_dir.exists():
+            pytest.skip("Production test data not available in this environment")
+            
+        return files
 
     def test_all_files_load_successfully(self, prod_files):
         """All production files must load without errors."""
