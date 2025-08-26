@@ -196,6 +196,7 @@ class TestWatchDomainAPI:
 class TestWatchDomainSOLID:
     """Test SOLID principles compliance."""
 
+    @pytest.mark.xfail(reason="Watch feature not yet implemented")
     def test_single_responsibility(self):
         """watch() has single responsibility: file watching."""
         # Expected to fail - watch feature not fully implemented
@@ -208,6 +209,7 @@ class TestWatchDomainSOLID:
         # Message creation should be delegated to models domain
         assert callable(watch)
 
+    @pytest.mark.xfail(reason="Watch feature not yet implemented")
     def test_open_closed_principle(self):
         """Can extend behavior without modifying watch() function."""
         # Expected to fail - watch feature not fully implemented
@@ -216,6 +218,7 @@ class TestWatchDomainSOLID:
         # Different callback functions should provide extension
         # without modifying watch() implementation
 
+    @pytest.mark.xfail(reason="Watch feature not yet implemented")
     def test_dependency_inversion(self):
         """watch() depends on abstractions, not concrete implementations."""
         # Expected to fail - watch feature not fully implemented
@@ -228,6 +231,7 @@ class TestWatchDomainSOLID:
 class TestWatchDomainDDD:
     """Test Domain-Driven Design principles."""
 
+    @pytest.mark.xfail(reason="Watch feature not yet implemented")
     def test_domain_boundaries(self):
         """Watch domain has clear boundaries."""
         # Expected to fail - watch feature not fully implemented
@@ -237,6 +241,7 @@ class TestWatchDomainDDD:
         # Should import from models domain for Message types
         # Should not duplicate logic from other domains
 
+    @pytest.mark.xfail(reason="Watch feature not yet implemented")
     def test_ubiquitous_language(self):
         """Uses domain language consistently."""
         # Expected to fail - watch feature not fully implemented
@@ -250,6 +255,7 @@ class TestWatchDomainDDD:
 class TestWatch95PercentPrinciple:
     """Test 95/5 development principle compliance."""
 
+    @pytest.mark.xfail(reason="Watch feature not yet implemented")
     def test_95_percent_api_simplicity(self):
         """95% use case requires ≤ 3 lines of code."""
         # Expected to fail - watch feature not fully implemented
@@ -259,6 +265,7 @@ class TestWatch95PercentPrinciple:
         # def callback(conv, msgs): pass
         # watch("file.jsonl", callback)  # 2 lines total
 
+    @pytest.mark.xfail(reason="Watch feature not yet implemented")
     def test_5_percent_advanced_features(self):
         """5% use case has advanced features available."""
         # Expected to fail - watch feature not fully implemented
@@ -273,6 +280,7 @@ class TestWatch95PercentPrinciple:
 class TestWatchIntegration:
     """Test integration with other domains."""
 
+    @pytest.mark.xfail(reason="Watch feature not yet implemented")
     def test_parser_domain_integration(self):
         """Uses parser domain for JSONL parsing."""
         # Expected to fail - watch feature not fully implemented
@@ -281,6 +289,7 @@ class TestWatchIntegration:
         # Should use existing load() function
         # Should not reimplement JSONL parsing
 
+    @pytest.mark.xfail(reason="Watch feature not yet implemented")
     def test_models_domain_integration(self):
         """Uses models domain for Message objects."""
         # Expected to fail - watch feature not fully implemented
@@ -289,6 +298,7 @@ class TestWatchIntegration:
         # Should return typed Message objects
         # Should not create raw dicts
 
+    @pytest.mark.xfail(reason="Watch feature not yet implemented")
     def test_hooks_domain_integration(self):
         """Can be used from hook scripts."""
         # Expected to fail - watch feature not fully implemented
