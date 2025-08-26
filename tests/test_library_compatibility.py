@@ -58,9 +58,9 @@ class TestOrjsonCompatibility:
         orjson_time = time.perf_counter() - start
 
         # orjson should be faster
-        assert (
-            orjson_time < json_time
-        ), f"orjson ({orjson_time:.3f}s) should be faster than json ({json_time:.3f}s)"
+        assert orjson_time < json_time, (
+            f"orjson ({orjson_time:.3f}s) should be faster than json ({json_time:.3f}s)"
+        )
 
     def test_usage_in_our_code(self):
         """Test the specific usage patterns in our codebase."""

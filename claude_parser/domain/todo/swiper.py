@@ -1,4 +1,5 @@
 """TodoSwiper - Tinder-like navigation through todo history."""
+
 from typing import Dict, List
 
 from rich.console import Console

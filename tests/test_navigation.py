@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 """TDD tests for navigation features following 95/5 principle."""
 
-
 import pytest
 
 from claude_parser import load

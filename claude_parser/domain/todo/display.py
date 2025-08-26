@@ -2,6 +2,7 @@
 
 95% library (Rich), 5% glue.
 """
+
 from typing import Dict, List
 
 from rich.tree import Tree

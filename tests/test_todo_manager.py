@@ -1,4 +1,5 @@
 """Test TodoManager - Integration tests for facade pattern."""
+
 from claude_parser.domain.todo import TodoManager
 
 

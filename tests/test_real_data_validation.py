@@ -76,9 +76,9 @@ class TestRealDataValidation:
                 if hasattr(msg, "message") and isinstance(msg.message, dict):
                     if msg.message.get("content"):
                         # Should extract meaningful text, not raw JSON
-                        assert (
-                            "{" not in text or "type" not in text
-                        ), "Text extraction returning raw JSON structure"
+                        assert "{" not in text or "type" not in text, (
+                            "Text extraction returning raw JSON structure"
+                        )
 
     def test_token_counting_accuracy(self, prod_files):
         """Token counting must use real usage structure."""
@@ -103,9 +103,9 @@ class TestRealDataValidation:
                         + usage.get("cache_read_input_tokens", 0)
                         + usage.get("cache_creation_input_tokens", 0)
                     )
-                    assert (
-                        total == expected
-                    ), f"Token calculation mismatch: {total} != {expected}"
+                    assert total == expected, (
+                        f"Token calculation mismatch: {total} != {expected}"
+                    )
 
     def test_session_analysis_with_real_data(self, prod_files):
         """Session analysis must work with production data."""
@@ -278,7 +278,7 @@ class TestRealDataValidation:
         print(f"\nPerformance metrics for {large_file.name}:")
         print(f"  Load time: {load_time:.2f}s")
         print(f"  Messages: {len(conv.messages)}")
-        print(f"  Messages/sec: {len(conv.messages)/load_time:.0f}")
+        print(f"  Messages/sec: {len(conv.messages) / load_time:.0f}")
 
         # Should load at reasonable speed (>1000 msgs/sec)
         assert len(conv.messages) / load_time > 100, "Load performance too slow"
@@ -377,9 +377,9 @@ class TestBusinessLogicInvariants:
 
                 # Allow up to 5% out of order (real-world data has minor timing issues)
                 tolerance = max(1, len(timestamps) * 0.05)
-                assert (
-                    out_of_order <= tolerance
-                ), f"Too many timestamps out of order in {name}: {out_of_order}/{len(timestamps)}"
+                assert out_of_order <= tolerance, (
+                    f"Too many timestamps out of order in {name}: {out_of_order}/{len(timestamps)}"
+                )
 
     def test_session_consistency(self, prod_files):
         """Session IDs should be consistent within boundaries."""
@@ -399,9 +399,9 @@ class TestBusinessLogicInvariants:
                     session_ids.add(conv.messages[j].session_id)
 
             # Should have at most one unique session_id per segment
-            assert (
-                len(session_ids) <= 1
-            ), f"Multiple session IDs in segment {i}: {session_ids}"
+            assert len(session_ids) <= 1, (
+                f"Multiple session IDs in segment {i}: {session_ids}"
+            )
 
     def test_cost_calculation_accuracy(self, prod_files):
         """Cost calculations must be accurate and consistent."""
@@ -419,9 +419,9 @@ class TestBusinessLogicInvariants:
         expected_cost += (stats.cache_read_tokens / 1_000_000) * 0.30
 
         # Should match within rounding error
-        assert (
-            abs(stats.cost_usd - expected_cost) < 0.01
-        ), f"Cost calculation mismatch: {stats.cost_usd} != {expected_cost}"
+        assert abs(stats.cost_usd - expected_cost) < 0.01, (
+            f"Cost calculation mismatch: {stats.cost_usd} != {expected_cost}"
+        )
 
 
 # No skips allowed - all tests must pass with real data!

@@ -1,4 +1,5 @@
 """Test TodoDisplay - Single Responsibility: Formatting."""
+
 from rich.tree import Tree
 
 from claude_parser.domain.todo.display import TodoDisplay

@@ -1,6 +1,5 @@
 """Test for json_output bug with dict_items."""
 
-
 import orjson
 import pytest
 

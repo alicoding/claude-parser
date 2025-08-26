@@ -1,6 +1,5 @@
 """Tests for JSONL parser."""
 
-
 import orjson
 import pytest
 

@@ -95,9 +95,9 @@ class TestContextWindowManager:
 
         for tokens_used, expected_until_compact in test_cases:
             info = manager.analyze(tokens_used)
-            assert (
-                info.tokens_until_compact == expected_until_compact
-            ), f"At {tokens_used} tokens, expected {expected_until_compact} until compact"
+            assert info.tokens_until_compact == expected_until_compact, (
+                f"At {tokens_used} tokens, expected {expected_until_compact} until compact"
+            )
 
     def test_percentage_until_compact(self, manager):
         """Verify percentage until compact calculation."""

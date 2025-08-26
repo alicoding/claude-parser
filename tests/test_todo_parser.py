@@ -1,4 +1,5 @@
 """Test TodoParser - Single Responsibility: Parse JSON."""
+
 import orjson
 import pytest
 

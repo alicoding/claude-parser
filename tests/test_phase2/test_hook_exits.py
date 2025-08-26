@@ -8,7 +8,6 @@ Success criteria:
 - Functions are simple (≤ 3 lines each)
 """
 
-
 import pytest
 
 
