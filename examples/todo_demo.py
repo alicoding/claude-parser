@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Demo TodoManager usage."""
 from claude_parser.domain.todo import TodoManager
-from pathlib import Path
 
 def main():
     """Demo todo operations."""

@@ -4,7 +4,6 @@ Specification Compliance Verifier
 Run this before committing to ensure 95/5 principle is followed
 """
 import sys
-import subprocess
 from pathlib import Path
 from typing import List, Tuple
 import re

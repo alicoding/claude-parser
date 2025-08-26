@@ -9,11 +9,8 @@ This script can be used as:
 """
 
 import subprocess
-import orjson
 import sys
-from pathlib import Path
-from typing import Dict, List, Tuple
-import re
+from typing import List, Tuple
 
 
 def get_task_notes(task_id: int) -> str:

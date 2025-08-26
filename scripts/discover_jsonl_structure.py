@@ -7,18 +7,14 @@ Uses streaming to handle huge files without choking.
 
 import orjson
 from pathlib import Path
-from typing import Dict, Set, Any, List, Union
+from typing import Dict, Set, Any, List
 from collections import defaultdict
 import mmap
 import random
 from rich.console import Console
-from rich.tree import Tree
-from rich.table import Table
 from rich.progress import track
-from rich import print as rprint
 import typer
 from dataclasses import dataclass, field
-import hashlib
 
 app = typer.Typer(help="Discover complete JSONL structure from Claude Code files")
 console = Console()

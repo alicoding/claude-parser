@@ -18,7 +18,6 @@ This will:
 import subprocess
 import sys
 from pathlib import Path
-import orjson
 from typing import List, Dict, Tuple
 import re
 import pendulum

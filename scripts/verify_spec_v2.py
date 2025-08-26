@@ -7,14 +7,11 @@ import sys
 import re
 import ast
 from pathlib import Path
-from typing import Tuple, Set, Dict, Any
+from typing import Tuple, Dict
 from toolz import (
-    pipe, concat, merge, partition, groupby, count,
-    compose, reduce, get_in, valmap
+    pipe, concat, reduce
 )
-from toolz.curried import map as toolz_map, filter as toolz_filter, get
-from functools import partial
-from more_itertools import flatten
+from toolz.curried import map as toolz_map, filter as toolz_filter
 
 # Import configuration (SOLID: Dependency Inversion)
 from verification_config import (
