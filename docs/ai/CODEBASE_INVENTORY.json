@@ -1,18 +1,81 @@
 {
-  "project": "",
-  "root_path": ".",
+  "project": "claude-parser",
+  "root_path": "/Volumes/AliDev/ai-projects/claude-parser",
   "summary": {
-    "total_files": 159,
-    "total_lines": 21709,
+    "total_files": 160,
+    "total_lines": 21770,
     "total_classes": 158,
-    "total_functions": 260
+    "total_functions": 263
   },
   "packages": {
+    "sanitize_jsonl.py": {
+      "files": [
+        {
+          "file": "sanitize_jsonl.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/sanitize_jsonl.py",
+          "module_docstring": "Sanitize JSONL files by removing secrets and sensitive data.",
+          "imports": [
+            {
+              "module": "orjson",
+              "alias": null
+            },
+            {
+              "module": "re",
+              "alias": null
+            },
+            {
+              "module": "pathlib",
+              "from": true,
+              "names": [
+                "Path"
+              ]
+            }
+          ],
+          "functions": [
+            {
+              "name": "sanitize_line",
+              "signature": "(line: str) -> str",
+              "docstring": "Remove secrets from a single JSONL line.",
+              "decorators": [],
+              "is_async": false,
+              "line_number": 9
+            },
+            {
+              "name": "sanitize_jsonl_file",
+              "signature": "(input_path: Path, output_path: Path)",
+              "docstring": "Sanitize an entire JSONL file.",
+              "decorators": [],
+              "is_async": false,
+              "line_number": 56
+            },
+            {
+              "name": "main",
+              "signature": "()",
+              "docstring": null,
+              "decorators": [],
+              "is_async": false,
+              "line_number": 75
+            }
+          ],
+          "classes": [],
+          "constants": [],
+          "size": {
+            "lines": 91,
+            "bytes": 3355
+          }
+        }
+      ],
+      "summary": {
+        "file_count": 1,
+        "class_count": 0,
+        "function_count": 3
+      }
+    },
     "verify_consolidation.py": {
       "files": [
         {
           "file": "verify_consolidation.py",
-          "path": "verify_consolidation.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/verify_consolidation.py",
           "module_docstring": "Verify the Conversation consolidation was successful.",
           "imports": [
             {
@@ -30,23 +93,7 @@
               "module": "claude_parser",
               "from": true,
               "names": [
-                "load",
                 "Conversation"
-              ]
-            },
-            {
-              "module": "claude_parser",
-              "from": true,
-              "names": [
-                "UserMessage",
-                "AssistantMessage"
-              ]
-            },
-            {
-              "module": "claude_parser",
-              "from": true,
-              "names": [
-                "load"
               ]
             }
           ],
@@ -54,8 +101,8 @@
           "classes": [],
           "constants": [],
           "size": {
-            "lines": 104,
-            "bytes": 3265
+            "lines": 102,
+            "bytes": 3165
           }
         }
       ],
@@ -69,7 +116,7 @@
       "files": [
         {
           "file": "tests/test_parser.py",
-          "path": "tests/test_parser.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_parser.py",
           "module_docstring": "Tests for JSONL parser.",
           "imports": [
             {
@@ -234,7 +281,7 @@
         },
         {
           "file": "tests/test_watch_async.py",
-          "path": "tests/test_watch_async.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_watch_async.py",
           "module_docstring": "TDD Tests for async watch functionality.\n\nFollowing 95/5 principle - test with real scenarios.",
           "imports": [
             {
@@ -295,7 +342,7 @@
         },
         {
           "file": "tests/test_library_compatibility.py",
-          "path": "tests/test_library_compatibility.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_library_compatibility.py",
           "module_docstring": "Test that our library replacements are compatible.",
           "imports": [
             {
@@ -371,7 +418,7 @@
         },
         {
           "file": "tests/conftest.py",
-          "path": "tests/conftest.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/conftest.py",
           "module_docstring": "Shared test fixtures for claude-parser test suite.\n\nIMPORTANT: Uses REAL production JSONL data, not synthetic fixtures.\nThis ensures tests validate against actual Claude Code data structures.",
           "imports": [
             {
@@ -467,7 +514,7 @@
         },
         {
           "file": "tests/test_navigation.py",
-          "path": "tests/test_navigation.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_navigation.py",
           "module_docstring": "TDD tests for navigation features following 95/5 principle.",
           "imports": [
             {
@@ -592,7 +639,7 @@
         },
         {
           "file": "tests/real_test_data.py",
-          "path": "tests/real_test_data.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/real_test_data.py",
           "module_docstring": "Real Claude JSONL test data samples.\n\nThese are actual message structures from real Claude conversations.\nUsing real data ensures our tests validate actual production scenarios.",
           "imports": [
             {
@@ -632,7 +679,7 @@
         },
         {
           "file": "tests/test_production_data_validation.py",
-          "path": "tests/test_production_data_validation.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_production_data_validation.py",
           "module_docstring": "Production data validation test suite - Ground truth for business logic.\n\nUses real production JSONL files as the source of truth for:\n- Message structure expectations\n- Token counting accuracy\n- Content extraction patterns\n- Usage info structure\n\nSOLID: Single Responsibility - Production data validation only\n95/5: Uses pytest framework for validation",
           "imports": [
             {
@@ -774,7 +821,7 @@
         },
         {
           "file": "tests/test_application_service_bugs.py",
-          "path": "tests/test_application_service_bugs.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_application_service_bugs.py",
           "module_docstring": "TDD tests to prove bugs found in conversation_service.py during code review.\n\nThese tests should FAIL initially, then pass after fixing the bugs.",
           "imports": [
             {
@@ -847,7 +894,7 @@
         },
         {
           "file": "tests/test_todo_display.py",
-          "path": "tests/test_todo_display.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_todo_display.py",
           "module_docstring": "Test TodoDisplay - Single Responsibility: Formatting.",
           "imports": [
             {
@@ -916,7 +963,7 @@
         },
         {
           "file": "tests/__init__.py",
-          "path": "tests/__init__.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/__init__.py",
           "module_docstring": null,
           "imports": [],
           "functions": [],
@@ -929,7 +976,7 @@
         },
         {
           "file": "tests/test_timeline.py",
-          "path": "tests/test_timeline.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_timeline.py",
           "module_docstring": "Tests for Timeline domain - git-based JSONL navigation.",
           "imports": [
             {
@@ -1031,7 +1078,7 @@
         },
         {
           "file": "tests/test_context_window_manager.py",
-          "path": "tests/test_context_window_manager.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_context_window_manager.py",
           "module_docstring": "Tests for Context Window Manager - Critical for workflow automation.\n\nValidates that context monitoring works correctly for detecting\nwhen approaching auto-compact threshold without watching UI.",
           "imports": [
             {
@@ -1218,7 +1265,7 @@
         },
         {
           "file": "tests/test_todo_parser.py",
-          "path": "tests/test_todo_parser.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_todo_parser.py",
           "module_docstring": "Test TodoParser - Single Responsibility: Parse JSON.",
           "imports": [
             {
@@ -1288,7 +1335,7 @@
         },
         {
           "file": "tests/test_unused_modules.py",
-          "path": "tests/test_unused_modules.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_unused_modules.py",
           "module_docstring": "Tests for unused modules to improve coverage.\n\nThese modules are not currently used but exist in the codebase.\nTesting them ensures they work if needed in the future.",
           "imports": [
             {
@@ -1442,7 +1489,7 @@
         },
         {
           "file": "tests/test_json_output_bug.py",
-          "path": "tests/test_json_output_bug.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_json_output_bug.py",
           "module_docstring": "Test for json_output bug with dict_items.",
           "imports": [
             {
@@ -1488,7 +1535,7 @@
         },
         {
           "file": "tests/test_discovery.py",
-          "path": "tests/test_discovery.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_discovery.py",
           "module_docstring": "Tests for discovery domain.",
           "imports": [
             {
@@ -1637,7 +1684,7 @@
         },
         {
           "file": "tests/test_exit_success_json.py",
-          "path": "tests/test_exit_success_json.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_exit_success_json.py",
           "module_docstring": "Test that exit_success outputs proper JSON for Claude Code.",
           "imports": [
             {
@@ -1683,7 +1730,7 @@
         },
         {
           "file": "tests/test_conversation.py",
-          "path": "tests/test_conversation.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_conversation.py",
           "module_docstring": "Tests for Conversation class.",
           "imports": [
             {
@@ -1988,7 +2035,7 @@
         },
         {
           "file": "tests/test_todo_storage.py",
-          "path": "tests/test_todo_storage.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_todo_storage.py",
           "module_docstring": "Test TodoStorage - Single Responsibility: File I/O.",
           "imports": [
             {
@@ -2049,7 +2096,7 @@
         },
         {
           "file": "tests/test_models.py",
-          "path": "tests/test_models.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_models.py",
           "module_docstring": "Comprehensive Pydantic model tests following best practices.\n\nTests all validation logic, edge cases, and field constraints.\nFollows 95/5 principle - uses pytest extensively, minimal custom test code.",
           "imports": [
             {
@@ -2558,7 +2605,7 @@
         },
         {
           "file": "tests/test_integration.py",
-          "path": "tests/test_integration.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_integration.py",
           "module_docstring": "Integration tests with real Claude Code JSONL files.",
           "imports": [
             {
@@ -2725,7 +2772,7 @@
         },
         {
           "file": "tests/test_api.py",
-          "path": "tests/test_api.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_api.py",
           "module_docstring": "Tests for public API - the 95% use cases.",
           "imports": [
             {
@@ -2985,7 +3032,7 @@
         },
         {
           "file": "tests/test_bug_toolz_map.py",
-          "path": "tests/test_bug_toolz_map.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_bug_toolz_map.py",
           "module_docstring": "Test to reproduce the P0 bug: map() must have at least two arguments.",
           "imports": [
             {
@@ -3022,7 +3069,7 @@
         },
         {
           "file": "tests/test_claude_format_validation.py",
-          "path": "tests/test_claude_format_validation.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_claude_format_validation.py",
           "module_docstring": "TDD Tests for Claude format validation.\nThese tests should FAIL initially, then pass after implementing validation.",
           "imports": [
             {
@@ -3140,7 +3187,7 @@
         },
         {
           "file": "tests/test_ddd_conversation.py",
-          "path": "tests/test_ddd_conversation.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_ddd_conversation.py",
           "module_docstring": "Tests for DDD Conversation implementation with real Claude Code data.",
           "imports": [
             {
@@ -3408,7 +3455,7 @@
         },
         {
           "file": "tests/test_true_95_5_streaming.py",
-          "path": "tests/test_true_95_5_streaming.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_true_95_5_streaming.py",
           "module_docstring": "TDD Test for TRUE 95/5 JSONL Streaming.\n\nThis test defines the exact behavior we need:\n1. Stream large files incrementally (not reload entire file)\n2. Detect new messages as they're appended\n3. Handle file rotation gracefully\n4. Use only approved libraries in the TRUE 95/5 way",
           "imports": [
             {
@@ -3502,7 +3549,7 @@
         },
         {
           "file": "tests/test_api_contract.py",
-          "path": "tests/test_api_contract.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_api_contract.py",
           "module_docstring": "API Contract Tests - MUST NOT BREAK!\n\nThese tests ensure backward compatibility during refactoring.\nIf these fail, we've broken the public API.",
           "imports": [
             {
@@ -3715,7 +3762,7 @@
         },
         {
           "file": "tests/test_todo_swiper.py",
-          "path": "tests/test_todo_swiper.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_todo_swiper.py",
           "module_docstring": "Test TodoSwiper - Tinder-like todo history navigation.",
           "imports": [
             {
@@ -3816,7 +3863,7 @@
         },
         {
           "file": "tests/test_todo_manager.py",
-          "path": "tests/test_todo_manager.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_todo_manager.py",
           "module_docstring": "Test TodoManager - Integration tests for facade pattern.",
           "imports": [
             {
@@ -3862,7 +3909,7 @@
         },
         {
           "file": "tests/fixtures.py",
-          "path": "tests/fixtures.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/fixtures.py",
           "module_docstring": "Test fixtures using real Claude Code JSONL production data.\n\nSOLID: Single responsibility - only test fixtures\n95/5: Using real production data from actual Claude sessions\nNO MOCKS: All tests use real JSONL files from jsonl-prod-data-for-test/",
           "imports": [
             {
@@ -3956,7 +4003,7 @@
         },
         {
           "file": "tests/test_real_jsonl_edge_cases.py",
-          "path": "tests/test_real_jsonl_edge_cases.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_real_jsonl_edge_cases.py",
           "module_docstring": "Test edge cases with real Claude JSONL files.\n\nFollowing LIBRARY_FIRST_RULE - using pytest for testing, orjson for parsing.\nTests all edge cases documented in docs/JSONL-STRUCTURE.md",
           "imports": [
             {
@@ -4136,7 +4183,7 @@
         },
         {
           "file": "tests/test_phase3/test_watch_api.py",
-          "path": "tests/test_phase3/test_watch_api.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_phase3/test_watch_api.py",
           "module_docstring": "TDD Tests for Watch Domain API - Written FIRST.\n\nFollowing PHASE2_STRICT_PATTERN.md:\n1. Tests written before implementation\n2. 95/5 principle validation\n3. SOLID principle compliance\n4. DDD domain boundaries\n\nUses REAL Claude Code JSONL data for robust testing.\n\nSuccess Criteria:\n- watch() function exists and is callable\n- Callback receives (Conversation, List[Message])\n- Message type filtering works\n- File watching detects changes\n- Performance: handles large files efficiently\n- Error handling: graceful failure modes",
           "imports": [
             {
@@ -4303,25 +4350,31 @@
                   "name": "test_single_responsibility",
                   "signature": "(self)",
                   "docstring": "watch() has single responsibility: file watching.",
-                  "decorators": [],
+                  "decorators": [
+                    "pytest.mark.xfail(reason='Watch feature not yet implemented')"
+                  ],
                   "is_async": false,
-                  "line_number": 199
+                  "line_number": 200
                 },
                 {
                   "name": "test_open_closed_principle",
                   "signature": "(self)",
                   "docstring": "Can extend behavior without modifying watch() function.",
-                  "decorators": [],
+                  "decorators": [
+                    "pytest.mark.xfail(reason='Watch feature not yet implemented')"
+                  ],
                   "is_async": false,
-                  "line_number": 211
+                  "line_number": 213
                 },
                 {
                   "name": "test_dependency_inversion",
                   "signature": "(self)",
                   "docstring": "watch() depends on abstractions, not concrete implementations.",
-                  "decorators": [],
+                  "decorators": [
+                    "pytest.mark.xfail(reason='Watch feature not yet implemented')"
+                  ],
                   "is_async": false,
-                  "line_number": 219
+                  "line_number": 222
                 }
               ],
               "attributes": [],
@@ -4338,23 +4391,27 @@
                   "name": "test_domain_boundaries",
                   "signature": "(self)",
                   "docstring": "Watch domain has clear boundaries.",
-                  "decorators": [],
+                  "decorators": [
+                    "pytest.mark.xfail(reason='Watch feature not yet implemented')"
+                  ],
                   "is_async": false,
-                  "line_number": 231
+                  "line_number": 235
                 },
                 {
                   "name": "test_ubiquitous_language",
                   "signature": "(self)",
                   "docstring": "Uses domain language consistently.",
-                  "decorators": [],
+                  "decorators": [
+                    "pytest.mark.xfail(reason='Watch feature not yet implemented')"
+                  ],
                   "is_async": false,
-                  "line_number": 240
+                  "line_number": 245
                 }
               ],
               "attributes": [],
               "properties": [],
               "class_variables": [],
-              "line_number": 228
+              "line_number": 231
             },
             {
               "name": "TestWatch95PercentPrinciple",
@@ -4365,23 +4422,27 @@
                   "name": "test_95_percent_api_simplicity",
                   "signature": "(self)",
                   "docstring": "95% use case requires ≤ 3 lines of code.",
-                  "decorators": [],
+                  "decorators": [
+                    "pytest.mark.xfail(reason='Watch feature not yet implemented')"
+                  ],
                   "is_async": false,
-                  "line_number": 253
+                  "line_number": 259
                 },
                 {
                   "name": "test_5_percent_advanced_features",
                   "signature": "(self)",
                   "docstring": "5% use case has advanced features available.",
-                  "decorators": [],
+                  "decorators": [
+                    "pytest.mark.xfail(reason='Watch feature not yet implemented')"
+                  ],
                   "is_async": false,
-                  "line_number": 262
+                  "line_number": 269
                 }
               ],
               "attributes": [],
               "properties": [],
               "class_variables": [],
-              "line_number": 250
+              "line_number": 255
             },
             {
               "name": "TestWatchIntegration",
@@ -4392,31 +4453,37 @@
                   "name": "test_parser_domain_integration",
                   "signature": "(self)",
                   "docstring": "Uses parser domain for JSONL parsing.",
-                  "decorators": [],
+                  "decorators": [
+                    "pytest.mark.xfail(reason='Watch feature not yet implemented')"
+                  ],
                   "is_async": false,
-                  "line_number": 276
+                  "line_number": 284
                 },
                 {
                   "name": "test_models_domain_integration",
                   "signature": "(self)",
                   "docstring": "Uses models domain for Message objects.",
-                  "decorators": [],
+                  "decorators": [
+                    "pytest.mark.xfail(reason='Watch feature not yet implemented')"
+                  ],
                   "is_async": false,
-                  "line_number": 284
+                  "line_number": 293
                 },
                 {
                   "name": "test_hooks_domain_integration",
                   "signature": "(self)",
                   "docstring": "Can be used from hook scripts.",
-                  "decorators": [],
+                  "decorators": [
+                    "pytest.mark.xfail(reason='Watch feature not yet implemented')"
+                  ],
                   "is_async": false,
-                  "line_number": 292
+                  "line_number": 302
                 }
               ],
               "attributes": [],
               "properties": [],
               "class_variables": [],
-              "line_number": 273
+              "line_number": 280
             }
           ],
           "constants": [
@@ -4425,13 +4492,13 @@
             "REAL_ASSISTANT_MESSAGE"
           ],
           "size": {
-            "lines": 298,
-            "bytes": 11114
+            "lines": 308,
+            "bytes": 11784
           }
         },
         {
           "file": "tests/test_phase2/conftest.py",
-          "path": "tests/test_phase2/conftest.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_phase2/conftest.py",
           "module_docstring": "Test infrastructure for Phase 2 hooks testing.\n\nFollowing TDD approach - writing test fixtures FIRST before implementation.",
           "imports": [
             {
@@ -4564,7 +4631,7 @@
         },
         {
           "file": "tests/test_phase2/test_hook_exits.py",
-          "path": "tests/test_phase2/test_hook_exits.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_phase2/test_hook_exits.py",
           "module_docstring": "Tests for exit helper functions - TDD approach, tests written FIRST.\n\nSuccess criteria:\n- exit_success() exits with code 0\n- exit_block() exits with code 2\n- exit_error() exits with code 1\n- Correct stdout/stderr routing\n- Functions are simple (≤ 3 lines each)",
           "imports": [
             {
@@ -4756,7 +4823,7 @@
         },
         {
           "file": "tests/test_phase2/test_hook_input.py",
-          "path": "tests/test_phase2/test_hook_input.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_phase2/test_hook_input.py",
           "module_docstring": "Tests for hook_input() function - TDD approach, tests written FIRST.\n\nSuccess criteria:\n- Parse stdin JSON for all 8 hook types\n- Exit with code 1 on invalid JSON\n- Exit with code 1 on missing required fields\n- Performance < 10ms\n- Single function handles everything (SRP)",
           "imports": [
             {
@@ -4944,7 +5011,7 @@
         },
         {
           "file": "tests/test_phase2/__init__.py",
-          "path": "tests/test_phase2/__init__.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_phase2/__init__.py",
           "module_docstring": "Phase 2 test suite for Claude Parser SDK hooks and watching.",
           "imports": [],
           "functions": [],
@@ -4957,7 +5024,7 @@
         },
         {
           "file": "tests/test_phase2/test_hook_models.py",
-          "path": "tests/test_phase2/test_hook_models.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_phase2/test_hook_models.py",
           "module_docstring": "Tests for HookData model - TDD approach, tests written FIRST.\n\nSuccess criteria:\n- Single HookData model handles ALL 8 hook types (DRY)\n- Uses pydantic BaseModel with field aliases (no manual parsing)\n- All fields are Optional except core 3 (session_id, transcript_path, hook_event_name)\n- NO isinstance checks needed by users (Liskov Substitution)\n- NO separate classes per hook type (violates DRY)",
           "imports": [
             {
@@ -5110,7 +5177,7 @@
         },
         {
           "file": "tests/test_phase2/test_posttooluse_verification.py",
-          "path": "tests/test_phase2/test_posttooluse_verification.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_phase2/test_posttooluse_verification.py",
           "module_docstring": "Comprehensive PostToolUse verification tests based on Anthropic's hooks.md.\n\nTests the ACTUAL behavior documented in docs/anthropic/hooks.md:\n- PostToolUse runs AFTER tool execution (can't block the tool)\n- Exit code 2 shows stderr to Claude (tool already ran)\n- JSON output with decision=\"block\" prompts Claude with reason\n- additionalContext adds info for Claude to consider\n- Tool response formats vary by tool type",
           "imports": [
             {
@@ -5432,7 +5499,7 @@
         },
         {
           "file": "tests/test_phase2/test_tool_response_string_bug.py",
-          "path": "tests/test_phase2/test_tool_response_string_bug.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_phase2/test_tool_response_string_bug.py",
           "module_docstring": "Test for critical bug fix: tool_response accepting strings.\n\nBUG REPORT: Claude sends string responses for many tools (LS, Grep, Read, etc.)\nbut claude-parser only accepted Dict or List[Dict].\n\nThis test validates the fix using real Claude output examples.",
           "imports": [
             {
@@ -5529,7 +5596,7 @@
         },
         {
           "file": "tests/test_phase2/test_json_output.py",
-          "path": "tests/test_phase2/test_json_output.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_phase2/test_json_output.py",
           "module_docstring": "Tests for advanced JSON output hook helpers.\n\nTests the json_output() function and advanced.allow()/deny()/ask() methods\nto ensure they produce correct JSON for Claude Code hooks.",
           "imports": [
             {
@@ -5756,7 +5823,7 @@
         },
         {
           "file": "tests/test_phase2/test_claude_format_validation.py",
-          "path": "tests/test_phase2/test_claude_format_validation.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/tests/test_phase2/test_claude_format_validation.py",
           "module_docstring": "Test validation against REAL Claude Code JSON format.\n\nThis test ensures our HookData model works with actual Claude Code output,\nnot just theoretical schema.\n\nBug Report: https://github.com/anthropic/claude-code/issues/schema-mismatch",
           "imports": [
             {
@@ -5873,7 +5940,7 @@
       "files": [
         {
           "file": "examples/sse_streaming.py",
-          "path": "examples/sse_streaming.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/examples/sse_streaming.py",
           "module_docstring": "95/5 Solution: SSE Streaming with claude-parser\n\nThis example shows how to create a production-ready SSE endpoint\nwith just a few lines of code. No manual threading needed!",
           "imports": [
             {
@@ -5881,13 +5948,6 @@
               "from": true,
               "names": [
                 "FastAPI"
-              ]
-            },
-            {
-              "module": "fastapi.responses",
-              "from": true,
-              "names": [
-                "StreamingResponse"
               ]
             },
             {
@@ -5933,13 +5993,13 @@
           "classes": [],
           "constants": [],
           "size": {
-            "lines": 213,
-            "bytes": 6812
+            "lines": 212,
+            "bytes": 6820
           }
         },
         {
           "file": "examples/todo_manager_demo.py",
-          "path": "examples/todo_manager_demo.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/examples/todo_manager_demo.py",
           "module_docstring": "Demo TodoManager - Show current todos with discovery.",
           "imports": [
             {
@@ -5982,12 +6042,12 @@
           "constants": [],
           "size": {
             "lines": 44,
-            "bytes": 1188
+            "bytes": 1189
           }
         },
         {
           "file": "examples/todo_demo.py",
-          "path": "examples/todo_demo.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/examples/todo_demo.py",
           "module_docstring": "Demo TodoManager usage.",
           "imports": [
             {
@@ -5995,13 +6055,6 @@
               "from": true,
               "names": [
                 "TodoManager"
-              ]
-            },
-            {
-              "module": "pathlib",
-              "from": true,
-              "names": [
-                "Path"
               ]
             }
           ],
@@ -6012,19 +6065,19 @@
               "docstring": "Demo todo operations.",
               "decorators": [],
               "is_async": false,
-              "line_number": 6
+              "line_number": 5
             }
           ],
           "classes": [],
           "constants": [],
           "size": {
-            "lines": 46,
-            "bytes": 1532
+            "lines": 45,
+            "bytes": 1508
           }
         },
         {
           "file": "examples/todo_swiper_demo.py",
-          "path": "examples/todo_swiper_demo.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/examples/todo_swiper_demo.py",
           "module_docstring": "Demo TodoSwiper - Navigate todo history like Tinder.",
           "imports": [
             {
@@ -6067,12 +6120,12 @@
           "constants": [],
           "size": {
             "lines": 47,
-            "bytes": 1279
+            "bytes": 1280
           }
         },
         {
           "file": "examples/monitor_context_usage.py",
-          "path": "examples/monitor_context_usage.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/examples/monitor_context_usage.py",
           "module_docstring": "Example: Monitor Claude Context Usage Programmatically\n\nThis demonstrates how to monitor context usage without watching the Claude Code UI.\nPerfect for automation, alerts, and workflow integration.\n\nUsage:\n    python monitor_context_usage.py /path/to/conversation.jsonl",
           "imports": [
             {
@@ -6124,7 +6177,7 @@
           "constants": [],
           "size": {
             "lines": 119,
-            "bytes": 3987
+            "bytes": 3988
           }
         }
       ],
@@ -6141,7 +6194,7 @@
           "files": [
             {
               "file": "claude_parser/bootstrap.py",
-              "path": "claude_parser/bootstrap.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/bootstrap.py",
               "module_docstring": "DDD Composition Root - Centralized dependency container.\n\nResearch-backed approach using python-dependency-injector to:\n- Eliminate DRY violations in dependency injection\n- Centralize all imports in one place\n- Enable easy test overrides without manual patching\n- Enforce DDD boundaries and architectural patterns\n\n95/5: Uses dependency-injector library for all wiring.\nDDD: Composition root pattern for clean architecture.\nSOLID: Single place for dependency configuration.",
               "imports": [
                 {
@@ -6291,7 +6344,7 @@
             },
             {
               "file": "claude_parser/feature_registry.py",
-              "path": "claude_parser/feature_registry.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/feature_registry.py",
               "module_docstring": "Feature Registry - Backward compatibility.\n\nThis file maintains backward compatibility.\nThe actual implementation is in the features/ package.\n\nSOLID: Single import/export responsibility",
               "imports": [
                 {
@@ -6326,7 +6379,7 @@
             },
             {
               "file": "claude_parser/timeline.py",
-              "path": "claude_parser/timeline.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/timeline.py",
               "module_docstring": "Timeline - Ultra minimal using maximum libraries.\nEvery operation delegates to a library.",
               "imports": [
                 {
@@ -6509,7 +6562,7 @@
             },
             {
               "file": "claude_parser/models.py",
-              "path": "claude_parser/models.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/models.py",
               "module_docstring": "Message models - Backward compatibility.\n\nThis file maintains backward compatibility.\nThe actual implementation is in the models/ package.\n\nSOLID: Single import/export responsibility",
               "imports": [
                 {
@@ -6539,7 +6592,7 @@
             },
             {
               "file": "claude_parser/__init__.py",
-              "path": "claude_parser/__init__.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/__init__.py",
               "module_docstring": "Claude Parser - Parse Claude Code JSONL files with ease.\n\nThe 95/5 principle: 95% of users just need one line:\n    conv = load(\"session.jsonl\")\n\nFor the remaining 5%, full power is available through the classes.\n\nArchitecture:\n- Domain Driven Design (DDD) with clean separation of concerns\n- SOLID principles throughout the codebase\n- Uses orjson + pydantic per specification for maximum performance",
               "imports": [
                 {
@@ -6632,7 +6685,7 @@
           "files": [
             {
               "file": "claude_parser/memory/exporter.py",
-              "path": "claude_parser/memory/exporter.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/memory/exporter.py",
               "module_docstring": "Memory export implementation.\n\nProvides functionality to export Claude conversations to memory systems.\nDesigned to work with mem0 and similar vector databases.",
               "imports": [
                 {
@@ -6788,7 +6841,7 @@
             },
             {
               "file": "claude_parser/memory/__init__.py",
-              "path": "claude_parser/memory/__init__.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/memory/__init__.py",
               "module_docstring": "Memory export functionality for Claude Parser.\n\nThis module provides functionality for exporting conversation data\nto memory systems and vector databases.\n\nExample:\n    from claude_parser import load\n    from claude_parser.memory import MemoryExporter\n\n    conv = load(\"conversation.jsonl\")\n    exporter = MemoryExporter()\n\n    # Export to memory format\n    memories = exporter.export(conv)\n\n    # Each memory has content and metadata\n    for memory in memories:\n        print(f\"Memory: {memory.content[:100]}...\")\n        print(f\"ID: {memory.memory_id}\")",
               "imports": [
                 {
@@ -6820,7 +6873,7 @@
           "files": [
             {
               "file": "claude_parser/features/formatters.py",
-              "path": "claude_parser/features/formatters.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/features/formatters.py",
               "module_docstring": "Feature formatters for documentation.\n\nSOLID: Single Responsibility - Only formatting\n95/5: Using toolz for functional operations",
               "imports": [
                 {
@@ -6857,7 +6910,7 @@
             },
             {
               "file": "claude_parser/features/models.py",
-              "path": "claude_parser/features/models.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/features/models.py",
               "module_docstring": "Feature models for SDK capability tracking.\n\nSOLID: Single Responsibility - Only data models\nDDD: Value Objects - Immutable feature definitions",
               "imports": [
                 {
@@ -7009,7 +7062,7 @@
             },
             {
               "file": "claude_parser/features/registry.py",
-              "path": "claude_parser/features/registry.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/features/registry.py",
               "module_docstring": "Feature registry operations.\n\nSOLID: Single Responsibility - Only registry operations\n95/5: Using toolz for functional operations",
               "imports": [
                 {
@@ -7175,7 +7228,7 @@
             },
             {
               "file": "claude_parser/features/__init__.py",
-              "path": "claude_parser/features/__init__.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/features/__init__.py",
               "module_docstring": "Feature tracking system for Claude Parser SDK.\n\nSOLID: Separated into single responsibilities\n- models.py: Data models only\n- registry.py: Registry operations only\n- data.py: Feature data only",
               "imports": [
                 {
@@ -7213,7 +7266,7 @@
             },
             {
               "file": "claude_parser/features/feature_data2.py",
-              "path": "claude_parser/features/feature_data2.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/features/feature_data2.py",
               "module_docstring": "Feature data definitions - Part 2.\n\nSOLID: Single Responsibility - Other domain features\nDRY: Reusable feature definitions",
               "imports": [
                 {
@@ -7269,7 +7322,7 @@
             },
             {
               "file": "claude_parser/features/feature_data.py",
-              "path": "claude_parser/features/feature_data.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/features/feature_data.py",
               "module_docstring": "Feature data definitions - Part 1.\n\nSOLID: Single Responsibility - Parser and Hooks features\nDRY: Reusable feature definitions",
               "imports": [
                 {
@@ -7309,7 +7362,7 @@
             },
             {
               "file": "claude_parser/features/data.py",
-              "path": "claude_parser/features/data.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/features/data.py",
               "module_docstring": "Feature data aggregator for Claude Parser SDK.\n\nSOLID: Single Responsibility - Only aggregation\nDRY: Imports from split data files",
               "imports": [
                 {
@@ -7382,7 +7435,7 @@
           "files": [
             {
               "file": "claude_parser/discovery/transcript_finder.py",
-              "path": "claude_parser/discovery/transcript_finder.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/discovery/transcript_finder.py",
               "module_docstring": "Transcript discovery implementation.\n\nMaps project paths to Claude Code transcript files.\nHandles directory names and finds most recent sessions.",
               "imports": [
                 {
@@ -7509,7 +7562,7 @@
             },
             {
               "file": "claude_parser/discovery/__init__.py",
-              "path": "claude_parser/discovery/__init__.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/discovery/__init__.py",
               "module_docstring": "Discovery domain - Find Claude Code transcript paths.\n\n95/5 Principle:\n- Simple factory function for current CWD\n- Rich options for advanced discovery patterns",
               "imports": [
                 {
@@ -7544,7 +7597,7 @@
           "files": [
             {
               "file": "claude_parser/models/user.py",
-              "path": "claude_parser/models/user.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/models/user.py",
               "module_docstring": "User message model.\n\nSOLID: Single Responsibility - User messages only\nDDD: Value object for user messages",
               "imports": [
                 {
@@ -7616,7 +7669,7 @@
             },
             {
               "file": "claude_parser/models/system.py",
-              "path": "claude_parser/models/system.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/models/system.py",
               "module_docstring": "System message model.\n\nSOLID: Single Responsibility - System messages only\nDDD: Value object for system messages",
               "imports": [
                 {
@@ -7669,7 +7722,7 @@
             },
             {
               "file": "claude_parser/models/assistant.py",
-              "path": "claude_parser/models/assistant.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/models/assistant.py",
               "module_docstring": "Assistant message model.\n\nSOLID: Single Responsibility - Assistant messages only\nDDD: Value object for assistant messages",
               "imports": [
                 {
@@ -7748,7 +7801,7 @@
             },
             {
               "file": "claude_parser/models/__init__.py",
-              "path": "claude_parser/models/__init__.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/models/__init__.py",
               "module_docstring": "Message models for Claude Parser.\n\nSOLID: Each model in its own file\nDDD: Clear message types as value objects",
               "imports": [
                 {
@@ -7822,7 +7875,7 @@
             },
             {
               "file": "claude_parser/models/parser.py",
-              "path": "claude_parser/models/parser.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/models/parser.py",
               "module_docstring": "Message parser utilities.\n\nSOLID: Single Responsibility - Message parsing only\n95/5: Using pydantic for validation, orjson for parsing",
               "imports": [
                 {
@@ -7934,7 +7987,7 @@
             },
             {
               "file": "claude_parser/models/summary.py",
-              "path": "claude_parser/models/summary.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/models/summary.py",
               "module_docstring": "Summary message model.\n\nSOLID: Single Responsibility - Summary messages only\nDDD: Value object for conversation summaries",
               "imports": [
                 {
@@ -8001,7 +8054,7 @@
             },
             {
               "file": "claude_parser/models/content.py",
-              "path": "claude_parser/models/content.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/models/content.py",
               "module_docstring": "Content block models for Claude messages.\n\nBased on analysis of 41,085 real messages showing tool_use/tool_result\nare CONTENT BLOCKS, not message types.\n\nSOLID: Single responsibility for content block structures",
               "imports": [
                 {
@@ -8198,7 +8251,7 @@
             },
             {
               "file": "claude_parser/models/tool.py",
-              "path": "claude_parser/models/tool.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/models/tool.py",
               "module_docstring": "Tool message models.\n\nSOLID: Single Responsibility - Tool messages only\nDDD: Value objects for tool use and results",
               "imports": [
                 {
@@ -8300,7 +8353,7 @@
             },
             {
               "file": "claude_parser/models/usage.py",
-              "path": "claude_parser/models/usage.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/models/usage.py",
               "module_docstring": "Token usage model based on discoveries from 41,085 real messages.\n\nSOLID: Single Responsibility - Token usage tracking only\nDDD: Value object for token usage",
               "imports": [
                 {
@@ -8425,7 +8478,7 @@
             },
             {
               "file": "claude_parser/models/base.py",
-              "path": "claude_parser/models/base.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/models/base.py",
               "module_docstring": "Base message models.\n\nSOLID: Single Responsibility - Base message structure only\nDDD: Base value object for all messages",
               "imports": [
                 {
@@ -8618,7 +8671,7 @@
           "files": [
             {
               "file": "claude_parser/hooks/models.py",
-              "path": "claude_parser/hooks/models.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/hooks/models.py",
               "module_docstring": "Hook data models for Claude Code hooks.\n\nFollowing DRY principle: Single model for ALL 8 hook types.\nNo subclasses, no isinstance checks needed.",
               "imports": [
                 {
@@ -8739,7 +8792,7 @@
             },
             {
               "file": "claude_parser/hooks/__init__.py",
-              "path": "claude_parser/hooks/__init__.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/hooks/__init__.py",
               "module_docstring": "Claude Parser SDK - Hooks Domain.\n\nProvides helpers for Claude Code hook scripts.\n95% use case: 3 lines to handle any hook.\n\nExample:\n    from claude_parser.hooks import hook_input, exit_block, exit_success\n\n    data = hook_input()\n    if data.tool_name == \"Write\": exit_block(\"No writes\")\n    exit_success()",
               "imports": [
                 {
@@ -8785,7 +8838,7 @@
             },
             {
               "file": "claude_parser/hooks/json_output.py",
-              "path": "claude_parser/hooks/json_output.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/hooks/json_output.py",
               "module_docstring": "Advanced JSON output for Claude Code hooks.\n\nThis module provides the 5% advanced API for users who need\nstructured JSON responses for specific hook types.\n\n95% of users should use the simple exit_success/exit_block functions.",
               "imports": [
                 {
@@ -8951,7 +9004,7 @@
             },
             {
               "file": "claude_parser/hooks/input.py",
-              "path": "claude_parser/hooks/input.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/hooks/input.py",
               "module_docstring": "Hook input parsing functionality.\n\nSingle Responsibility: Parse JSON from stdin into HookData.\nNo other logic, no side effects beyond exit on error.",
               "imports": [
                 {
@@ -8996,7 +9049,7 @@
             },
             {
               "file": "claude_parser/hooks/hook_responses.py",
-              "path": "claude_parser/hooks/hook_responses.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/hooks/hook_responses.py",
               "module_docstring": "Hook response models using pydantic - replaces 145 lines with ~30.",
               "imports": [
                 {
@@ -9102,7 +9155,7 @@
             },
             {
               "file": "claude_parser/hooks/exits.py",
-              "path": "claude_parser/hooks/exits.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/hooks/exits.py",
               "module_docstring": "Exit helper functions for Claude Code hooks.\n\nFollowing 95/5 principle: Each function is ≤ 3 lines of code.",
               "imports": [
                 {
@@ -9166,7 +9219,7 @@
           "files": [
             {
               "file": "claude_parser/watch/async_watcher.py",
-              "path": "claude_parser/watch/async_watcher.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/watch/async_watcher.py",
               "module_docstring": "Async watcher implementation - Watch Domain.\n\nSOLID Principles:\n- SRP: Single responsibility - async file watching\n- OCP: Open for extension via callbacks\n- LSP: Can substitute for sync watcher interface\n- ISP: Focused interface - watch_async only\n- DIP: Depends on abstractions (watchfiles library)\n\n95/5 Principle:\n- Uses watchfiles.awatch (NOT custom file polling)\n- Simple async generator interface\n- No manual threading (watchfiles handles it)\n- TRUE 95/5: Now uses incremental streaming for large files",
               "imports": [
                 {
@@ -9271,7 +9324,7 @@
             },
             {
               "file": "claude_parser/watch/sse_helpers.py",
-              "path": "claude_parser/watch/sse_helpers.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/watch/sse_helpers.py",
               "module_docstring": "SSE (Server-Sent Events) helper functions for streaming.\n\n95/5 Principle: Dead simple SSE streaming for web frameworks.",
               "imports": [
                 {
@@ -9330,7 +9383,7 @@
             },
             {
               "file": "claude_parser/watch/__init__.py",
-              "path": "claude_parser/watch/__init__.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/watch/__init__.py",
               "module_docstring": "Claude Parser SDK - Watch Domain.\n\nProvides file watching for real-time JSONL monitoring.\n95% use case: One line starts watching.\n\nSync Example:\n    from claude_parser.watch import watch\n\n    def on_new(conv, new_messages):\n        print(f\"Got {len(new_messages)} new messages\")\n\n    watch(\"session.jsonl\", on_new)  # Blocks, monitors forever\n\nAsync Example:\n    from claude_parser.watch import watch_async\n\n    async for conv, new_messages in watch_async(\"session.jsonl\"):\n        print(f\"Got {len(new_messages)} new messages\")",
               "imports": [
                 {
@@ -9366,7 +9419,7 @@
             },
             {
               "file": "claude_parser/watch/true_streaming.py",
-              "path": "claude_parser/watch/true_streaming.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/watch/true_streaming.py",
               "module_docstring": "TRUE 95/5 JSONL Streaming Implementation.\n\nFollowing the pattern alignment principle:\n- watchfiles: Tells us WHEN something changed (like inotify)\n- aiofiles: Async file I/O without blocking\n- orjson: Fast JSON parsing (we already use it everywhere)\n- Our code: Just glue - tracking position, detecting rotation\n\nThis is like using Temporal for workflows - the library IS the pattern.",
               "imports": [
                 {
@@ -9439,7 +9492,7 @@
             },
             {
               "file": "claude_parser/watch/watcher.py",
-              "path": "claude_parser/watch/watcher.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/watch/watcher.py",
               "module_docstring": "Watch domain implementation following 95/5 principle.\n\nSingle Responsibility: File watching with incremental parsing.\nUses watchfiles library for cross-platform file monitoring.",
               "imports": [
                 {
@@ -9608,7 +9661,7 @@
           "files": [
             {
               "file": "claude_parser/application/conversation_service.py",
-              "path": "claude_parser/application/conversation_service.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/application/conversation_service.py",
               "module_docstring": "Conversation application service.\n\nSOLID:\n- SRP: Single responsibility - conversation use cases\n- DIP: Depends on domain abstractions, not infrastructure\n\n95/5 Principle:\n- Simple factory functions for 95% use cases\n- Rich options for 5% advanced use cases",
               "imports": [
                 {
@@ -9863,7 +9916,7 @@
             },
             {
               "file": "claude_parser/application/__init__.py",
-              "path": "claude_parser/application/__init__.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/application/__init__.py",
               "module_docstring": "Application layer - Use cases and API.\n\nFollowing DDD:\n- Application Services: Orchestrate domain operations\n- Use Cases: Business workflows\n- DTOs: Data transfer objects for external interfaces",
               "imports": [],
               "functions": [],
@@ -9876,7 +9929,7 @@
             },
             {
               "file": "claude_parser/application/sse_service.py",
-              "path": "claude_parser/application/sse_service.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/application/sse_service.py",
               "module_docstring": "Streaming Service - Application Layer.\n\nProvides backend-agnostic streaming using watch domain.\nWorks with any async framework (FastAPI, Sanic, aiohttp, Quart, etc).\n\nSOLID:\n- SRP: Single responsibility - message streaming\n- DIP: Depends on watch domain abstractions\n- OCP: Open for extension via formatters",
               "imports": [
                 {
@@ -9995,7 +10048,7 @@
           "files": [
             {
               "file": "claude_parser/infrastructure/logger_config.py",
-              "path": "claude_parser/infrastructure/logger_config.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/infrastructure/logger_config.py",
               "module_docstring": "Configure loguru to output to stderr only.\n\nThis prevents loguru from breaking hooks that need clean stdout for JSON.",
               "imports": [
                 {
@@ -10020,7 +10073,7 @@
             },
             {
               "file": "claude_parser/infrastructure/jsonl_parser.py",
-              "path": "claude_parser/infrastructure/jsonl_parser.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/infrastructure/jsonl_parser.py",
               "module_docstring": "JSONL parsing infrastructure using functional programming.\n\n95/5 Principle:\n- Uses orjson for fast parsing\n- Uses toolz/more-itertools for functional operations\n- NO manual loops, NO manual state management",
               "imports": [
                 {
@@ -10141,7 +10194,7 @@
             },
             {
               "file": "claude_parser/infrastructure/__init__.py",
-              "path": "claude_parser/infrastructure/__init__.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/infrastructure/__init__.py",
               "module_docstring": "Infrastructure layer - External concerns and adapters.\n\nFollowing DDD:\n- Repositories: Concrete data access implementations\n- External Services: File system, JSON parsing, etc.\n- Adapters: Convert between domain and external formats",
               "imports": [],
               "functions": [],
@@ -10154,7 +10207,7 @@
             },
             {
               "file": "claude_parser/infrastructure/file_utils.py",
-              "path": "claude_parser/infrastructure/file_utils.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/infrastructure/file_utils.py",
               "module_docstring": "File utilities for DRY principle compliance.\n\nSOLID: Single Responsibility - File operations\nDRY: Shared utilities to eliminate duplication\n95/5: Using pathlib and orjson libraries",
               "imports": [
                 {
@@ -10228,7 +10281,7 @@
             },
             {
               "file": "claude_parser/infrastructure/message_repository.py",
-              "path": "claude_parser/infrastructure/message_repository.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/infrastructure/message_repository.py",
               "module_docstring": "Message repository implementation using functional programming.\n\nSOLID:\n- SRP: Single responsibility - data access for messages\n- DIP: Implements abstract repository interface\n\n95/5 Principle:\n- Uses orjson (not json) per specification\n- Uses pydantic for validation per specification\n- NO manual loops, state, or mutations - pure functional",
               "imports": [
                 {
@@ -10394,7 +10447,7 @@
           "files": [
             {
               "file": "claude_parser/domain/__init__.py",
-              "path": "claude_parser/domain/__init__.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/domain/__init__.py",
               "module_docstring": "Domain layer - Core business logic.\n\nFollowing DDD with proper separation:\n- entities: Core domain models\n- value_objects: Immutable value types\n- services: Domain operations\n- filters: Message filtering strategies\n- interfaces: Domain contracts",
               "imports": [
                 {
@@ -10447,7 +10500,7 @@
             },
             {
               "file": "claude_parser/domain/filters/error.py",
-              "path": "claude_parser/domain/filters/error.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/domain/filters/error.py",
               "module_docstring": "Error detection filter.\n\nSOLID: Single Responsibility - Only error detection.\n95/5: Using toolz for functional operations.",
               "imports": [
                 {
@@ -10535,7 +10588,7 @@
             },
             {
               "file": "claude_parser/domain/filters/__init__.py",
-              "path": "claude_parser/domain/filters/__init__.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/domain/filters/__init__.py",
               "module_docstring": "Message filters for domain operations.",
               "imports": [
                 {
@@ -10570,7 +10623,7 @@
             },
             {
               "file": "claude_parser/domain/filters/type.py",
-              "path": "claude_parser/domain/filters/type.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/domain/filters/type.py",
               "module_docstring": "Type-based message filter.\n\nSOLID: Single Responsibility - Only type filtering.",
               "imports": [
                 {
@@ -10619,7 +10672,7 @@
             },
             {
               "file": "claude_parser/domain/filters/content.py",
-              "path": "claude_parser/domain/filters/content.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/domain/filters/content.py",
               "module_docstring": "Content-based message filter.\n\nSOLID: Single Responsibility - Only content filtering.\n95/5: Using toolz for functional operations.",
               "imports": [
                 {
@@ -10668,7 +10721,7 @@
             },
             {
               "file": "claude_parser/domain/value_objects/metadata.py",
-              "path": "claude_parser/domain/value_objects/metadata.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/domain/value_objects/metadata.py",
               "module_docstring": "Conversation metadata value object.\n\nSOLID: Single Responsibility - Only metadata representation.\nDDD: Value Object - Immutable, no identity.",
               "imports": [
                 {
@@ -10739,7 +10792,7 @@
             },
             {
               "file": "claude_parser/domain/value_objects/__init__.py",
-              "path": "claude_parser/domain/value_objects/__init__.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/domain/value_objects/__init__.py",
               "module_docstring": "Domain value objects.\n\nFollowing DDD principles, these are immutable objects defined by their value,\nnot identity. They encapsulate domain logic and ensure data integrity.",
               "imports": [
                 {
@@ -10773,7 +10826,7 @@
             },
             {
               "file": "claude_parser/domain/value_objects/token_service.py",
-              "path": "claude_parser/domain/value_objects/token_service.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/domain/value_objects/token_service.py",
               "module_docstring": "Unified token service - Eliminates DRY violation across token counting.\n\nSOLID: Single Responsibility - Token counting and pricing only\nDDD: Value object for token operations\n95/5: Uses tiktoken library for accurate counting",
               "imports": [
                 {
@@ -10974,7 +11027,7 @@
             },
             {
               "file": "claude_parser/domain/value_objects/ids.py",
-              "path": "claude_parser/domain/value_objects/ids.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/domain/value_objects/ids.py",
               "module_docstring": "Identity value objects for domain entities.\n\nDDD: Strongly-typed identifiers to eliminate primitive obsession.\nSOLID: Immutable value objects with validation.\n95/5: Uses uuid library for UUID validation and generation.",
               "imports": [
                 {
@@ -11147,7 +11200,7 @@
             },
             {
               "file": "claude_parser/domain/todo/swiper.py",
-              "path": "claude_parser/domain/todo/swiper.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/domain/todo/swiper.py",
               "module_docstring": "TodoSwiper - Tinder-like navigation through todo history.",
               "imports": [
                 {
@@ -11297,7 +11350,7 @@
             },
             {
               "file": "claude_parser/domain/todo/__init__.py",
-              "path": "claude_parser/domain/todo/__init__.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/domain/todo/__init__.py",
               "module_docstring": "TodoDomain - Parse and manage Claude's TodoWrite format.\n\nDomain Boundaries (DDD):\n- Parser: Parse JSON (no I/O)\n- Storage: File operations (no business logic)\n- Display: Formatting (no data manipulation)\n- Manager: Orchestrates the above (facade pattern)\n- Swiper: Navigate todo history (timeline integration)",
               "imports": [
                 {
@@ -11346,7 +11399,7 @@
             },
             {
               "file": "claude_parser/domain/todo/display.py",
-              "path": "claude_parser/domain/todo/display.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/domain/todo/display.py",
               "module_docstring": "TodoDisplay - Single Responsibility: Formatting.\n\n95% library (Rich), 5% glue.",
               "imports": [
                 {
@@ -11407,7 +11460,7 @@
             },
             {
               "file": "claude_parser/domain/todo/parser.py",
-              "path": "claude_parser/domain/todo/parser.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/domain/todo/parser.py",
               "module_docstring": "TodoParser - Single Responsibility: Parse JSON.\n\n95% library (orjson), 5% glue.",
               "imports": [
                 {
@@ -11456,7 +11509,7 @@
             },
             {
               "file": "claude_parser/domain/todo/storage.py",
-              "path": "claude_parser/domain/todo/storage.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/domain/todo/storage.py",
               "module_docstring": "TodoStorage - Single Responsibility: File I/O.\n\n95% library (pathlib, orjson), 5% glue.",
               "imports": [
                 {
@@ -11542,7 +11595,7 @@
             },
             {
               "file": "claude_parser/domain/todo/manager.py",
-              "path": "claude_parser/domain/todo/manager.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/domain/todo/manager.py",
               "module_docstring": "TodoManager - Facade for todo operations.\n\nOrchestrates Parser, Storage, and Display (DDD).",
               "imports": [
                 {
@@ -11673,7 +11726,7 @@
             },
             {
               "file": "claude_parser/domain/services/token_analyzer.py",
-              "path": "claude_parser/domain/services/token_analyzer.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/domain/services/token_analyzer.py",
               "module_docstring": "Token analyzer service for tracking and analyzing token usage.\n\nSOLID: Single Responsibility - Token analysis only\nDDD: Domain service for token analytics\n95/5: Uses tokenator library for tracking",
               "imports": [
                 {
@@ -11869,7 +11922,7 @@
             },
             {
               "file": "claude_parser/domain/services/analyzer.py",
-              "path": "claude_parser/domain/services/analyzer.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/domain/services/analyzer.py",
               "module_docstring": "Conversation analysis service.\n\nSOLID: Single Responsibility - Only analysis operations.\nDDD: Domain Service - Stateless operations on aggregates.",
               "imports": [
                 {
@@ -11927,7 +11980,7 @@
             },
             {
               "file": "claude_parser/domain/services/__init__.py",
-              "path": "claude_parser/domain/services/__init__.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/domain/services/__init__.py",
               "module_docstring": "Domain services.",
               "imports": [
                 {
@@ -11972,7 +12025,7 @@
             },
             {
               "file": "claude_parser/domain/services/navigation.py",
-              "path": "claude_parser/domain/services/navigation.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/domain/services/navigation.py",
               "module_docstring": "Conversation navigation service.\n\nSOLID: Single Responsibility - Only navigation operations.\nDDD: Domain Service - Complex navigation logic.\n95/5: Using libraries (networkx, pendulum, toolz).",
               "imports": [
                 {
@@ -12098,7 +12151,7 @@
             },
             {
               "file": "claude_parser/domain/services/context_window_manager.py",
-              "path": "claude_parser/domain/services/context_window_manager.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/domain/services/context_window_manager.py",
               "module_docstring": "Context Window Manager - Monitor and alert on context usage.\n\nCRITICAL for workflow automation - detects when approaching auto-compact threshold.\nEnables programmatic monitoring without watching Claude Code UI.\n\nSOLID: Single Responsibility - Context window monitoring only\n95/5: Simple percentage API for common use, detailed info available",
               "imports": [
                 {
@@ -12297,7 +12350,7 @@
             },
             {
               "file": "claude_parser/domain/services/session_analyzer.py",
-              "path": "claude_parser/domain/services/session_analyzer.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/domain/services/session_analyzer.py",
               "module_docstring": "Session analyzer - Handles session boundaries and current session token counting.\n\nSOLID: Single Responsibility - Session analysis only\n95/5: Uses tiktoken for token counting",
               "imports": [
                 {
@@ -12477,7 +12530,7 @@
             },
             {
               "file": "claude_parser/domain/entities/conversation.py",
-              "path": "claude_parser/domain/entities/conversation.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/domain/entities/conversation.py",
               "module_docstring": "Conversation entity - Core domain model.\n\nSOLID: Single Responsibility - ONLY conversation representation.\nDDD: Entity with identity (session_id).\n95/5: Using toolz for all filtering operations.",
               "imports": [
                 {
@@ -12722,7 +12775,7 @@
             },
             {
               "file": "claude_parser/domain/entities/__init__.py",
-              "path": "claude_parser/domain/entities/__init__.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/domain/entities/__init__.py",
               "module_docstring": "Domain entities.",
               "imports": [
                 {
@@ -12743,7 +12796,7 @@
             },
             {
               "file": "claude_parser/domain/interfaces/protocols.py",
-              "path": "claude_parser/domain/interfaces/protocols.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/domain/interfaces/protocols.py",
               "module_docstring": "Domain interfaces and protocols.\n\nSOLID: Interface Segregation - Small, focused interfaces.\nDRY: Shared contracts for domain operations.",
               "imports": [
                 {
@@ -12832,7 +12885,7 @@
             },
             {
               "file": "claude_parser/domain/interfaces/__init__.py",
-              "path": "claude_parser/domain/interfaces/__init__.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/domain/interfaces/__init__.py",
               "module_docstring": "Domain interfaces and protocols.",
               "imports": [
                 {
@@ -12864,7 +12917,7 @@
           "files": [
             {
               "file": "claude_parser/analytics/tool_analyzer.py",
-              "path": "claude_parser/analytics/tool_analyzer.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/analytics/tool_analyzer.py",
               "module_docstring": "Tool usage analysis for conversations - SOLID Single Responsibility.\n\nFocused solely on tool usage patterns and statistics.",
               "imports": [
                 {
@@ -12969,7 +13022,7 @@
             },
             {
               "file": "claude_parser/analytics/analyzer.py",
-              "path": "claude_parser/analytics/analyzer.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/analytics/analyzer.py",
               "module_docstring": "Analytics analyzer for conversations.\n\nSOLID: Single Responsibility orchestrator that delegates to focused analyzers.\nDDD: Composes domain services for comprehensive analysis.\n95/5: Uses specialized classes, minimal orchestration logic.",
               "imports": [
                 {
@@ -13257,7 +13310,7 @@
             },
             {
               "file": "claude_parser/analytics/__init__.py",
-              "path": "claude_parser/analytics/__init__.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/analytics/__init__.py",
               "module_docstring": "Analytics engine for Claude Parser.\n\nProvides token counting, aggregations, and visualizations\nfor Claude conversations.\n\nExample:\n    from claude_parser import load\n    from claude_parser.analytics import ConversationAnalytics\n\n    conv = load(\"conversation.jsonl\")\n    analytics = ConversationAnalytics(conv)\n\n    # Get token counts\n    stats = analytics.get_statistics()\n    print(f\"Total tokens: {stats['total_tokens']}\")",
               "imports": [
                 {
@@ -13301,7 +13354,7 @@
             },
             {
               "file": "claude_parser/analytics/time_analyzer.py",
-              "path": "claude_parser/analytics/time_analyzer.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/analytics/time_analyzer.py",
               "module_docstring": "Time analysis for conversations - SOLID Single Responsibility.\n\nFocused solely on temporal patterns and distributions.",
               "imports": [
                 {
@@ -13397,7 +13450,7 @@
             },
             {
               "file": "claude_parser/analytics/statistics.py",
-              "path": "claude_parser/analytics/statistics.py",
+              "path": "/Volumes/AliDev/ai-projects/claude-parser/claude_parser/analytics/statistics.py",
               "module_docstring": "Conversation statistics calculation - SOLID Single Responsibility.\n\nFocused solely on calculating message counts and basic stats.",
               "imports": [
                 {
@@ -13523,7 +13576,7 @@
       "files": [
         {
           "file": "scripts/validate_task.py",
-          "path": "scripts/validate_task.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/validate_task.py",
           "module_docstring": "Task validation for dstask - enforces 95/5 and DRY principles.\n\nThis script can be used as:\n1. Pre-commit hook in ~/.dstask/.git/hooks/\n2. Manual validation: python validate_task.py <task_id>\n3. Automated enrichment on task creation",
           "imports": [
             {
@@ -13531,32 +13584,16 @@
               "alias": null
             },
             {
-              "module": "orjson",
-              "alias": null
-            },
-            {
               "module": "sys",
               "alias": null
-            },
-            {
-              "module": "pathlib",
-              "from": true,
-              "names": [
-                "Path"
-              ]
             },
             {
               "module": "typing",
               "from": true,
               "names": [
-                "Dict",
                 "List",
                 "Tuple"
               ]
-            },
-            {
-              "module": "re",
-              "alias": null
             }
           ],
           "functions": [
@@ -13566,7 +13603,7 @@
               "docstring": "Get notes for a specific task.",
               "decorators": [],
               "is_async": false,
-              "line_number": 19
+              "line_number": 16
             },
             {
               "name": "validate_task_notes",
@@ -13574,7 +13611,7 @@
               "docstring": "Validate task notes have required information.",
               "decorators": [],
               "is_async": false,
-              "line_number": 29
+              "line_number": 26
             },
             {
               "name": "suggest_libraries",
@@ -13582,7 +13619,7 @@
               "docstring": "Suggest libraries based on task summary.",
               "decorators": [],
               "is_async": false,
-              "line_number": 56
+              "line_number": 53
             },
             {
               "name": "check_for_duplicates",
@@ -13590,7 +13627,7 @@
               "docstring": "Check for potential duplicate implementations.",
               "decorators": [],
               "is_async": false,
-              "line_number": 78
+              "line_number": 75
             },
             {
               "name": "main",
@@ -13598,19 +13635,19 @@
               "docstring": "Validate task or enrich with suggestions.",
               "decorators": [],
               "is_async": false,
-              "line_number": 93
+              "line_number": 90
             }
           ],
           "classes": [],
           "constants": [],
           "size": {
-            "lines": 126,
-            "bytes": 3751
+            "lines": 123,
+            "bytes": 3697
           }
         },
         {
           "file": "scripts/install_dstask_hooks.py",
-          "path": "scripts/install_dstask_hooks.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/install_dstask_hooks.py",
           "module_docstring": "Install git hooks directly into ~/.dstask to enforce task quality at the data layer.\nThis is the ULTIMATE enforcement - happens on EVERY dstask operation!",
           "imports": [
             {
@@ -13618,22 +13655,10 @@
               "alias": null
             },
             {
-              "module": "pendulum",
-              "alias": null
-            },
-            {
               "module": "pathlib",
               "from": true,
               "names": [
                 "Path"
-              ]
-            },
-            {
-              "module": "typing",
-              "from": true,
-              "names": [
-                "Dict",
-                "List"
               ]
             },
             {
@@ -13652,7 +13677,7 @@
               "docstring": "Create the pre-commit hook for ~/.dstask/.git/hooks/",
               "decorators": [],
               "is_async": false,
-              "line_number": 30
+              "line_number": 28
             },
             {
               "name": "create_post_commit_hook",
@@ -13660,7 +13685,7 @@
               "docstring": "Create post-commit hook to flag non-compliant tasks.",
               "decorators": [],
               "is_async": false,
-              "line_number": 115
+              "line_number": 113
             },
             {
               "name": "install_hooks",
@@ -13668,7 +13693,7 @@
               "docstring": "Install the hooks into ~/.dstask/.git/hooks/",
               "decorators": [],
               "is_async": false,
-              "line_number": 177
+              "line_number": 175
             },
             {
               "name": "test_hooks",
@@ -13676,7 +13701,7 @@
               "docstring": "Test the hooks work.",
               "decorators": [],
               "is_async": false,
-              "line_number": 205
+              "line_number": 203
             },
             {
               "name": "main",
@@ -13684,7 +13709,7 @@
               "docstring": "Install and test dstask git hooks.",
               "decorators": [],
               "is_async": false,
-              "line_number": 227
+              "line_number": 225
             }
           ],
           "classes": [],
@@ -13692,13 +13717,13 @@
             "TASK_TEMPLATE"
           ],
           "size": {
-            "lines": 256,
-            "bytes": 7665
+            "lines": 254,
+            "bytes": 7620
           }
         },
         {
           "file": "scripts/research_sync.py",
-          "path": "scripts/research_sync.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/research_sync.py",
           "module_docstring": "Perplexity Research Tool - 95/5 Architecture\nUses httpx SYNCHRONOUS client (no async needed)",
           "imports": [
             {
@@ -13848,7 +13873,7 @@
         },
         {
           "file": "scripts/research.py",
-          "path": "scripts/research.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/research.py",
           "module_docstring": "Perplexity Research Tool - 95/5 Architecture\nUses httpx SYNCHRONOUS client (no async needed)\nSupports conversation threads and file context",
           "imports": [
             {
@@ -13883,13 +13908,6 @@
               ]
             },
             {
-              "module": "rich.markdown",
-              "from": true,
-              "names": [
-                "Markdown"
-              ]
-            },
-            {
               "module": "rich.panel",
               "from": true,
               "names": [
@@ -13898,10 +13916,6 @@
             },
             {
               "module": "orjson",
-              "alias": null
-            },
-            {
-              "module": "hashlib",
               "alias": null
             },
             {
@@ -13938,7 +13952,7 @@
                 "app.command()"
               ],
               "is_async": false,
-              "line_number": 357
+              "line_number": 355
             }
           ],
           "classes": [
@@ -13953,7 +13967,7 @@
                   "docstring": null,
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 59
+                  "line_number": 57
                 },
                 {
                   "name": "_load_thread",
@@ -13961,7 +13975,7 @@
                   "docstring": "Load existing conversation thread or start new.",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 161
+                  "line_number": 159
                 },
                 {
                   "name": "_save_thread",
@@ -13969,7 +13983,7 @@
                   "docstring": "Save conversation thread to disk.",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 180
+                  "line_number": 178
                 },
                 {
                   "name": "_call_api_streaming",
@@ -13979,7 +13993,7 @@
                     "retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10))"
                   ],
                   "is_async": false,
-                  "line_number": 191
+                  "line_number": 189
                 },
                 {
                   "name": "research",
@@ -13987,7 +14001,7 @@
                   "docstring": "Research with streaming output, file context, and auto-save.",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 209
+                  "line_number": 207
                 },
                 {
                   "name": "_save_to_file",
@@ -13995,7 +14009,7 @@
                   "docstring": "Save research to markdown file.",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 300
+                  "line_number": 298
                 },
                 {
                   "name": "interactive",
@@ -14003,32 +14017,28 @@
                   "docstring": "Interactive research mode - simple loop.",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 311
+                  "line_number": 309
                 }
               ],
               "attributes": [],
               "properties": [],
               "class_variables": [],
-              "line_number": 56
+              "line_number": 54
             }
           ],
           "constants": [],
           "size": {
-            "lines": 389,
-            "bytes": 15583
+            "lines": 387,
+            "bytes": 15534
           }
         },
         {
           "file": "scripts/manage_backlog.py",
-          "path": "scripts/manage_backlog.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/manage_backlog.py",
           "module_docstring": "Backlog management script for claude-parser using dstask.\nThis script can be run by Claude Code to manage tasks autonomously.\n\n95/5 Principle: Uses dstask CLI for task management\nLIBRARY FIRST: Uses subprocess for CLI interaction, orjson for JSON",
           "imports": [
             {
               "module": "subprocess",
-              "alias": null
-            },
-            {
-              "module": "sys",
               "alias": null
             },
             {
@@ -14043,13 +14053,8 @@
               "from": true,
               "names": [
                 "List",
-                "Dict",
-                "Optional"
+                "Dict"
               ]
-            },
-            {
-              "module": "orjson",
-              "alias": null
             },
             {
               "module": "rich.console",
@@ -14088,7 +14093,7 @@
               "docstring": "Initialize backlog with current tasks from documentation.",
               "decorators": [],
               "is_async": false,
-              "line_number": 90
+              "line_number": 88
             },
             {
               "name": "show_status",
@@ -14096,7 +14101,7 @@
               "docstring": "Show current backlog status.",
               "decorators": [],
               "is_async": false,
-              "line_number": 206
+              "line_number": 204
             },
             {
               "name": "main",
@@ -14104,7 +14109,7 @@
               "docstring": "Main CLI interface.",
               "decorators": [],
               "is_async": false,
-              "line_number": 223
+              "line_number": 221
             }
           ],
           "classes": [
@@ -14119,7 +14124,7 @@
                   "docstring": null,
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 24
+                  "line_number": 22
                 },
                 {
                   "name": "add_task",
@@ -14127,7 +14132,7 @@
                   "docstring": "Add a new task to backlog.",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 27
+                  "line_number": 25
                 },
                 {
                   "name": "add_note",
@@ -14135,7 +14140,7 @@
                   "docstring": "Add note to existing task.",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 53
+                  "line_number": 51
                 },
                 {
                   "name": "list_tasks",
@@ -14143,7 +14148,7 @@
                   "docstring": "List tasks with optional filter.",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 66
+                  "line_number": 64
                 },
                 {
                   "name": "complete_task",
@@ -14151,7 +14156,7 @@
                   "docstring": "Mark task as done.",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 76
+                  "line_number": 74
                 },
                 {
                   "name": "start_task",
@@ -14159,7 +14164,7 @@
                   "docstring": "Start working on task.",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 80
+                  "line_number": 78
                 },
                 {
                   "name": "get_next_tasks",
@@ -14167,24 +14172,24 @@
                   "docstring": "Get prioritized next tasks.",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 84
+                  "line_number": 82
                 }
               ],
               "attributes": [],
               "properties": [],
               "class_variables": [],
-              "line_number": 21
+              "line_number": 19
             }
           ],
           "constants": [],
           "size": {
-            "lines": 255,
-            "bytes": 8456
+            "lines": 253,
+            "bytes": 8422
           }
         },
         {
           "file": "scripts/check_inventory_sync.py",
-          "path": "scripts/check_inventory_sync.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/check_inventory_sync.py",
           "module_docstring": "Check if codebase inventory is synchronized with actual code.\n\nExits with 0 if synchronized, 1 if out of date.\nUsed by pre-commit hooks to enforce documentation updates.",
           "imports": [
             {
@@ -14240,12 +14245,12 @@
           "constants": [],
           "size": {
             "lines": 105,
-            "bytes": 4151
+            "bytes": 4152
           }
         },
         {
           "file": "scripts/discover_jsonl_structure.py",
-          "path": "scripts/discover_jsonl_structure.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/discover_jsonl_structure.py",
           "module_docstring": "JSONL Structure Discovery Tool - Complete Analysis\nDiscovers ALL keys, nested structures, and variations in Claude Code JSONL files.\nUses streaming to handle huge files without choking.",
           "imports": [
             {
@@ -14266,8 +14271,7 @@
                 "Dict",
                 "Set",
                 "Any",
-                "List",
-                "Union"
+                "List"
               ]
             },
             {
@@ -14293,31 +14297,10 @@
               ]
             },
             {
-              "module": "rich.tree",
-              "from": true,
-              "names": [
-                "Tree"
-              ]
-            },
-            {
-              "module": "rich.table",
-              "from": true,
-              "names": [
-                "Table"
-              ]
-            },
-            {
               "module": "rich.progress",
               "from": true,
               "names": [
                 "track"
-              ]
-            },
-            {
-              "module": "rich",
-              "from": true,
-              "names": [
-                "print"
               ]
             },
             {
@@ -14331,10 +14314,6 @@
                 "dataclass",
                 "field"
               ]
-            },
-            {
-              "module": "hashlib",
-              "alias": null
             }
           ],
           "functions": [
@@ -14346,7 +14325,7 @@
                 "app.command()"
               ],
               "is_async": false,
-              "line_number": 429
+              "line_number": 425
             }
           ],
           "classes": [
@@ -14395,7 +14374,7 @@
                   "type": "Any"
                 }
               ],
-              "line_number": 27
+              "line_number": 23
             },
             {
               "name": "StructureDiscoverer",
@@ -14408,7 +14387,7 @@
                   "docstring": null,
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 42
+                  "line_number": 38
                 },
                 {
                   "name": "analyze_value",
@@ -14416,7 +14395,7 @@
                   "docstring": "Recursively analyze value structure.",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 54
+                  "line_number": 50
                 },
                 {
                   "name": "process_line",
@@ -14424,7 +14403,7 @@
                   "docstring": "Process a single JSONL line. Returns True if successful.",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 157
+                  "line_number": 153
                 },
                 {
                   "name": "process_file",
@@ -14432,7 +14411,7 @@
                   "docstring": "Process a single file. Returns number of lines processed.",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 179
+                  "line_number": 175
                 },
                 {
                   "name": "generate_complete_structure",
@@ -14440,7 +14419,7 @@
                   "docstring": "Generate complete structure dictionary.",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 226
+                  "line_number": 222
                 },
                 {
                   "name": "generate_typescript",
@@ -14448,7 +14427,7 @@
                   "docstring": "Generate complete TypeScript definitions.",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 275
+                  "line_number": 271
                 },
                 {
                   "name": "generate_markdown_report",
@@ -14456,24 +14435,24 @@
                   "docstring": "Generate comprehensive markdown documentation.",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 354
+                  "line_number": 350
                 }
               ],
               "attributes": [],
               "properties": [],
               "class_variables": [],
-              "line_number": 39
+              "line_number": 35
             }
           ],
           "constants": [],
           "size": {
-            "lines": 523,
-            "bytes": 21227
+            "lines": 519,
+            "bytes": 21117
           }
         },
         {
           "file": "scripts/backlog_dashboard.py",
-          "path": "scripts/backlog_dashboard.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/backlog_dashboard.py",
           "module_docstring": "Backlog dashboard for Claude Code to autonomously manage tasks.\nThis provides a clean interface that Claude Code can use to track progress.\n\n95/5: Uses dstask for task management, rich for display",
           "imports": [
             {
@@ -14600,12 +14579,12 @@
           "constants": [],
           "size": {
             "lines": 178,
-            "bytes": 5628
+            "bytes": 5629
           }
         },
         {
           "file": "scripts/verify_spec_v2.py",
-          "path": "scripts/verify_spec_v2.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/verify_spec_v2.py",
           "module_docstring": "95/5 Principle Verification - SOLID Version\nThis script follows its own rules: functional programming with toolz",
           "imports": [
             {
@@ -14632,9 +14611,7 @@
               "from": true,
               "names": [
                 "Tuple",
-                "Set",
-                "Dict",
-                "Any"
+                "Dict"
               ]
             },
             {
@@ -14643,14 +14620,7 @@
               "names": [
                 "pipe",
                 "concat",
-                "merge",
-                "partition",
-                "groupby",
-                "count",
-                "compose",
-                "reduce",
-                "get_in",
-                "valmap"
+                "reduce"
               ]
             },
             {
@@ -14658,22 +14628,7 @@
               "from": true,
               "names": [
                 "map",
-                "filter",
-                "get"
-              ]
-            },
-            {
-              "module": "functools",
-              "from": true,
-              "names": [
-                "partial"
-              ]
-            },
-            {
-              "module": "more_itertools",
-              "from": true,
-              "names": [
-                "flatten"
+                "filter"
               ]
             },
             {
@@ -14698,7 +14653,7 @@
               "docstring": "Print colored status message.",
               "decorators": [],
               "is_async": false,
-              "line_number": 30
+              "line_number": 27
             },
             {
               "name": "read_file_safe",
@@ -14706,7 +14661,7 @@
               "docstring": "Safely read file content.",
               "decorators": [],
               "is_async": false,
-              "line_number": 35
+              "line_number": 32
             },
             {
               "name": "get_python_files",
@@ -14714,7 +14669,7 @@
               "docstring": "Get all Python files from a directory.",
               "decorators": [],
               "is_async": false,
-              "line_number": 42
+              "line_number": 39
             },
             {
               "name": "extract_imports_from_line",
@@ -14722,7 +14677,7 @@
               "docstring": "Extract module name from import line.",
               "decorators": [],
               "is_async": false,
-              "line_number": 59
+              "line_number": 56
             },
             {
               "name": "check_line_against_patterns",
@@ -14730,7 +14685,7 @@
               "docstring": "Check if line matches any forbidden pattern.",
               "decorators": [],
               "is_async": false,
-              "line_number": 70
+              "line_number": 67
             },
             {
               "name": "format_violation",
@@ -14738,7 +14693,7 @@
               "docstring": "Format a violation message.",
               "decorators": [],
               "is_async": false,
-              "line_number": 79
+              "line_number": 76
             },
             {
               "name": "check_forbidden_imports",
@@ -14746,7 +14701,7 @@
               "docstring": "Check for forbidden imports using functional approach.",
               "decorators": [],
               "is_async": false,
-              "line_number": 87
+              "line_number": 84
             },
             {
               "name": "check_approved_libraries",
@@ -14754,7 +14709,7 @@
               "docstring": "Check that only approved libraries are imported.",
               "decorators": [],
               "is_async": false,
-              "line_number": 130
+              "line_number": 127
             },
             {
               "name": "check_manual_loops",
@@ -14762,7 +14717,7 @@
               "docstring": "Check for manual loops and state management.",
               "decorators": [],
               "is_async": false,
-              "line_number": 177
+              "line_number": 174
             },
             {
               "name": "check_95_5_principle",
@@ -14770,7 +14725,7 @@
               "docstring": "Check that the API follows 95/5 principle.",
               "decorators": [],
               "is_async": false,
-              "line_number": 217
+              "line_number": 214
             },
             {
               "name": "check_tests_exist",
@@ -14778,7 +14733,7 @@
               "docstring": "Check that required test files exist.",
               "decorators": [],
               "is_async": false,
-              "line_number": 239
+              "line_number": 236
             },
             {
               "name": "check_unused_files",
@@ -14786,7 +14741,7 @@
               "docstring": "Check for unused files using functional approach.",
               "decorators": [],
               "is_async": false,
-              "line_number": 255
+              "line_number": 252
             },
             {
               "name": "run_all_checks",
@@ -14794,7 +14749,7 @@
               "docstring": "Run all verification checks and return results.",
               "decorators": [],
               "is_async": false,
-              "line_number": 344
+              "line_number": 341
             },
             {
               "name": "display_results",
@@ -14802,7 +14757,7 @@
               "docstring": "Display verification results.",
               "decorators": [],
               "is_async": false,
-              "line_number": 355
+              "line_number": 352
             },
             {
               "name": "main",
@@ -14810,19 +14765,19 @@
               "docstring": "Main entry point.",
               "decorators": [],
               "is_async": false,
-              "line_number": 444
+              "line_number": 441
             }
           ],
           "classes": [],
           "constants": [],
           "size": {
-            "lines": 452,
-            "bytes": 15476
+            "lines": 449,
+            "bytes": 15334
           }
         },
         {
           "file": "scripts/backlog_priorities.py",
-          "path": "scripts/backlog_priorities.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/backlog_priorities.py",
           "module_docstring": "Extract and display backlog priorities with notes from tags.",
           "imports": [
             {
@@ -14903,12 +14858,12 @@
           "constants": [],
           "size": {
             "lines": 90,
-            "bytes": 2967
+            "bytes": 2968
           }
         },
         {
           "file": "scripts/verification_config.py",
-          "path": "scripts/verification_config.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/verification_config.py",
           "module_docstring": "Configuration for 95/5 Principle Verification\nSOLID: Single Responsibility - Just configuration, no logic",
           "imports": [],
           "functions": [],
@@ -14924,20 +14879,16 @@
           ],
           "size": {
             "lines": 164,
-            "bytes": 5782
+            "bytes": 5783
           }
         },
         {
           "file": "scripts/verify_spec.py",
-          "path": "scripts/verify_spec.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/verify_spec.py",
           "module_docstring": "Specification Compliance Verifier\nRun this before committing to ensure 95/5 principle is followed",
           "imports": [
             {
               "module": "sys",
-              "alias": null
-            },
-            {
-              "module": "subprocess",
               "alias": null
             },
             {
@@ -14967,7 +14918,7 @@
               "docstring": "Print colored status message",
               "decorators": [],
               "is_async": false,
-              "line_number": 18
+              "line_number": 17
             },
             {
               "name": "check_forbidden_imports",
@@ -14975,7 +14926,7 @@
               "docstring": "Check for forbidden imports that violate 95/5 principle",
               "decorators": [],
               "is_async": false,
-              "line_number": 23
+              "line_number": 22
             },
             {
               "name": "check_required_libraries",
@@ -14983,7 +14934,7 @@
               "docstring": "Check that required libraries are in dependency files",
               "decorators": [],
               "is_async": false,
-              "line_number": 87
+              "line_number": 86
             },
             {
               "name": "check_95_5_principle",
@@ -14991,7 +14942,7 @@
               "docstring": "Check that the 95% use case is actually simple",
               "decorators": [],
               "is_async": false,
-              "line_number": 130
+              "line_number": 129
             },
             {
               "name": "check_models_use_pydantic",
@@ -14999,7 +14950,7 @@
               "docstring": "Ensure all models use pydantic.BaseModel",
               "decorators": [],
               "is_async": false,
-              "line_number": 153
+              "line_number": 152
             },
             {
               "name": "check_tests_exist",
@@ -15007,7 +14958,7 @@
               "docstring": "Check that test files exist for main features",
               "decorators": [],
               "is_async": false,
-              "line_number": 171
+              "line_number": 170
             },
             {
               "name": "run_verification",
@@ -15015,7 +14966,7 @@
               "docstring": "Run all verification checks",
               "decorators": [],
               "is_async": false,
-              "line_number": 190
+              "line_number": 189
             }
           ],
           "classes": [],
@@ -15026,13 +14977,13 @@
             "RESET"
           ],
           "size": {
-            "lines": 246,
-            "bytes": 8625
+            "lines": 245,
+            "bytes": 8608
           }
         },
         {
           "file": "scripts/analyze_tokens.py",
-          "path": "scripts/analyze_tokens.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/analyze_tokens.py",
           "module_docstring": "Token usage analyzer CLI.\n\n95/5: Uses typer for CLI, rich for display",
           "imports": [
             {
@@ -15145,7 +15096,7 @@
         },
         {
           "file": "scripts/enforce_context.py",
-          "path": "scripts/enforce_context.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/enforce_context.py",
           "module_docstring": "Local enforcement of AI context awareness.\nRuns BEFORE any code changes to ensure Claude loads context.\n\nThis script can be called from:\n1. Shell aliases\n2. VS Code tasks\n3. Makefile targets\n4. Direct execution",
           "imports": [
             {
@@ -15220,12 +15171,12 @@
           "constants": [],
           "size": {
             "lines": 119,
-            "bytes": 3694
+            "bytes": 3695
           }
         },
         {
           "file": "scripts/discover_structure_simple.py",
-          "path": "scripts/discover_structure_simple.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/discover_structure_simple.py",
           "module_docstring": "Simple JSONL structure discovery without typer.",
           "imports": [
             {
@@ -15323,12 +15274,12 @@
           "constants": [],
           "size": {
             "lines": 202,
-            "bytes": 7219
+            "bytes": 7220
           }
         },
         {
           "file": "scripts/feature_matrix.py",
-          "path": "scripts/feature_matrix.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/feature_matrix.py",
           "module_docstring": "Generate feature matrix documentation for Claude Parser SDK.\n\n95/5: Using typer for CLI, rich for display\nSOLID: Single responsibility - only feature matrix generation",
           "imports": [
             {
@@ -15436,20 +15387,16 @@
           "constants": [],
           "size": {
             "lines": 213,
-            "bytes": 7415
+            "bytes": 7416
           }
         },
         {
           "file": "scripts/codebase_inventory.py",
-          "path": "scripts/codebase_inventory.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/codebase_inventory.py",
           "module_docstring": "Codebase Inventory Generator for AI/LLM Context.\n\nUses AST to extract comprehensive codebase structure into hierarchical JSON.\nFollows LIBRARY_FIRST_RULE.md and 95/5 principle.",
           "imports": [
             {
               "module": "ast",
-              "alias": null
-            },
-            {
-              "module": "os",
               "alias": null
             },
             {
@@ -15464,7 +15411,6 @@
               "from": true,
               "names": [
                 "Dict",
-                "List",
                 "Any",
                 "Optional"
               ]
@@ -15532,7 +15478,7 @@
                 "app.command()"
               ],
               "is_async": false,
-              "line_number": 270
+              "line_number": 269
             },
             {
               "name": "display_tree",
@@ -15540,7 +15486,7 @@
               "docstring": "Display visual tree of codebase structure.",
               "decorators": [],
               "is_async": false,
-              "line_number": 310
+              "line_number": 309
             },
             {
               "name": "display_stats",
@@ -15548,7 +15494,7 @@
               "docstring": "Display statistics table.",
               "decorators": [],
               "is_async": false,
-              "line_number": 335
+              "line_number": 334
             },
             {
               "name": "generate_markdown_summary",
@@ -15556,7 +15502,7 @@
               "docstring": "Generate markdown summary of inventory.",
               "decorators": [],
               "is_async": false,
-              "line_number": 361
+              "line_number": 360
             }
           ],
           "classes": [
@@ -15571,7 +15517,7 @@
                   "docstring": null,
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 29
+                  "line_number": 28
                 },
                 {
                   "name": "extract_file_inventory",
@@ -15579,7 +15525,7 @@
                   "docstring": "Extract inventory from a single Python file using AST.",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 33
+                  "line_number": 32
                 },
                 {
                   "name": "_extract_function",
@@ -15587,7 +15533,7 @@
                   "docstring": "Extract function information from AST node.",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 91
+                  "line_number": 90
                 },
                 {
                   "name": "_extract_class",
@@ -15595,7 +15541,7 @@
                   "docstring": "Extract class information from AST node.",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 115
+                  "line_number": 114
                 },
                 {
                   "name": "analyze_codebase",
@@ -15603,7 +15549,7 @@
                   "docstring": "Analyze entire codebase and generate hierarchical inventory.",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 159
+                  "line_number": 158
                 },
                 {
                   "name": "_get_subdomain",
@@ -15611,7 +15557,7 @@
                   "docstring": "Extract subdomain from claude_parser file path.",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 242
+                  "line_number": 241
                 },
                 {
                   "name": "_infer_domain_responsibility",
@@ -15619,24 +15565,24 @@
                   "docstring": "Infer domain responsibility from directory name.",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 251
+                  "line_number": 250
                 }
               ],
               "attributes": [],
               "properties": [],
               "class_variables": [],
-              "line_number": 26
+              "line_number": 25
             }
           ],
           "constants": [],
           "size": {
-            "lines": 392,
-            "bytes": 16362
+            "lines": 391,
+            "bytes": 16347
           }
         },
         {
           "file": "scripts/create_enforced_task.py",
-          "path": "scripts/create_enforced_task.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/create_enforced_task.py",
           "module_docstring": "Enforced task creation for Claude Code sessions.\n\nThis ensures EVERY task has FULL CONTEXT before any Claude agent works on it.\nNo more partial implementations, no more violations, no more tech debt.\n\nUsage:\n    python create_enforced_task.py \"Task description\"\n    \nThis will:\n1. Research libraries automatically\n2. Check for duplicates\n3. Analyze affected files\n4. Create task with COMPLETE context",
           "imports": [
             {
@@ -15653,10 +15599,6 @@
               "names": [
                 "Path"
               ]
-            },
-            {
-              "module": "orjson",
-              "alias": null
             },
             {
               "module": "typing",
@@ -15683,7 +15625,7 @@
               "docstring": "Run research.py to find libraries.",
               "decorators": [],
               "is_async": false,
-              "line_number": 27
+              "line_number": 26
             },
             {
               "name": "check_for_duplicates",
@@ -15691,7 +15633,7 @@
               "docstring": "Check codebase for potential duplicates.",
               "decorators": [],
               "is_async": false,
-              "line_number": 41
+              "line_number": 40
             },
             {
               "name": "analyze_complexity",
@@ -15699,7 +15641,7 @@
               "docstring": "Run radon complexity check on files.",
               "decorators": [],
               "is_async": false,
-              "line_number": 59
+              "line_number": 58
             },
             {
               "name": "get_file_sizes",
@@ -15707,7 +15649,7 @@
               "docstring": "Get files matching pattern with line counts.",
               "decorators": [],
               "is_async": false,
-              "line_number": 78
+              "line_number": 77
             },
             {
               "name": "extract_keywords",
@@ -15715,7 +15657,7 @@
               "docstring": "Extract keywords from task description.",
               "decorators": [],
               "is_async": false,
-              "line_number": 99
+              "line_number": 98
             },
             {
               "name": "create_task_with_context",
@@ -15723,7 +15665,7 @@
               "docstring": "Create a task with FULL ENFORCED CONTEXT.",
               "decorators": [],
               "is_async": false,
-              "line_number": 111
+              "line_number": 110
             },
             {
               "name": "main",
@@ -15731,19 +15673,19 @@
               "docstring": null,
               "decorators": [],
               "is_async": false,
-              "line_number": 216
+              "line_number": 215
             }
           ],
           "classes": [],
           "constants": [],
           "size": {
-            "lines": 233,
-            "bytes": 7112
+            "lines": 232,
+            "bytes": 7099
           }
         },
         {
           "file": "scripts/audit_tasks.py",
-          "path": "scripts/audit_tasks.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/audit_tasks.py",
           "module_docstring": "Audit all tasks for proper context and flag for refinement.\n\nThis script:\n1. Checks all open tasks for required context\n2. Flags tasks missing critical information\n3. Suggests refinements\n4. Can bulk-update tasks with template",
           "imports": [
             {
@@ -15766,13 +15708,6 @@
                 "List",
                 "Tuple"
               ]
-            },
-            {
-              "module": "pathlib",
-              "from": true,
-              "names": [
-                "Path"
-              ]
             }
           ],
           "functions": [
@@ -15782,7 +15717,7 @@
               "docstring": "Get all open tasks from dstask.",
               "decorators": [],
               "is_async": false,
-              "line_number": 68
+              "line_number": 67
             },
             {
               "name": "check_task_context",
@@ -15790,7 +15725,7 @@
               "docstring": "Check if task has proper context.",
               "decorators": [],
               "is_async": false,
-              "line_number": 80
+              "line_number": 79
             },
             {
               "name": "flag_task",
@@ -15798,7 +15733,7 @@
               "docstring": "Flag a task as needing refinement.",
               "decorators": [],
               "is_async": false,
-              "line_number": 105
+              "line_number": 104
             },
             {
               "name": "generate_refinement",
@@ -15806,7 +15741,7 @@
               "docstring": "Generate refinement template for task.",
               "decorators": [],
               "is_async": false,
-              "line_number": 120
+              "line_number": 119
             },
             {
               "name": "audit_all_tasks",
@@ -15814,7 +15749,7 @@
               "docstring": "Audit all tasks and optionally fix them.",
               "decorators": [],
               "is_async": false,
-              "line_number": 125
+              "line_number": 124
             },
             {
               "name": "create_phase_tasks",
@@ -15822,7 +15757,7 @@
               "docstring": "Create properly contexted tasks for each cleanup phase.",
               "decorators": [],
               "is_async": false,
-              "line_number": 182
+              "line_number": 181
             },
             {
               "name": "main",
@@ -15830,7 +15765,7 @@
               "docstring": null,
               "decorators": [],
               "is_async": false,
-              "line_number": 204
+              "line_number": 203
             }
           ],
           "classes": [],
@@ -15839,13 +15774,13 @@
             "TEMPLATE"
           ],
           "size": {
-            "lines": 217,
-            "bytes": 6304
+            "lines": 216,
+            "bytes": 6280
           }
         },
         {
           "file": "scripts/detect_unused.py",
-          "path": "scripts/detect_unused.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/detect_unused.py",
           "module_docstring": "Detect unused Python files in the codebase.\nFiles that are not imported anywhere are likely dead code.",
           "imports": [
             {
@@ -15934,12 +15869,12 @@
           ],
           "size": {
             "lines": 211,
-            "bytes": 7893
+            "bytes": 7894
           }
         },
         {
           "file": "scripts/research/research_navigation_libs.py",
-          "path": "scripts/research/research_navigation_libs.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/research/research_navigation_libs.py",
           "module_docstring": "Quick research on navigation libraries for conversation data.",
           "imports": [],
           "functions": [],
@@ -15952,7 +15887,7 @@
         },
         {
           "file": "scripts/research/research_testing.py",
-          "path": "scripts/research/research_testing.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/research/research_testing.py",
           "module_docstring": "Research the best testing library setup for 95/5 development.\n\nFollowing our principle: research FIRST, then implement.",
           "imports": [
             {
@@ -15983,7 +15918,7 @@
         },
         {
           "file": "scripts/security/security_scan.py",
-          "path": "scripts/security/security_scan.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/security/security_scan.py",
           "module_docstring": "Security scan for GitHub preparation.\nChecks for secrets, API keys, and sensitive data.",
           "imports": [
             {
@@ -16030,12 +15965,12 @@
           ],
           "size": {
             "lines": 71,
-            "bytes": 2139
+            "bytes": 2140
           }
         },
         {
           "file": "scripts/security/clean_secrets.py",
-          "path": "scripts/security/clean_secrets.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/security/clean_secrets.py",
           "module_docstring": "Clean up secrets and prepare for GitHub.",
           "imports": [
             {
@@ -16077,7 +16012,7 @@
         },
         {
           "file": "scripts/experiments/test_parse_debug.py",
-          "path": "scripts/experiments/test_parse_debug.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/experiments/test_parse_debug.py",
           "module_docstring": "Debug parse_message.",
           "imports": [
             {
@@ -16088,10 +16023,7 @@
               "module": "claude_parser.models",
               "from": true,
               "names": [
-                "parse_message",
-                "UserMessage",
-                "ToolResult",
-                "MessageType"
+                "UserMessage"
               ]
             },
             {
@@ -16104,12 +16036,12 @@
           "constants": [],
           "size": {
             "lines": 44,
-            "bytes": 2123
+            "bytes": 2084
           }
         },
         {
           "file": "scripts/experiments/test_discovery_tdd.py",
-          "path": "scripts/experiments/test_discovery_tdd.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/experiments/test_discovery_tdd.py",
           "module_docstring": "TDD-style test to understand Claude's directory structure.",
           "imports": [
             {
@@ -16138,12 +16070,12 @@
           "constants": [],
           "size": {
             "lines": 102,
-            "bytes": 4024
+            "bytes": 4025
           }
         },
         {
           "file": "scripts/experiments/test_parse_with_module.py",
-          "path": "scripts/experiments/test_parse_with_module.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/experiments/test_parse_with_module.py",
           "module_docstring": "Test with actual parse_message.",
           "imports": [
             {
@@ -16180,12 +16112,12 @@
           "constants": [],
           "size": {
             "lines": 59,
-            "bytes": 2361
+            "bytes": 2362
           }
         },
         {
           "file": "scripts/experiments/test_real_conversation_navigation.py",
-          "path": "scripts/experiments/test_real_conversation_navigation.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/experiments/test_real_conversation_navigation.py",
           "module_docstring": "TDD test - Find actual messages from our current conversation using keywords.",
           "imports": [
             {
@@ -16215,12 +16147,12 @@
           "constants": [],
           "size": {
             "lines": 145,
-            "bytes": 5423
+            "bytes": 5424
           }
         },
         {
           "file": "scripts/experiments/debug_parse_errors.py",
-          "path": "scripts/experiments/debug_parse_errors.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/experiments/debug_parse_errors.py",
           "module_docstring": "Debug parsing errors in JSONL file.",
           "imports": [
             {
@@ -16228,13 +16160,6 @@
               "from": true,
               "names": [
                 "Path"
-              ]
-            },
-            {
-              "module": "claude_parser",
-              "from": true,
-              "names": [
-                "load"
               ]
             },
             {
@@ -16253,13 +16178,13 @@
           "classes": [],
           "constants": [],
           "size": {
-            "lines": 35,
-            "bytes": 1203
+            "lines": 34,
+            "bytes": 1173
           }
         },
         {
           "file": "scripts/experiments/fix_test_calls.py",
-          "path": "scripts/experiments/fix_test_calls.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/experiments/fix_test_calls.py",
           "module_docstring": "Fix test method calls to use properties.",
           "imports": [
             {
@@ -16279,12 +16204,12 @@
           "constants": [],
           "size": {
             "lines": 24,
-            "bytes": 704
+            "bytes": 705
           }
         },
         {
           "file": "scripts/experiments/test_discovery.py",
-          "path": "scripts/experiments/test_discovery.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/experiments/test_discovery.py",
           "module_docstring": "Test discovery tool with real data.",
           "imports": [
             {
@@ -16308,12 +16233,12 @@
           "constants": [],
           "size": {
             "lines": 36,
-            "bytes": 1258
+            "bytes": 1259
           }
         },
         {
           "file": "scripts/experiments/test_parse_line.py",
-          "path": "scripts/experiments/test_parse_line.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/experiments/test_parse_line.py",
           "module_docstring": "Test parsing a specific line.",
           "imports": [
             {
@@ -16333,12 +16258,12 @@
           "constants": [],
           "size": {
             "lines": 22,
-            "bytes": 1081
+            "bytes": 1082
           }
         },
         {
           "file": "scripts/experiments/test_strict.py",
-          "path": "scripts/experiments/test_strict.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/scripts/experiments/test_strict.py",
           "module_docstring": "Test strict validation.",
           "imports": [
             {
@@ -16368,7 +16293,7 @@
           "constants": [],
           "size": {
             "lines": 28,
-            "bytes": 806
+            "bytes": 807
           }
         }
       ],
@@ -16382,38 +16307,9 @@
       "files": [
         {
           "file": "packages/python-sdk/tests/test_parser.py",
-          "path": "packages/python-sdk/tests/test_parser.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/packages/python-sdk/tests/test_parser.py",
           "module_docstring": "Test Specifications for JSONL Parser - Sprint 1, F001\nMUST PASS: All message types parse correctly",
-          "imports": [
-            {
-              "module": "pytest",
-              "alias": null
-            },
-            {
-              "module": "pathlib",
-              "from": true,
-              "names": [
-                "Path"
-              ]
-            },
-            {
-              "module": "typing",
-              "from": true,
-              "names": [
-                "List",
-                "Dict",
-                "Any"
-              ]
-            },
-            {
-              "module": "claude_parser.core.parsers",
-              "from": true,
-              "names": [
-                "JsonlParser",
-                "ParseError"
-              ]
-            }
-          ],
+          "imports": [],
           "functions": [],
           "classes": [
             {
@@ -16427,7 +16323,7 @@
                   "docstring": "GIVEN: An empty JSONL file\nWHEN: Parser attempts to parse it\nTHEN: Returns empty list without errors",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 14
+                  "line_number": 10
                 },
                 {
                   "name": "test_parse_single_line",
@@ -16435,7 +16331,7 @@
                   "docstring": "GIVEN: JSONL file with one valid JSON line\nWHEN: Parser reads the file\nTHEN: Returns list with one parsed object",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 22
+                  "line_number": 18
                 },
                 {
                   "name": "test_parse_multiple_lines",
@@ -16443,7 +16339,7 @@
                   "docstring": "GIVEN: JSONL file with multiple valid lines\nWHEN: Parser reads the file\nTHEN: Returns list with all parsed objects in order",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 30
+                  "line_number": 26
                 },
                 {
                   "name": "test_parse_malformed_json",
@@ -16451,7 +16347,7 @@
                   "docstring": "GIVEN: JSONL file with malformed JSON on line 3\nWHEN: Parser encounters the error\nTHEN: Raises ParseError with line number and continues or stops based on mode",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 38
+                  "line_number": 34
                 },
                 {
                   "name": "test_parse_message_types",
@@ -16459,7 +16355,7 @@
                   "docstring": "GIVEN: JSONL with all Claude message types (user, assistant, tool, system, summary)\nWHEN: Parser reads the file\nTHEN: Correctly identifies and parses each message type",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 46
+                  "line_number": 42
                 },
                 {
                   "name": "test_parse_nested_objects",
@@ -16467,7 +16363,7 @@
                   "docstring": "GIVEN: JSONL with deeply nested JSON objects\nWHEN: Parser reads complex structures\nTHEN: Preserves full object hierarchy",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 62
+                  "line_number": 58
                 },
                 {
                   "name": "test_parse_large_file_streaming",
@@ -16475,7 +16371,7 @@
                   "docstring": "GIVEN: Large JSONL file (>100MB)\nWHEN: Parser uses streaming mode\nTHEN: Yields objects without loading entire file into memory",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 70
+                  "line_number": 66
                 },
                 {
                   "name": "test_parse_with_unicode",
@@ -16483,7 +16379,7 @@
                   "docstring": "GIVEN: JSONL with unicode characters (emoji, multilingual)\nWHEN: Parser reads the file\nTHEN: Correctly preserves all unicode content",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 78
+                  "line_number": 74
                 },
                 {
                   "name": "test_parse_with_escape_sequences",
@@ -16491,7 +16387,7 @@
                   "docstring": "GIVEN: JSONL with escaped characters (\\n, \\t, \\\", etc)\nWHEN: Parser reads the file\nTHEN: Correctly interprets escape sequences",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 86
+                  "line_number": 82
                 },
                 {
                   "name": "test_parse_empty_lines",
@@ -16499,7 +16395,7 @@
                   "docstring": "GIVEN: JSONL with empty lines between valid JSON\nWHEN: Parser reads the file\nTHEN: Skips empty lines and continues parsing",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 94
+                  "line_number": 90
                 },
                 {
                   "name": "test_parse_with_bom",
@@ -16507,7 +16403,7 @@
                   "docstring": "GIVEN: JSONL file with UTF-8 BOM\nWHEN: Parser reads the file\nTHEN: Correctly handles BOM and parses content",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 102
+                  "line_number": 98
                 },
                 {
                   "name": "test_parse_compressed_file",
@@ -16515,7 +16411,7 @@
                   "docstring": "GIVEN: Gzipped JSONL file\nWHEN: Parser detects .gz extension\nTHEN: Automatically decompresses and parses",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 110
+                  "line_number": 106
                 },
                 {
                   "name": "test_parse_validation_mode",
@@ -16523,7 +16419,7 @@
                   "docstring": "GIVEN: Parser in strict validation mode\nWHEN: Parsing JSONL with schema violations\nTHEN: Reports all validation errors with line numbers",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 118
+                  "line_number": 114
                 },
                 {
                   "name": "test_parse_recovery_mode",
@@ -16531,7 +16427,7 @@
                   "docstring": "GIVEN: Parser in recovery mode\nWHEN: Encounters errors\nTHEN: Logs errors but continues parsing valid lines",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 126
+                  "line_number": 122
                 },
                 {
                   "name": "test_parse_performance_benchmark",
@@ -16539,13 +16435,13 @@
                   "docstring": "GIVEN: 10MB JSONL file\nWHEN: Parser reads entire file\nTHEN: Completes in under 1 second",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 134
+                  "line_number": 130
                 }
               ],
               "attributes": [],
               "properties": [],
               "class_variables": [],
-              "line_number": 11
+              "line_number": 7
             },
             {
               "name": "TestJsonlParserIntegration",
@@ -16558,7 +16454,7 @@
                   "docstring": "GIVEN: Actual Claude Code JSONL export\nWHEN: Parser processes the file\nTHEN: Extracts all messages, sessions, and metadata correctly",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 146
+                  "line_number": 142
                 },
                 {
                   "name": "test_parse_multi_session_file",
@@ -16566,7 +16462,7 @@
                   "docstring": "GIVEN: JSONL with multiple session IDs\nWHEN: Parser processes the file\nTHEN: Correctly groups messages by session",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 154
+                  "line_number": 150
                 },
                 {
                   "name": "test_parse_with_tool_sequences",
@@ -16574,59 +16470,26 @@
                   "docstring": "GIVEN: JSONL with tool_use followed by tool_result\nWHEN: Parser processes the sequence\nTHEN: Links tool uses with their results",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 162
+                  "line_number": 158
                 }
               ],
               "attributes": [],
               "properties": [],
               "class_variables": [],
-              "line_number": 143
+              "line_number": 139
             }
           ],
           "constants": [],
           "size": {
-            "lines": 168,
-            "bytes": 6080
+            "lines": 164,
+            "bytes": 5944
           }
         },
         {
           "file": "packages/python-sdk/tests/test_models.py",
-          "path": "packages/python-sdk/tests/test_models.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/packages/python-sdk/tests/test_models.py",
           "module_docstring": "Test Specifications for Message Models - Sprint 1, F002\nMUST PASS: Type-safe message representation with validation",
-          "imports": [
-            {
-              "module": "pytest",
-              "alias": null
-            },
-            {
-              "module": "pendulum",
-              "alias": null
-            },
-            {
-              "module": "typing",
-              "from": true,
-              "names": [
-                "Optional",
-                "Dict",
-                "Any"
-              ]
-            },
-            {
-              "module": "claude_parser.core.models",
-              "from": true,
-              "names": [
-                "Message",
-                "UserMessage",
-                "AssistantMessage",
-                "ToolUse",
-                "ToolResult",
-                "Summary",
-                "Session",
-                "MessageType",
-                "ValidationError"
-              ]
-            }
-          ],
+          "imports": [],
           "functions": [],
           "classes": [
             {
@@ -16640,7 +16503,7 @@
                   "docstring": "GIVEN: User message data from JSONL\nWHEN: Creating UserMessage model\nTHEN: All fields correctly mapped and accessible",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 17
+                  "line_number": 10
                 },
                 {
                   "name": "test_assistant_message_creation",
@@ -16648,7 +16511,7 @@
                   "docstring": "GIVEN: Assistant message data from JSONL\nWHEN: Creating AssistantMessage model\nTHEN: Content and metadata preserved",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 34
+                  "line_number": 27
                 },
                 {
                   "name": "test_tool_use_model",
@@ -16656,7 +16519,7 @@
                   "docstring": "GIVEN: Tool use data from JSONL\nWHEN: Creating ToolUse model\nTHEN: Tool name, parameters, and ID accessible",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 50
+                  "line_number": 43
                 },
                 {
                   "name": "test_tool_result_model",
@@ -16664,7 +16527,7 @@
                   "docstring": "GIVEN: Tool result data from JSONL\nWHEN: Creating ToolResult model\nTHEN: Result and tool reference preserved",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 69
+                  "line_number": 62
                 },
                 {
                   "name": "test_summary_model",
@@ -16672,7 +16535,7 @@
                   "docstring": "GIVEN: Summary message from JSONL\nWHEN: Creating Summary model\nTHEN: Summary text and leaf UUID accessible",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 83
+                  "line_number": 76
                 },
                 {
                   "name": "test_message_type_enum",
@@ -16680,7 +16543,7 @@
                   "docstring": "GIVEN: Various message type strings\nWHEN: Converting to MessageType enum\nTHEN: Correct enum values returned",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 96
+                  "line_number": 89
                 },
                 {
                   "name": "test_message_validation",
@@ -16688,7 +16551,7 @@
                   "docstring": "GIVEN: Invalid message data (missing required fields)\nWHEN: Creating message model\nTHEN: Raises ValidationError with clear message",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 105
+                  "line_number": 98
                 },
                 {
                   "name": "test_message_timestamp_parsing",
@@ -16696,7 +16559,7 @@
                   "docstring": "GIVEN: Various timestamp formats\nWHEN: Parsing timestamps\nTHEN: Correctly converts to datetime objects",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 114
+                  "line_number": 107
                 },
                 {
                   "name": "test_message_parent_child_relationship",
@@ -16704,7 +16567,7 @@
                   "docstring": "GIVEN: Messages with parentUuid references\nWHEN: Building message chain\nTHEN: Can traverse parent-child relationships",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 128
+                  "line_number": 121
                 },
                 {
                   "name": "test_message_serialization",
@@ -16712,7 +16575,7 @@
                   "docstring": "GIVEN: Message model instances\nWHEN: Serializing to dict/JSON\nTHEN: Produces valid JSONL-compatible output",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 136
+                  "line_number": 129
                 },
                 {
                   "name": "test_message_equality",
@@ -16720,7 +16583,7 @@
                   "docstring": "GIVEN: Two message instances with same data\nWHEN: Comparing with == operator\nTHEN: Returns True for equivalent messages",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 144
+                  "line_number": 137
                 },
                 {
                   "name": "test_message_hashing",
@@ -16728,7 +16591,7 @@
                   "docstring": "GIVEN: Message instances\nWHEN: Using as dict keys or in sets\nTHEN: Hashing works based on UUID",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 152
+                  "line_number": 145
                 },
                 {
                   "name": "test_message_metadata_access",
@@ -16736,7 +16599,7 @@
                   "docstring": "GIVEN: Message with metadata fields\nWHEN: Accessing cwd, gitBranch, version\nTHEN: Returns correct values or None if missing",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 160
+                  "line_number": 153
                 },
                 {
                   "name": "test_message_content_types",
@@ -16744,13 +16607,13 @@
                   "docstring": "GIVEN: Messages with different content types (text, code, mixed)\nWHEN: Parsing content field\nTHEN: Preserves formatting and special characters",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 168
+                  "line_number": 161
                 }
               ],
               "attributes": [],
               "properties": [],
               "class_variables": [],
-              "line_number": 14
+              "line_number": 7
             },
             {
               "name": "TestSessionModel",
@@ -16763,7 +16626,7 @@
                   "docstring": "GIVEN: Session data from JSONL\nWHEN: Creating Session model\nTHEN: Session ID and metadata accessible",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 180
+                  "line_number": 173
                 },
                 {
                   "name": "test_session_message_collection",
@@ -16771,7 +16634,7 @@
                   "docstring": "GIVEN: Session with multiple messages\nWHEN: Adding messages to session\nTHEN: Maintains chronological order",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 188
+                  "line_number": 181
                 },
                 {
                   "name": "test_session_duration_calculation",
@@ -16779,7 +16642,7 @@
                   "docstring": "GIVEN: Session with start and end timestamps\nWHEN: Calculating duration\nTHEN: Returns correct time delta",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 196
+                  "line_number": 189
                 },
                 {
                   "name": "test_session_parent_child_hierarchy",
@@ -16787,7 +16650,7 @@
                   "docstring": "GIVEN: Sessions with parent-child relationships\nWHEN: Building session tree\nTHEN: Can traverse hierarchy correctly",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 204
+                  "line_number": 197
                 },
                 {
                   "name": "test_session_statistics",
@@ -16795,59 +16658,26 @@
                   "docstring": "GIVEN: Session with messages and tool uses\nWHEN: Calculating statistics\nTHEN: Returns message count, tool count, error count",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 212
+                  "line_number": 205
                 }
               ],
               "attributes": [],
               "properties": [],
               "class_variables": [],
-              "line_number": 177
+              "line_number": 170
             }
           ],
           "constants": [],
           "size": {
-            "lines": 218,
-            "bytes": 7320
+            "lines": 211,
+            "bytes": 7094
           }
         },
         {
           "file": "packages/python-sdk/tests/test_api.py",
-          "path": "packages/python-sdk/tests/test_api.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/packages/python-sdk/tests/test_api.py",
           "module_docstring": "Test Specifications for Basic API - Sprint 1, F004\nMUST PASS: Simple one-liner API for 95% use cases",
-          "imports": [
-            {
-              "module": "pytest",
-              "alias": null
-            },
-            {
-              "module": "pathlib",
-              "from": true,
-              "names": [
-                "Path"
-              ]
-            },
-            {
-              "module": "typing",
-              "from": true,
-              "names": [
-                "List",
-                "Dict",
-                "Any"
-              ]
-            },
-            {
-              "module": "claude_parser",
-              "from": true,
-              "names": [
-                "ClaudeConversation",
-                "load",
-                "save",
-                "iterate",
-                "filter",
-                "append"
-              ]
-            }
-          ],
+          "imports": [],
           "functions": [],
           "classes": [
             {
@@ -16861,7 +16691,7 @@
                   "docstring": "GIVEN: Path to Claude JSONL file\nWHEN: Using load() function\nTHEN: Returns ClaudeConversation object with all data",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 14
+                  "line_number": 10
                 },
                 {
                   "name": "test_conversation_messages_property",
@@ -16869,7 +16699,7 @@
                   "docstring": "GIVEN: Loaded conversation\nWHEN: Accessing .messages property\nTHEN: Returns list of all messages in order",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 25
+                  "line_number": 21
                 },
                 {
                   "name": "test_conversation_assistant_messages",
@@ -16877,7 +16707,7 @@
                   "docstring": "GIVEN: Loaded conversation with mixed messages\nWHEN: Accessing .assistant_messages\nTHEN: Returns only assistant messages",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 37
+                  "line_number": 33
                 },
                 {
                   "name": "test_conversation_user_messages",
@@ -16885,7 +16715,7 @@
                   "docstring": "GIVEN: Loaded conversation with mixed messages\nWHEN: Accessing .user_messages\nTHEN: Returns only user messages",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 48
+                  "line_number": 44
                 },
                 {
                   "name": "test_conversation_tool_uses",
@@ -16893,7 +16723,7 @@
                   "docstring": "GIVEN: Conversation with tool interactions\nWHEN: Accessing .tool_uses\nTHEN: Returns all tool use and result pairs",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 59
+                  "line_number": 55
                 },
                 {
                   "name": "test_conversation_session_id",
@@ -16901,7 +16731,7 @@
                   "docstring": "GIVEN: Loaded conversation\nWHEN: Accessing .session_id\nTHEN: Returns current session identifier",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 70
+                  "line_number": 66
                 },
                 {
                   "name": "test_conversation_current_dir",
@@ -16909,7 +16739,7 @@
                   "docstring": "GIVEN: Conversation with cwd metadata\nWHEN: Accessing .current_dir\nTHEN: Returns working directory path",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 80
+                  "line_number": 76
                 },
                 {
                   "name": "test_conversation_git_branch",
@@ -16917,7 +16747,7 @@
                   "docstring": "GIVEN: Conversation with git metadata\nWHEN: Accessing .git_branch\nTHEN: Returns active git branch name",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 90
+                  "line_number": 86
                 },
                 {
                   "name": "test_iterate_large_file",
@@ -16925,7 +16755,7 @@
                   "docstring": "GIVEN: Large JSONL file (>100MB)\nWHEN: Using iterate() function\nTHEN: Yields messages without loading entire file",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 100
+                  "line_number": 96
                 },
                 {
                   "name": "test_filter_messages",
@@ -16933,7 +16763,7 @@
                   "docstring": "GIVEN: JSONL file with mixed messages\nWHEN: Using filter() with predicate\nTHEN: Returns only matching messages",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 112
+                  "line_number": 108
                 },
                 {
                   "name": "test_append_single_message",
@@ -16941,7 +16771,7 @@
                   "docstring": "GIVEN: Existing JSONL file\nWHEN: Using append() to add message\nTHEN: Message added to end of file",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 122
+                  "line_number": 118
                 },
                 {
                   "name": "test_save_conversation",
@@ -16949,7 +16779,7 @@
                   "docstring": "GIVEN: Modified conversation object\nWHEN: Using save() function\nTHEN: Writes valid JSONL file",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 131
+                  "line_number": 127
                 },
                 {
                   "name": "test_conversation_before_summary",
@@ -16957,7 +16787,7 @@
                   "docstring": "GIVEN: Conversation with summary message\nWHEN: Calling before_summary(limit=20)\nTHEN: Returns last 20 messages before summary",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 142
+                  "line_number": 138
                 },
                 {
                   "name": "test_conversation_with_errors",
@@ -16965,7 +16795,7 @@
                   "docstring": "GIVEN: Conversation containing error messages\nWHEN: Calling with_errors()\nTHEN: Returns messages containing errors",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 154
+                  "line_number": 150
                 },
                 {
                   "name": "test_conversation_length",
@@ -16973,7 +16803,7 @@
                   "docstring": "GIVEN: Loaded conversation\nWHEN: Using len() on conversation\nTHEN: Returns total message count",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 165
+                  "line_number": 161
                 },
                 {
                   "name": "test_conversation_iteration",
@@ -16981,7 +16811,7 @@
                   "docstring": "GIVEN: Loaded conversation\nWHEN: Iterating with for loop\nTHEN: Yields messages in order",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 175
+                  "line_number": 171
                 },
                 {
                   "name": "test_conversation_indexing",
@@ -16989,7 +16819,7 @@
                   "docstring": "GIVEN: Loaded conversation\nWHEN: Accessing by index\nTHEN: Returns message at position",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 186
+                  "line_number": 182
                 },
                 {
                   "name": "test_empty_file_handling",
@@ -16997,7 +16827,7 @@
                   "docstring": "GIVEN: Empty JSONL file\nWHEN: Loading with API\nTHEN: Returns empty conversation without error",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 198
+                  "line_number": 194
                 },
                 {
                   "name": "test_malformed_file_graceful_degradation",
@@ -17005,19 +16835,19 @@
                   "docstring": "GIVEN: JSONL with some malformed lines\nWHEN: Loading in default mode\nTHEN: Skips bad lines, loads valid ones",
                   "decorators": [],
                   "is_async": false,
-                  "line_number": 209
+                  "line_number": 205
                 }
               ],
               "attributes": [],
               "properties": [],
               "class_variables": [],
-              "line_number": 11
+              "line_number": 7
             }
           ],
           "constants": [],
           "size": {
-            "lines": 218,
-            "bytes": 8041
+            "lines": 214,
+            "bytes": 7886
           }
         }
       ],
@@ -17031,7 +16861,7 @@
       "files": [
         {
           "file": "node_modules/flatted/python/flatted.py",
-          "path": "node_modules/flatted/python/flatted.py",
+          "path": "/Volumes/AliDev/ai-projects/claude-parser/node_modules/flatted/python/flatted.py",
           "module_docstring": null,
           "imports": [
             {

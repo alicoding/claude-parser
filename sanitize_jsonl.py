@@ -2,17 +2,17 @@
 """
 Sanitize JSONL files by removing secrets and sensitive data.
 """
-import json
+import orjson
 import re
 from pathlib import Path
 
 def sanitize_line(line: str) -> str:
     """Remove secrets from a single JSONL line."""
     try:
-        data = json.loads(line)
+        data = orjson.loads(line)
         
         # Convert to string for regex replacement
-        json_str = json.dumps(data)
+        json_str = orjson.dumps(data).decode('utf-8')
         
         # List of patterns to replace
         patterns = [
@@ -43,10 +43,10 @@ def sanitize_line(line: str) -> str:
             json_str = re.sub(pattern, replacement, json_str, flags=re.IGNORECASE)
         
         # Parse back to ensure valid JSON
-        sanitized = json.loads(json_str)
+        sanitized = orjson.loads(json_str)
         
-        return json.dumps(sanitized, separators=(',', ':'))
-    except json.JSONDecodeError:
+        return orjson.dumps(sanitized).decode('utf-8')
+    except orjson.JSONDecodeError:
         # If not valid JSON, return empty line
         return ""
     except Exception as e:
