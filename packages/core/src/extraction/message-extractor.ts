@@ -132,8 +132,8 @@ export function extractMessagesBetween(
   if (startIndex === -1 || endIndex === -1) {
     return {
       messages: [],
-      startPoint: startIndex >= 0 ? messages[startIndex] : null,
-      endPoint: endIndex >= 0 ? messages[endIndex] : null,
+      startPoint: startIndex >= 0 ? (messages[startIndex] ?? null) : null,
+      endPoint: endIndex >= 0 ? (messages[endIndex] ?? null) : null,
       totalInRange: 0,
       metadata: {
         startIndex,
@@ -173,7 +173,7 @@ export function extractMessagesBetween(
   const endMsg = messages[endIndex]
   let duration: number | undefined
   
-  if (startMsg.timestamp && endMsg.timestamp) {
+  if (startMsg?.timestamp && endMsg?.timestamp) {
     const startTime = new Date(startMsg.timestamp).getTime()
     const endTime = new Date(endMsg.timestamp).getTime()
     duration = endTime - startTime
@@ -184,13 +184,13 @@ export function extractMessagesBetween(
   
   return {
     messages: extractedMessages,
-    startPoint: messages[startIndex],
-    endPoint: messages[endIndex],
+    startPoint: messages[startIndex] ?? null,
+    endPoint: messages[endIndex] ?? null,
     totalInRange,
     metadata: {
       startIndex,
       endIndex,
-      duration,
+      ...(duration !== undefined && { duration }),
       sessionIds
     }
   }
@@ -266,6 +266,7 @@ function findMessagePoint(
 ): number {
   for (let i = startFrom; i < messages.length; i++) {
     const message = messages[i]
+    if (!message) continue
     
     // Check index match first (most specific)
     if (point.index !== undefined && i === point.index) {
@@ -416,6 +417,20 @@ export function extractMessagesBySession(
   // Find indices in original array
   const firstSessionMsg = sessionMessages[0]
   const lastSessionMsg = sessionMessages[sessionMessages.length - 1]
+  
+  if (!firstSessionMsg || !lastSessionMsg) {
+    return {
+      messages: sessionMessages,
+      startPoint: null,
+      endPoint: null,
+      totalInRange: sessionMessages.length,
+      metadata: {
+        startIndex: -1,
+        endIndex: -1,
+        sessionIds: [sessionId]
+      }
+    }
+  }
   
   const startIndex = messages.findIndex(m => m.uuid === firstSessionMsg.uuid)
   const endIndex = messages.findIndex(m => m.uuid === lastSessionMsg.uuid)

@@ -33,7 +33,7 @@ jobs:
       run: |
         echo "🎯 Enforcing CLAUDE.md Absolute Rules"
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        python verify_spec.py
+        poetry run python scripts/verify_spec.py
         
     - name: ✅ 95/5 Principle Test
       run: |
