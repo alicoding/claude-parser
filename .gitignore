@@ -88,8 +88,10 @@ recovery_output/
 # Personal paths
 **/Users/ali/**
 
-# JSONL files - conversation data
+# JSONL files - conversation data (but allow test data)
 *.jsonl
-jsonl-prod-data-for-test/
+!jsonl-prod-data-for-test/test-data/*.jsonl
+jsonl-prod-data-for-test/*
+!jsonl-prod-data-for-test/test-data/
 full_failures.jsonl
 test_failures.jsonl
