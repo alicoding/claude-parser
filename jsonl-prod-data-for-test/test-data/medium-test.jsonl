@@ -1,0 +1,5 @@
+{"type":"summary","summary":"Test conversation for CI/CD","leafUuid":"test-002"}
+{"parentUuid":"test-002","type":"user","message":{"role":"user","content":[{"type":"text","text":"Hello, can you help me?"}]},"uuid":"msg-001","timestamp":"2025-01-01T00:00:00.000Z"}
+{"parentUuid":"msg-001","type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"Hello! I'd be happy to help you."}],"model":"claude-3-opus-20240229"},"uuid":"msg-002","timestamp":"2025-01-01T00:00:01.000Z"}
+{"parentUuid":"msg-002","type":"user","message":{"role":"user","content":[{"type":"text","text":"Write a Python function"}]},"uuid":"msg-003","timestamp":"2025-01-01T00:00:02.000Z"}
+{"parentUuid":"msg-003","type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"Here's a simple Python function:"},{"type":"tool_use","id":"tool-001","name":"Write","input":{"file_path":"test.py","content":"def hello():\n    return 'Hello'"}}],"model":"claude-3-opus-20240229"},"uuid":"msg-004","timestamp":"2025-01-01T00:00:03.000Z"}
