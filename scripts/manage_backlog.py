@@ -8,10 +8,8 @@ LIBRARY FIRST: Uses subprocess for CLI interaction, orjson for JSON
 """
 
 import subprocess
-import sys
 from pathlib import Path
-from typing import List, Dict, Optional
-import orjson
+from typing import List, Dict
 from rich.console import Console
 from rich.table import Table
 from rich import box

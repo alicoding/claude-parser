@@ -2,13 +2,6 @@
 Test Specifications for Message Models - Sprint 1, F002
 MUST PASS: Type-safe message representation with validation
 """
-import pytest
-import pendulum
-from typing import Optional, Dict, Any
-from claude_parser.core.models import (
-    Message, UserMessage, AssistantMessage, ToolUse, ToolResult,
-    Summary, Session, MessageType, ValidationError
-)
 
 
 class TestMessageModels:

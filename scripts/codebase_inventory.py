@@ -7,9 +7,8 @@ Follows LIBRARY_FIRST_RULE.md and 95/5 principle.
 """
 
 import ast
-import os
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any, Optional
 from typing_extensions import Annotated
 import orjson
 from rich.console import Console

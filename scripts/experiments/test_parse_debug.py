@@ -2,7 +2,7 @@
 """Debug parse_message."""
 
 import orjson
-from claude_parser.models import parse_message, UserMessage, ToolResult, MessageType
+from claude_parser.models import UserMessage
 
 line = """{"parentUuid": "393689ce-925b-46d2-8765-d3ca628b9935", "isSidechain": false, "userType": "external", "cwd": "/Volumes/AliDev/ai-projects/claude-intelligence-center/hook-system-v2", "sessionId": "8f64b245-7268-4ecd-9b90-34037f3c5b75", "version": "1.0.83", "gitBranch": "main", "type": "user", "message": {"role": "user", "content": [{"tool_use_id": "toolu_01Neh8n24ZfgEhBn9BRGwCHY", "type": "tool_result", "content": [{"type": "text", "text": "/Volumes/AliDev/ai-projects/claude-intelligence-center/hook-system-v2/cchooks_platform/monitor_service_celery.py"}]}]}}"""
 

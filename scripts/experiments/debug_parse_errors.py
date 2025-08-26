@@ -2,7 +2,6 @@
 """Debug parsing errors in JSONL file."""
 
 from pathlib import Path
-from claude_parser import load
 from claude_parser.infrastructure.message_repository import JsonlMessageRepository
 import orjson
 

@@ -13,7 +13,6 @@ import subprocess
 import orjson
 import sys
 from typing import Dict, List, Tuple
-from pathlib import Path
 
 
 REQUIRED_SECTIONS = [

@@ -10,10 +10,8 @@ from pathlib import Path
 from typing import Optional, List, Dict
 import pendulum
 from rich.console import Console
-from rich.markdown import Markdown
 from rich.panel import Panel
 import orjson
-import hashlib
 import typer
 
 # Load .env file first

@@ -2,10 +2,6 @@
 Test Specifications for JSONL Parser - Sprint 1, F001
 MUST PASS: All message types parse correctly
 """
-import pytest
-from pathlib import Path
-from typing import List, Dict, Any
-from claude_parser.core.parsers import JsonlParser, ParseError
 
 
 class TestJsonlParser:

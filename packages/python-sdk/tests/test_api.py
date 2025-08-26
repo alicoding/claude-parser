@@ -2,10 +2,6 @@
 Test Specifications for Basic API - Sprint 1, F004
 MUST PASS: Simple one-liner API for 95% use cases
 """
-import pytest
-from pathlib import Path
-from typing import List, Dict, Any
-from claude_parser import ClaudeConversation, load, save, iterate, filter, append
 
 
 class TestBasicAPI:
