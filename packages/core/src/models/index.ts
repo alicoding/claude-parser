@@ -18,6 +18,7 @@ export {
   ConversationSchema,
   MessageCategorySchema,
   MessageGroupSchema,
+  ToolOperationSchema,
   
   // Enums (runtime constants)
   MessageTypeEnum,
@@ -42,6 +43,7 @@ export type {
   Conversation,
   MessageCategory,
   MessageGroup,
+  ToolOperation,
   
   // Enum types
   MessageType,
