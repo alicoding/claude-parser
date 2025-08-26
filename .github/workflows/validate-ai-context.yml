@@ -27,19 +27,19 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/pyproject.toml') }}
           restore-keys: |
             ${{ runner.os }}-pip-
             
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -r requirements-dev.txt
+          pip install poetry
+          poetry install
           
       - name: Generate fresh inventory
         run: |
-          python scripts/codebase_inventory.py . --output /tmp/fresh_inventory.json
+          poetry run python scripts/codebase_inventory.py . --output /tmp/fresh_inventory.json
           
       - name: Compare with committed inventory
         run: |
@@ -61,14 +61,14 @@ jobs:
           "
           
       - name: Check inventory sync script
-        run: python scripts/check_inventory_sync.py
+        run: poetry run python scripts/check_inventory_sync.py
         
       - name: Verify specification compliance
-        run: python scripts/verify_spec.py
+        run: poetry run python scripts/verify_spec.py
         
       - name: Check feature matrix
         run: |
-          python scripts/feature_matrix.py check
+          poetry run python scripts/feature_matrix.py check
           
       - name: Validate AI context files exist
         run: |
@@ -99,19 +99,19 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -r requirements-dev.txt
+          pip install poetry
+          poetry install
           
       - name: Test inventory generator
         run: |
           # Test that generator runs without errors
-          python scripts/codebase_inventory.py . --output /tmp/test.json
-          python scripts/codebase_inventory.py . --output /tmp/test.md --format summary
+          poetry run python scripts/codebase_inventory.py . --output /tmp/test.json
+          poetry run python scripts/codebase_inventory.py . --output /tmp/test.md --format summary
           
       - name: Test feature matrix generator
         run: |
-          python scripts/feature_matrix.py show
-          python scripts/feature_matrix.py markdown --output /tmp/features.md
+          poetry run python scripts/feature_matrix.py show
+          poetry run python scripts/feature_matrix.py markdown --output /tmp/features.md
           
       - name: Validate generated JSON
         run: |
