@@ -11,9 +11,7 @@ import orjson
 
 def exit_success(message: str = "") -> NoReturn:
     """Exit with success code 0 and JSON output."""
-    out = {"continue": True}
-    if message:
-        out["message"] = message
+    out = {"continue": True, **({} if not message else {"message": message})}
     sys.stdout.buffer.write(orjson.dumps(out))
     sys.exit(0)
 
