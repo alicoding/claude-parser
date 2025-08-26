@@ -51,6 +51,7 @@ lerna-debug.log*
 venv/
 env/
 ENV/
+.clauderc
 
 # Testing
 coverage/
