@@ -9,6 +9,7 @@ Success criteria:
 """
 
 import pytest
+from tests.constants import TestDefaults
 
 
 def test_single_model_all_hooks(hook_sample, all_hook_types):
@@ -21,7 +22,7 @@ def test_single_model_all_hooks(hook_sample, all_hook_types):
 
         # Core fields always present
         assert data.hook_event_name == hook_type
-        assert data.session_id == "abc123"
+        assert data.session_id == TestDefaults.SESSION_ID
         assert data.transcript_path == "/Users/test/.claude/projects/test/session.jsonl"
         assert data.cwd == "/Users/test/project"
 
