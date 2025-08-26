@@ -9,6 +9,7 @@ Success criteria:
 """
 
 import pytest
+from tests.constants import TestDefaults
 
 
 def test_hook_input_parses_valid_json(mock_stdin, hook_sample):
@@ -21,7 +22,7 @@ def test_hook_input_parses_valid_json(mock_stdin, hook_sample):
     with mock_stdin(test_data):
         data = hook_input()
 
-    assert data.session_id == "abc123"
+    assert data.session_id == TestDefaults.SESSION_ID
     assert data.hook_event_name == "PreToolUse"
     assert data.tool_name == "Write"
     assert data.tool_input["file_path"] == "/test.txt"
@@ -38,7 +39,7 @@ def test_hook_input_all_hook_types(mock_stdin, hook_sample, all_hook_types):
             data = hook_input()
 
         assert data.hook_event_name == hook_type
-        assert data.session_id == "abc123"
+        assert data.session_id == TestDefaults.SESSION_ID
 
 
 def test_hook_input_invalid_json(mock_stdin, capsys):
@@ -127,7 +128,7 @@ def test_hook_input_performance(mock_stdin, hook_sample, performance_timer):
 
     # Should be very fast - just JSON parsing and validation
     assert timer.elapsed < 0.01  # 10ms
-    assert data.session_id == "abc123"
+    assert data.session_id == TestDefaults.SESSION_ID
 
 
 def test_hook_input_validates_hook_type(mock_stdin, capsys):
