@@ -33,9 +33,9 @@ class TestClaudeFormatValidation:
         # This should FAIL initially - function doesn't exist
         is_valid, errors = validate_claude_format(file)
 
-        assert (
-            is_valid is True
-        ), f"Valid Claude format should pass validation. Errors: {errors}"
+        assert is_valid is True, (
+            f"Valid Claude format should pass validation. Errors: {errors}"
+        )
         assert len(errors) == 0, f"Should have no validation errors, got: {errors}"
 
     def test_non_claude_jsonl_fails_validation(self, tmp_path):
@@ -59,9 +59,9 @@ class TestClaudeFormatValidation:
 
         assert is_valid is False, "Non-Claude JSONL should fail validation"
         assert len(errors) > 0, "Should report validation errors"
-        assert any(
-            "Claude" in error for error in errors
-        ), f"Should mention Claude format in errors: {errors}"
+        assert any("Claude" in error for error in errors), (
+            f"Should mention Claude format in errors: {errors}"
+        )
 
     def test_load_with_strict_validation(self, tmp_path):
         """
@@ -82,9 +82,9 @@ class TestClaudeFormatValidation:
         with pytest.raises(ValueError) as exc_info:
             load(file, strict=True)
 
-        assert "Claude Code format" in str(
-            exc_info.value
-        ), "Should mention Claude Code format in error"
+        assert "Claude Code format" in str(exc_info.value), (
+            "Should mention Claude Code format in error"
+        )
 
     def test_load_without_strict_validation_works(self, tmp_path):
         """
@@ -127,9 +127,9 @@ class TestClaudeFormatValidation:
         is_valid, errors = validate_claude_format(file)
 
         # Should recognize Claude signatures
-        assert (
-            is_valid is True
-        ), f"Should recognize Claude format signatures. Errors: {errors}"
+        assert is_valid is True, (
+            f"Should recognize Claude format signatures. Errors: {errors}"
+        )
 
     def test_empty_file_validation(self, tmp_path):
         """
@@ -162,11 +162,11 @@ class TestRealClaudeFileValidation:
         # Real Claude file should definitely pass validation
         is_valid, errors = validate_claude_format(real_file)
 
-        assert (
-            is_valid is True
-        ), f"Real Claude file should pass validation. Errors: {errors}"
-        assert (
-            len(errors) == 0
-        ), f"Real Claude file should have no validation errors: {errors}"
+        assert is_valid is True, (
+            f"Real Claude file should pass validation. Errors: {errors}"
+        )
+        assert len(errors) == 0, (
+            f"Real Claude file should have no validation errors: {errors}"
+        )
 
         print("✅ Real Claude file validated successfully")

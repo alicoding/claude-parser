@@ -1,6 +1,5 @@
 """Tests for public API - the 95% use cases."""
 
-
 import pytest
 
 from claude_parser import Conversation, MessageType, load, load_many

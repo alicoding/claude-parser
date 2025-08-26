@@ -2,6 +2,7 @@
 
 Orchestrates Parser, Storage, and Display (DDD).
 """
+
 from typing import Dict, List, Optional, Union
 
 from rich.console import Console

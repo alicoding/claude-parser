@@ -2,6 +2,7 @@
 
 95% library (orjson), 5% glue.
 """
+
 from typing import Dict, List, Union
 
 import orjson

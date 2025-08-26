@@ -11,7 +11,6 @@ DDD: Composition root pattern for clean architecture.
 SOLID: Single place for dependency configuration.
 """
 
-
 from dependency_injector import containers, providers
 
 # Analytics components

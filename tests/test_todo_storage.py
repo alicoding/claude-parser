@@ -1,4 +1,5 @@
 """Test TodoStorage - Single Responsibility: File I/O."""
+
 from pathlib import Path
 
 from claude_parser.domain.todo.storage import TodoStorage

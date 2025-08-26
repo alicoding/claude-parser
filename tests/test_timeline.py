@@ -2,7 +2,6 @@
 Tests for Timeline domain - git-based JSONL navigation.
 """
 
-
 import jsonlines
 import pytest
 

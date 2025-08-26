@@ -188,9 +188,9 @@ class TestPerformance:
         # File is ~10MB, should use less than 50MB total
         file_size = Path(REAL_JSONL_PATH).stat().st_size / 1024 / 1024  # MB
 
-        assert (
-            memory_used < file_size * 5
-        ), f"Used {memory_used:.1f}MB for {file_size:.1f}MB file"
+        assert memory_used < file_size * 5, (
+            f"Used {memory_used:.1f}MB for {file_size:.1f}MB file"
+        )
 
         print(
             f"✅ Memory: Used {memory_used:.1f}MB for {file_size:.1f}MB file ({len(conv)} messages)"

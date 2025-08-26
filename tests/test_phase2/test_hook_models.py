@@ -8,7 +8,6 @@ Success criteria:
 - NO separate classes per hook type (violates DRY)
 """
 
-
 import pytest
 
 

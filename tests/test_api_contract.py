@@ -5,7 +5,6 @@ These tests ensure backward compatibility during refactoring.
 If these fail, we've broken the public API.
 """
 
-
 import pytest
 
 

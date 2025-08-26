@@ -1,4 +1,5 @@
 """Test TodoSwiper - Tinder-like todo history navigation."""
+
 import tempfile
 from pathlib import Path
 

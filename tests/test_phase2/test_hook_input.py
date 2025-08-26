@@ -8,7 +8,6 @@ Success criteria:
 - Single function handles everything (SRP)
 """
 
-
 import pytest
 
 
