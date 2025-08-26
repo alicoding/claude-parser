@@ -1,99 +1,63 @@
-# ⛔ CRITICAL: READ THIS ENTIRE FILE OR FAIL
+# 🛡️ CLAUDE-PARSER WORKFLOW - ZERO TOLERANCE
 
-<system-critical>
-YOU HAVE NO MEMORY FROM PREVIOUS SESSIONS!
-85 classes, 140+ functions, 9 domains already exist.
-USE ctask NOT dstask - ENFORCED CONTEXT REQUIRED!
-</system-critical>
-
-## 🔴 BEFORE ANY CODE - MANDATORY
+## 🔴 MANDATORY FIRST STEPS (NO EXCEPTIONS)
 ```bash
-# RUN THESE FIRST - NO EXCEPTIONS
-dstask show-open | head -20  # See existing tasks
-dstask <id> note             # READ FULL CONTEXT
-python scripts/codebase_inventory.py . --stats
+pytest tests/ -x                    # MUST be 100% pass rate
+python scripts/verify_spec.py       # MUST pass all quality gates  
+python scripts/codebase_inventory.py --stats  # Explore before coding
 ```
 
-## 🚨 THREE RULES - NO VIOLATIONS
+## 🚨 QUALITY GATES (NON-NEGOTIABLE)
+- **Tests**: 100% pass rate, 90%+ coverage
+- **Architecture**: SOLID/DRY/DDD/TDD only
+- **Files**: Max 150 LOC per file
+- **Libraries**: 95% library, 5% glue code
+- **Imports**: All dependencies validated
+- **Research**: MANDATORY `research` tool before any implementation
 
-### RULE 1: LIBRARY FIRST OR DIE
-- Built custom code = FAILURE (see: 634 lines for 25-line TTL disaster)
-- ALWAYS search: `python scripts/research.py "X functionality library"`
-- If library exists → USE IT
-- If no library → PROVE IT with research
+## ⚡ WORKFLOW PRINCIPLES
+1. **TDD**: Test → Code → Refactor (never Code → Test)
+2. **DRY**: Find conceptual duplication, not just copy/paste
+3. **Explore First**: Read existing code before writing new
+4. **Library First**: Use `research` tool before any custom code
+5. **Quality Gates**: Every commit must pass automated checks
 
-### RULE 2: CHECK BEFORE CREATE
-1. Read `docs/ai/CAPABILITY_MATRIX.md` - What exists
-2. Read `docs/ai/AI_CONTEXT.md` - Where it goes
-3. Search `docs/ai/CODEBASE_INVENTORY.json` - Verify no duplicate
-4. ONLY THEN: Write code
+## 🔍 RESEARCH FIRST - CRITICAL WORKFLOW
+**⚠️  MANDATORY: Research before implementing anything!**
 
-### RULE 3: QUALITY GATES
 ```bash
-python scripts/verify_spec.py  # MUST PASS
-make precommit                 # MUST PASS
-# Commits BLOCKED if these fail
+# Global research tool - use for ALL library decisions
+research search "best Python library for parsing JSONL with TRUE 95/5"
+research compare "JSON parsing libraries" 
+research minimal "pydantic" "parse JSONL with validation"
 ```
 
-## 📋 CURRENT BACKLOG (use dstask)
+**Why critical for claude-parser:**
+- Finds parsing libraries that handle edge cases automatically
+- Discovers validation frameworks (Pydantic) vs manual validation
+- Prevents 200-line custom parsers when 5-line solutions exist
+- Ensures SOLID/DDD compliance through library selection
+
+**NEVER write parsers/validators without researching first!**
+
+## 🔒 ENFORCEMENT (AUTOMATED)
 ```bash
-# Check priorities
-python scripts/backlog_dashboard.py
+# Pre-commit blocks bad commits
+pre-commit install
 
-# Start task
-dstask 2 start
+# CI/CD blocks bad merges  
+.github/workflows/quality-gates.yml
 
-# Complete task
-dstask 2 done
+# One command validation
+make quality-check
 ```
 
-## 🛠 QUICK REFERENCE
-
-### Approved Libraries ONLY
-- JSON: `orjson` (NOT json)
-- Dates: `pendulum` (NOT datetime)
-- HTTP: `httpx` (NOT requests)
-- CLI: `typer` (NOT argparse)
-- Loops: `toolz` (NOT for/while)
-- Testing: `pytest` (NOT unittest)
-
-### Key Files
-- `scripts/verify_spec.py` - Runs all checks
-- `scripts/research.py` - Find libraries
-- `scripts/backlog_dashboard.py` - Task management
-- `docs/BACKLOG_SYSTEM.md` - How to use dstask
-
-### Instant Failures
-- `while True:` → Use apscheduler
-- `import json` → Use orjson
-- `import datetime` → Use pendulum
-- Manual loops → Use toolz
-- Files > 150 LOC → Split immediately
-
-## ⚡ PERFORMANCE BENCHMARKS
-- **Coding Speed**: 500 LOC/minute
-- **Network Latency**: ~15s per tool call  
-- **File Reading**: Instant (parallel capable)
-- **Optimal Batch**: 5-10 files at once
-
-### Time Estimates (ACTUAL)
-- 150 LOC file: ~18 seconds to write
-- 500 LOC refactor: ~1 minute
-- Reading 50 files: ~15 seconds (parallel)
-- 8 violations fix: ~2 minutes total
-
-### Efficiency Rules
-- Use MultiEdit over multiple Edits
-- Read files in parallel batches
-- Write complete implementations
-- Don't overestimate - we're FAST
-
-## 📊 PROJECT STATUS
-- **Critical Issues**: 5 files exceed 150 LOC
-- **Next Priority**: Task 44 (merge JSONL docs) - 1 min
-- **Then**: Task 39 (more-itertools) - 2 min
-- **Coverage**: Must be ≥90%
-- **API**: `load("file.jsonl")` must work
+## 🏗️ CURRENT STATE REQUIREMENTS
+- Fix 50 failing tests through architecture fixes
+- Eliminate import dependency issues
+- Complete DDD value objects (SessionId, MessageUuid, TokenCount)
+- Establish proper dependency injection
+- Implement missing integration tests
 
 ---
-**NO EXCEPTIONS. NO CUSTOM CODE. USE LIBRARIES OR FAIL.**
+**VIOLATION = SESSION RESTART. NO EXCEPTIONS.**

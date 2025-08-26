@@ -12,10 +12,10 @@ from .base import BaseMessage, MessageType
 
 class SystemMessage(BaseMessage):
     """System message (prompts, instructions)."""
-    
+
     type: MessageType = MessageType.SYSTEM
     content: str = Field(..., min_length=1)
-    
+
     @property
     def text_content(self) -> str:
         """Get searchable text content."""

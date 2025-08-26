@@ -7,14 +7,16 @@ DRY: Shared utilities to eliminate duplication
 """
 
 from pathlib import Path
-from typing import Iterator, Optional, Any
+from typing import Any, Iterator, Optional
+
 import orjson
+
 from .logger_config import logger
 
 
 def ensure_file_exists(filepath: Path) -> Path:
     """Ensure file exists, raise FileNotFoundError if not.
-    
+
     DRY: Single place for file existence validation.
     """
     filepath = Path(filepath)
@@ -25,12 +27,12 @@ def ensure_file_exists(filepath: Path) -> Path:
 
 def read_jsonl_lines(filepath: Path) -> Iterator[tuple[int, bytes]]:
     """Read JSONL file lines with line numbers.
-    
+
     DRY: Single place for file reading pattern.
     Yields: (line_number, line_bytes) tuples
     """
     filepath = ensure_file_exists(filepath)
-    with open(filepath, 'rb') as f:
+    with open(filepath, "rb") as f:
         # Use functional approach to avoid manual loop
         lines = list(f)  # Read all lines at once
         numbered_lines = enumerate(lines, 1)
@@ -39,7 +41,7 @@ def read_jsonl_lines(filepath: Path) -> Iterator[tuple[int, bytes]]:
 
 def parse_json_safe(data: bytes, line_num: Optional[int] = None) -> tuple[bool, Any]:
     """Parse JSON safely with error handling.
-    
+
     DRY: Single place for JSON parsing with errors.
     Returns: (success, result_or_error)
     """
@@ -55,10 +57,12 @@ def parse_json_safe(data: bytes, line_num: Optional[int] = None) -> tuple[bool, 
 
 def log_parse_results(success_count: int, error_count: int, filepath: Path) -> None:
     """Log parsing results consistently.
-    
+
     DRY: Single place for result logging.
     """
     if error_count > 0:
-        logger.info(f"Parsed {success_count} messages from {filepath.name}, skipped {error_count} malformed lines")
+        logger.info(
+            f"Parsed {success_count} messages from {filepath.name}, skipped {error_count} malformed lines"
+        )
     else:
         logger.info(f"Parsed {success_count} messages from {filepath.name}")

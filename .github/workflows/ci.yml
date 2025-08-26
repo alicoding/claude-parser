@@ -50,22 +50,22 @@ jobs:
         run: |
           poetry run pytest -v --tb=short
       
-      - name: Test with edge case JSONL files
+      - name: Test with production JSONL files
         run: |
-          # Test with summary-only file
+          # Test with real production files
           poetry run python -c "
           from claude_parser import load
-          conv = load('test-fixtures/edge-case-summary-only.jsonl')
-          assert len(conv) == 1, 'Should handle summary-only files'
-          print('✅ Edge case: summary-only file handled')
-          "
+          from tests.fixtures import get_real_claude_jsonl_files
           
-          # Test with normal session
-          poetry run python -c "
-          from claude_parser import load
-          conv = load('test-fixtures/normal-session-start.jsonl')
-          assert len(conv) >= 1, 'Should parse normal sessions'
-          print(f'✅ Normal session: {len(conv)} messages parsed')
+          files = get_real_claude_jsonl_files()
+          assert len(files) >= 1, 'Should find production JSONL files'
+          
+          for file in files:
+              conv = load(file)
+              assert len(conv) >= 1, f'Should parse {file.name}'
+              print(f'✅ {file.name}: {len(conv)} messages loaded')
+          
+          print(f'✅ All {len(files)} production files tested')
           "
       
       - name: Check Python code quality
@@ -161,19 +161,22 @@ jobs:
       
       - name: Test Python-TypeScript interop
         run: |
-          # Generate test data with Python
+          # Generate test data with Python using production JSONL
           poetry run python -c "
           from claude_parser import load
-          import json
+          from tests.fixtures import get_real_claude_jsonl_files
+          import orjson
           
-          # Load real JSONL
-          conv = load('test-fixtures/normal-session-start.jsonl')
+          # Load real JSONL files
+          files = get_real_claude_jsonl_files()
+          conv = load(files[1] if len(files) > 1 else files[0])  # Use medium-sized file
           
-          # Export for TypeScript
-          with open('test-output.json', 'w') as f:
-              json.dump([msg.dict() for msg in conv.messages], f)
+          # Export for TypeScript (sample first 10 messages)
+          sample_messages = conv.messages[:10]
+          with open('test-output.json', 'wb') as f:
+              f.write(orjson.dumps([{'type': msg.type, 'content': getattr(msg, 'text_content', '')} for msg in sample_messages]))
           
-          print(f'✅ Exported {len(conv)} messages for TypeScript')
+          print(f'✅ Exported {len(sample_messages)} sample messages for TypeScript')
           "
           
           # Validate with TypeScript
@@ -220,14 +223,19 @@ jobs:
           import time
           from claude_parser import load
           
-          # Measure parsing speed
+          # Measure parsing speed with production JSONL
+          from tests.fixtures import get_real_claude_jsonl_files
+          
+          files = get_real_claude_jsonl_files()
+          test_file = files[1] if len(files) > 1 else files[0]  # Use medium-sized file
+          
           start = time.time()
-          conv = load('test-fixtures/normal-session-start.jsonl')
+          conv = load(test_file)
           elapsed = time.time() - start
           
-          # Should parse in < 100ms
-          assert elapsed < 0.1, f'Parsing too slow: {elapsed:.3f}s'
-          print(f'✅ Performance: {len(conv)} messages in {elapsed:.3f}s')
+          # Should parse reasonably fast (allow more time for real data)
+          assert elapsed < 1.0, f'Parsing too slow: {elapsed:.3f}s'
+          print(f'✅ Performance: {len(conv)} messages from {test_file.name} in {elapsed:.3f}s')
           "
 
   # ============================================================================

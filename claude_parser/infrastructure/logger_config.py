@@ -4,6 +4,7 @@ This prevents loguru from breaking hooks that need clean stdout for JSON.
 """
 
 import sys
+
 from loguru import logger
 
 # Remove default handler (which outputs to stdout)

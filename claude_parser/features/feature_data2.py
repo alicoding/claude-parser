@@ -5,7 +5,7 @@ SOLID: Single Responsibility - Other domain features
 DRY: Reusable feature definitions
 """
 
-from .models import Feature, FeatureStatus, FeatureCategory
+from .models import Feature, FeatureCategory, FeatureStatus
 
 
 def get_todo_features():
@@ -13,7 +13,7 @@ def get_todo_features():
     return [
         Feature(
             name="TodoManager",
-            category=FeatureCategory.DOMAIN,
+            category=FeatureCategory.NAVIGATION,
             status=FeatureStatus.COMPLETE,
             description="Manage Claude's TodoWrite format with Rich display",
             api_method="TodoManager(session_id, agent_id=None)",
@@ -21,11 +21,11 @@ def get_todo_features():
             tests_passing=14,
             tests_total=14,
             coverage_percent=100.0,
-            notes="SOLID/DRY/DDD implementation with Rich display"
+            notes="SOLID/DRY/DDD implementation with Rich display",
         ),
         Feature(
             name="TodoSwiper",
-            category=FeatureCategory.DOMAIN,
+            category=FeatureCategory.NAVIGATION,
             status=FeatureStatus.COMPLETE,
             description="Tinder-like navigation through todo history",
             api_method="TodoSwiper.from_transcript(path)",
@@ -33,7 +33,7 @@ def get_todo_features():
             tests_passing=3,
             tests_total=3,
             coverage_percent=100.0,
-            notes="Timeline integration for todo history"
+            notes="Timeline integration for todo history",
         ),
         Feature(
             name="TodoParser",
@@ -45,8 +45,8 @@ def get_todo_features():
             tests_passing=5,
             tests_total=5,
             coverage_percent=100.0,
-            notes="95% orjson library usage"
-        )
+            notes="95% orjson library usage",
+        ),
     ]
 
 
@@ -62,7 +62,7 @@ def get_watch_transport_features():
             version_added="2.0.0",
             tests_passing=4,
             tests_total=4,
-            coverage_percent=100.0
+            coverage_percent=100.0,
         ),
         Feature(
             name="SSE Transport",
@@ -74,7 +74,7 @@ def get_watch_transport_features():
             tests_passing=21,
             tests_total=21,
             coverage_percent=100.0,
-            notes="TypeScript implementation"
+            notes="TypeScript implementation",
         ),
     ]
 
@@ -92,7 +92,7 @@ def get_filter_navigation_features():
             notes="Stack trace extraction added",
             tests_passing=3,
             tests_total=3,
-            coverage_percent=100.0
+            coverage_percent=100.0,
         ),
         Feature(
             name="thread_navigation",
@@ -101,7 +101,7 @@ def get_filter_navigation_features():
             description="Navigate conversation threads",
             api_method="NavigationService.find_thread_messages()",
             version_added="2.0.0",
-            notes="NetworkX integration incomplete"
+            notes="NetworkX integration incomplete",
         ),
     ]
 
@@ -112,10 +112,14 @@ def get_planned_features():
         Feature(
             name="token_counting",
             category=FeatureCategory.ANALYTICS,
-            status=FeatureStatus.PLANNED,
+            status=FeatureStatus.COMPLETE,
             description="Count tokens in messages",
-            api_method="analytics.token_count(conversation)",
-            depends_on=["tiktoken"]
+            api_method="TokenCounter().count_tokens(text)",
+            version_added="2.0.3",
+            tests_passing=1,
+            tests_total=1,
+            coverage_percent=100.0,
+            notes="Uses tiktoken for accurate counting, fallback estimation",
         ),
         Feature(
             name="error_patterns",
@@ -123,7 +127,7 @@ def get_planned_features():
             status=FeatureStatus.PLANNED,
             description="Analyze error patterns",
             api_method="analytics.error_patterns(conversations)",
-            depends_on=["pandas", "scipy"]
+            depends_on=["pandas", "scipy"],
         ),
         Feature(
             name="mem0_export",
@@ -131,7 +135,7 @@ def get_planned_features():
             status=FeatureStatus.PLANNED,
             description="Export to mem0 memory system",
             api_method="conversation.to_mem0()",
-            depends_on=["mem0"]
+            depends_on=["mem0"],
         ),
         Feature(
             name="embeddings",
@@ -139,6 +143,6 @@ def get_planned_features():
             status=FeatureStatus.PLANNED,
             description="Generate embeddings for messages",
             api_method="conversation.to_embeddings()",
-            depends_on=["sentence-transformers"]
+            depends_on=["sentence-transformers"],
         ),
     ]

@@ -10,6 +10,7 @@ import ast
 import os
 from pathlib import Path
 from typing import Dict, List, Any, Optional
+from typing_extensions import Annotated
 import orjson
 from rich.console import Console
 from rich.table import Table
@@ -267,11 +268,11 @@ class CodebaseAnalyzer:
 
 @app.command()
 def generate(
-    path: Path = typer.Argument(Path.cwd(), help="Path to codebase root"),
-    output: Optional[Path] = typer.Option(None, "--output", "-o", help="Output file path"),
-    format: str = typer.Option("json", "--format", "-f", help="Output format: json, summary, tree"),
-    show_tree: bool = typer.Option(False, "--tree", help="Display visual tree"),
-    show_stats: bool = typer.Option(False, "--stats", help="Display statistics table")
+    path: Annotated[Path, typer.Argument(help="Path to codebase root")] = Path.cwd(),
+    output: Annotated[Optional[Path], typer.Option("--output", "-o", help="Output file path")] = None,
+    format: Annotated[str, typer.Option("--format", "-f", help="Output format: json, summary, tree")] = "json",
+    show_tree: Annotated[bool, typer.Option("--tree", help="Display visual tree")] = False,
+    show_stats: Annotated[bool, typer.Option("--stats", help="Display statistics table")] = False
 ):
     """Generate comprehensive codebase inventory for AI/LLM context."""
     analyzer = CodebaseAnalyzer(path)

@@ -1,17 +1,21 @@
 """Test TodoDisplay - Single Responsibility: Formatting."""
-import pytest
 from rich.tree import Tree
+
 from claude_parser.domain.todo.display import TodoDisplay
 
 
 def test_build_tree_with_active():
     """Build tree with in-progress task."""
     todos = [
-        {"content": "Update Todos", "status": "in_progress", "activeForm": "Updating Todos"},
+        {
+            "content": "Update Todos",
+            "status": "in_progress",
+            "activeForm": "Updating Todos",
+        },
         {"content": "Design", "status": "completed"},
-        {"content": "Implement", "status": "pending"}
+        {"content": "Implement", "status": "pending"},
     ]
-    
+
     tree = TodoDisplay.build_tree(todos)
     assert isinstance(tree, Tree)
     assert "⏺" in tree.label
@@ -22,9 +26,9 @@ def test_build_tree_no_active():
     """Build tree with no active task."""
     todos = [
         {"content": "Task 1", "status": "completed"},
-        {"content": "Task 2", "status": "pending"}
+        {"content": "Task 2", "status": "pending"},
     ]
-    
+
     tree = TodoDisplay.build_tree(todos)
     assert isinstance(tree, Tree)
     assert "📋" in tree.label
@@ -41,9 +45,9 @@ def test_calculate_progress():
     todos = [
         {"content": "Done", "status": "completed"},
         {"content": "Doing", "status": "in_progress"},
-        {"content": "Todo", "status": "pending"}
+        {"content": "Todo", "status": "pending"},
     ]
-    
+
     progress = TodoDisplay.calculate_progress(todos)
     assert progress["total"] == 3
     assert progress["completed"] == 1

@@ -7,15 +7,15 @@ Discovery domain - Find Claude Code transcript paths.
 """
 
 from .transcript_finder import (
-    find_current_transcript, 
-    find_transcript_for_cwd, 
-    list_all_projects,
-    find_project_by_original_path,
+    find_current_transcript,
     find_project_by_encoded_name,
+    find_project_by_original_path,
+    find_transcript_for_cwd,
+    list_all_projects,
 )
 
 __all__ = [
-    "find_current_transcript", 
+    "find_current_transcript",
     "find_transcript_for_cwd",
     "list_all_projects",
     "find_project_by_original_path",

@@ -1,6 +1,7 @@
 """Test TodoParser - Single Responsibility: Parse JSON."""
-import pytest
 import orjson
+import pytest
+
 from claude_parser.domain.todo.parser import TodoParser
 
 
