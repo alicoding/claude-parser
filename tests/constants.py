@@ -13,6 +13,8 @@ class TestDefaults:
     SESSION_ID = '12345678-1234-5678-1234-567812345678'  # Valid UUID format
     USER_UUID = 'user-msg-001'
     ASSISTANT_UUID = 'asst-msg-001'
+    TOOL_USE_ID = 'tool-001'
+    SUMMARY_UUID = 'summary-001'
     
     # Paths
     TRANSCRIPT_PATH = '/tmp/test-transcript.jsonl'
@@ -25,9 +27,20 @@ class TestDefaults:
     # Git metadata
     GIT_BRANCH = 'main'
     
+    # Test data paths
+    TEST_JSONL_PATTERN = 'test-*.jsonl'
+    TEST_SESSION_PREFIX = 'test-session'
+    TEST_MESSAGE_PREFIX = 'msg-'
+    
     # Common test values
     PARENT_UUID = 'parent-msg-001'
     LEAF_UUID = 'leaf-msg-001'
+    
+    # Test messages
+    DEFAULT_USER_MESSAGE = 'Hello'
+    DEFAULT_ASSISTANT_MESSAGE = 'Hi there!'
+    DEFAULT_TOOL_NAME = 'Read'
+    DEFAULT_TOOL_RESULT = 'File contents'
     
     @classmethod
     def create_basic_message(cls, message_type: str = 'user', **overrides):

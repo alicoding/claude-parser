@@ -3,6 +3,7 @@
 import pytest
 
 from claude_parser import Conversation, MessageType, load, load_many
+from tests.constants import TestDefaults
 
 
 @pytest.fixture
@@ -10,10 +11,10 @@ def simple_jsonl(tmp_path):
     """Simple JSONL for basic testing - matches real production structure."""
     file = tmp_path / "simple.jsonl"
     content = [
-        '{"type":"user","content":"Hello","uuid":"msg-1","sessionId":"test-session"}',
-        '{"type":"assistant","content":"Hi there!","uuid":"msg-2","sessionId":"test-session"}',
-        '{"type":"tool_use","toolUseID":"tool-1","name":"Read","uuid":"msg-3","sessionId":"test-session"}',
-        '{"type":"tool_result","toolUseID":"tool-1","toolUseResult":"File contents","uuid":"msg-4","sessionId":"test-session"}',
+        f'{{"type":"user","content":"{TestDefaults.DEFAULT_USER_MESSAGE}","uuid":"{TestDefaults.TEST_MESSAGE_PREFIX}1","sessionId":"{TestDefaults.TEST_SESSION_PREFIX}"}}',
+        f'{{"type":"assistant","content":"{TestDefaults.DEFAULT_ASSISTANT_MESSAGE}","uuid":"{TestDefaults.TEST_MESSAGE_PREFIX}2","sessionId":"{TestDefaults.TEST_SESSION_PREFIX}"}}',
+        f'{{"type":"tool_use","toolUseID":"{TestDefaults.TOOL_USE_ID}","name":"{TestDefaults.DEFAULT_TOOL_NAME}","uuid":"{TestDefaults.TEST_MESSAGE_PREFIX}3","sessionId":"{TestDefaults.TEST_SESSION_PREFIX}"}}',
+        f'{{"type":"tool_result","toolUseID":"{TestDefaults.TOOL_USE_ID}","toolUseResult":"{TestDefaults.DEFAULT_TOOL_RESULT}","uuid":"{TestDefaults.TEST_MESSAGE_PREFIX}4","sessionId":"{TestDefaults.TEST_SESSION_PREFIX}"}}',
     ]
     file.write_text("\n".join(content))
     return file
@@ -30,7 +31,7 @@ class TestLoadFunction:
         # Basic assertions
         assert isinstance(conv, Conversation)
         assert len(conv.messages) == 4
-        assert conv.session_id == "test-session"
+        assert conv.session_id == TestDefaults.TEST_SESSION_PREFIX
 
     def test_load_with_string_path(self, simple_jsonl):
         """Test load with string path."""
