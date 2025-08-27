@@ -10,7 +10,7 @@ class TestDefaults:
     """Default values for test data."""
     
     # Session and identification
-    SESSION_ID = 'test-session-001'
+    SESSION_ID = '12345678-1234-5678-1234-567812345678'  # Valid UUID format
     USER_UUID = 'user-msg-001'
     ASSISTANT_UUID = 'asst-msg-001'
     
