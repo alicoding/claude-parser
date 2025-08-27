@@ -162,3 +162,9 @@ EXCLUDED_FILES = [
     "test_",  # Test files have different rules
     "verification_config.py",  # Config file contains pattern definitions
 ]
+
+# Exemptions for specific files
+EXEMPTIONS = {
+    # Add file-specific exemptions here if needed
+    # "specific_file.py": ["pattern_to_exempt"]
+}

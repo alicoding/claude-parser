@@ -13,6 +13,9 @@ from toolz import (
 )
 from toolz.curried import map as toolz_map, filter as toolz_filter
 
+# Import our FileProcessor to eliminate duplication
+from claude_parser.patterns import FileProcessor
+
 # Import configuration (SOLID: Dependency Inversion)
 from verification_config import (
     COLORS, APPROVED_LIBRARIES, FORBIDDEN_IMPORTS,
@@ -37,21 +40,9 @@ def read_file_safe(path: Path) -> str:
         return ""
 
 def get_python_files(base_path: str) -> list:
-    """Get all Python files from a directory."""
-    def has_excluded_pattern(path: Path) -> bool:
-        """Check if path contains any excluded pattern."""
-        path_str = str(path)
-        return pipe(
-            EXCLUDED_FILES,
-            toolz_map(lambda exc: exc in path_str),
-            any
-        )
-    
-    return pipe(
-        list(Path(base_path).rglob("*.py")) if Path(base_path).exists() else [],
-        toolz_filter(lambda p: not has_excluded_pattern(p)),
-        list
-    )
+    """Get all Python files from a directory using FileProcessor."""
+    processor = FileProcessor(['*.py'], EXCLUDED_FILES)
+    return processor.process(base_path)
 
 def extract_imports_from_line(line: str) -> str:
     """Extract module name from import line."""

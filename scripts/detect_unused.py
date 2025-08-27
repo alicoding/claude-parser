@@ -8,6 +8,10 @@ import sys
 from pathlib import Path
 from typing import Set, Dict, List, Tuple
 
+# Use FileProcessor to eliminate duplication
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from claude_parser.patterns import FileProcessor
+
 # ANSI color codes
 RED = "\033[91m"
 GREEN = "\033[92m"
@@ -39,20 +43,10 @@ def get_imports_from_file(file_path: Path) -> Set[str]:
     return imports
 
 def get_all_python_files(root_dir: Path) -> List[Path]:
-    """Get all Python files in the project."""
-    files = []
-    for pattern in ["*.py"]:
-        files.extend(root_dir.rglob(pattern))
-    
-    # Filter out __pycache__, venv, .git, etc.
-    filtered = []
-    for f in files:
-        path_str = str(f)
-        if any(skip in path_str for skip in ["__pycache__", "venv", ".git", "build", "dist", ".egg"]):
-            continue
-        filtered.append(f)
-    
-    return filtered
+    """Get all Python files in the project using FileProcessor."""
+    exclusions = ["__pycache__", "venv", ".git", "build", "dist", ".egg", ".venv", "node_modules"]
+    processor = FileProcessor(["*.py"], exclusions)
+    return processor.process(str(root_dir))
 
 def module_path_from_file(file_path: Path, root_dir: Path) -> str:
     """Convert file path to module import path."""
