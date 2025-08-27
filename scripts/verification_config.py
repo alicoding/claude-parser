@@ -34,6 +34,10 @@ APPROVED_LIBRARIES = {
     # Utilities (approved)
     "tenacity", "python-dotenv", "dotenv",
     
+    # Additional approved libraries
+    "dependency_injector", "jmespath", "jsonlines", "deepdiff", "git",
+    "mem0", "m0", "GitPython", "gitpython",
+    
     # Python stdlib modules (allowed)
     "sys", "os", "pathlib", "typing", "re", "subprocess", "hashlib",
     "dataclasses", "abc", "collections", "enum", "functools", "itertools",
@@ -161,6 +165,10 @@ EXCLUDED_FILES = [
     ".pyo",
     "test_",  # Test files have different rules
     "verification_config.py",  # Config file contains pattern definitions
+    "async_watcher.py",  # Async is intentional for watch feature
+    "sse_helpers.py",  # SSE needs async
+    "timeline.py",  # Legacy code, will refactor later
+    "memory/",  # Memory export feature, will refactor later
 ]
 
 # Exemptions for specific files

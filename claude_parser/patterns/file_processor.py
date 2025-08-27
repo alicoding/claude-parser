@@ -54,12 +54,10 @@ class FileProcessor:
         if not base.exists():
             return []
         
-        # Collect files for all patterns
-        files = []
-        for pattern in self.patterns:
-            files.extend(base.rglob(pattern))
-        
-        return files
+        # Use functional approach with toolz
+        return list(concat(
+            base.rglob(pattern) for pattern in self.patterns
+        ))
     
     def _is_excluded(self, path: Path) -> bool:
         """Check if path contains any excluded pattern."""
@@ -79,8 +77,8 @@ def get_python_files(base_path: str, exclusions: Optional[List[str]] = None) -> 
         '.pytest_cache', 'research', 'verify_spec.py'
     ]
     
-    if exclusions:
-        default_exclusions.extend(exclusions)
+    # Use functional approach - concat instead of extend
+    all_exclusions = list(concat([default_exclusions, exclusions or []]))
     
-    processor = FileProcessor(['*.py'], default_exclusions)
+    processor = FileProcessor(['*.py'], all_exclusions)
     return processor.process(base_path)

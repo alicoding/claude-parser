@@ -55,15 +55,22 @@ def extract_text_from_content(content: List[Dict]) -> str:
     if not content:
         return ""
     
-    text_parts = []
-    for block in content:
+    # Use functional approach with toolz
+    from toolz import pipe, filter as toolz_filter, map as toolz_map
+    
+    def get_text(block):
         if isinstance(block, dict):
             if block.get("type") == "text":
-                text_parts.append(block.get("text", ""))
+                return block.get("text", "")
             elif "text" in block:
-                text_parts.append(block["text"])
+                return block["text"]
+        return ""
     
-    return " ".join(text_parts)
+    return " ".join(pipe(
+        content,
+        toolz_map(get_text),
+        toolz_filter(lambda x: x)  # Filter out empty strings
+    ))
 
 
 def extract_tool_blocks(content: List[Dict]) -> List[Dict]:
@@ -75,14 +82,16 @@ def extract_tool_blocks(content: List[Dict]) -> List[Dict]:
     if not content:
         return []
     
-    tool_blocks = []
-    for block in content:
-        if isinstance(block, dict):
-            block_type = block.get("type", "")
-            if block_type in ["tool_use", "tool_result"]:
-                tool_blocks.append(block)
+    # Use functional approach with toolz
+    from toolz import filter as toolz_filter
     
-    return tool_blocks
+    return list(toolz_filter(
+        lambda block: (
+            isinstance(block, dict) and 
+            block.get("type", "") in ["tool_use", "tool_result"]
+        ),
+        content
+    ))
 
 
 def get_message_usage(msg: Any) -> Optional[Dict]:
