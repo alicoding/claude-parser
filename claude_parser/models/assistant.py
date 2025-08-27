@@ -9,6 +9,7 @@ from typing import Optional
 
 from pydantic import Field
 
+from ..utils import has_message_dict, get_message_content
 from .base import BaseMessage, MessageType
 
 
@@ -27,9 +28,9 @@ class AssistantMessage(BaseMessage):
     @property
     def text_content(self) -> str:
         """Get searchable text content from real JSONL structure."""
-        # Handle real production data structure with nested message field
-        if hasattr(self, "message") and isinstance(self.message, dict):
-            content = self.message.get("content", [])
+        # Use utility function to get content
+        content = get_message_content(self)
+        if content:
             if isinstance(content, list):
                 text_parts = []
                 for block in content:
@@ -49,7 +50,7 @@ class AssistantMessage(BaseMessage):
     def total_tokens(self) -> int:
         """Calculate total tokens from real JSONL structure."""
         # First try real production data structure
-        if hasattr(self, "message") and isinstance(self.message, dict):
+        if has_message_dict(self):
             usage = self.message.get("usage", {})
             if usage:
                 return (
@@ -70,19 +71,18 @@ class AssistantMessage(BaseMessage):
     @property
     def real_usage_info(self) -> dict:
         """Get real production usage info from nested message structure."""
-        if hasattr(self, "message") and isinstance(self.message, dict):
+        if has_message_dict(self):
             return self.message.get("usage", {})
         return {}
 
     @property
     def tool_uses(self) -> list:
         """Get tool use blocks from message content."""
-        if hasattr(self, "message") and isinstance(self.message, dict):
-            content = self.message.get("content", [])
-            if isinstance(content, list):
-                return [
-                    block
-                    for block in content
-                    if isinstance(block, dict) and block.get("type") == "tool_use"
-                ]
+        content = get_message_content(self)
+        if isinstance(content, list):
+            return [
+                block
+                for block in content
+                if isinstance(block, dict) and block.get("type") == "tool_use"
+            ]
         return []

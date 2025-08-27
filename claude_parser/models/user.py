@@ -9,6 +9,7 @@ from typing import Optional
 
 from pydantic import Field
 
+from ..utils import get_message_content
 from .base import BaseMessage, MessageType
 
 
@@ -28,9 +29,9 @@ class UserMessage(BaseMessage):
     @property
     def text_content(self) -> str:
         """Get searchable text content from real JSONL structure."""
-        # Handle real production data structure with nested message field
-        if hasattr(self, "message") and isinstance(self.message, dict):
-            content = self.message.get("content", "")
+        # Use utility function to get content
+        content = get_message_content(self)
+        if content:
             if isinstance(content, str):
                 return content
             elif isinstance(content, list):
