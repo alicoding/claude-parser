@@ -98,7 +98,7 @@ from claude_parser.watch import watch, watch_async
 def on_new_messages(conv, new_messages):
     print(f"Received {len(new_messages)} new messages")
     # Track checkpoint: last_uuid = new_messages[-1].uuid
-    
+
 # Watch for live updates
 watch("session.jsonl", on_new_messages)
 
@@ -110,7 +110,7 @@ import asyncio
 async def watch_with_checkpoint():
     async for conv, new_messages in watch_async("session.jsonl", after_uuid="msg-456"):
         print(f"New: {len(new_messages)}")
-        
+
 asyncio.run(watch_with_checkpoint())
 ```
 
@@ -179,7 +179,7 @@ poetry run claude-parser --help
 Claude Parser follows Domain-Driven Design principles:
 
 - **Domain Layer** - Core business logic and entities
-- **Infrastructure Layer** - Data access with Repository pattern  
+- **Infrastructure Layer** - Data access with Repository pattern
 - **Application Layer** - Use cases and orchestration
 
 This ensures maintainability, testability, and extensibility for enterprise use.
@@ -204,4 +204,4 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-**Enterprise Support**: This project follows enterprise-grade development practices with comprehensive testing, documentation, and clean architecture.
+**Enterprise Support**: This project follows enterprise-grade development practices with comprehensive testing, documentation, and clean architecture.# Test change

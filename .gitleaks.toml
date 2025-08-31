@@ -1,0 +1,30 @@
+# Gitleaks configuration for claude-parser
+# https://github.com/gitleaks/gitleaks
+
+[extend]
+# Extend the base configuration
+useDefault = true
+
+[allowlist]
+# Files to ignore
+paths = [
+    "tests/",
+    ".*test.*.py",
+    ".*\\.jsonl",  # Claude export files may contain false positives
+    "docs/",
+    ".*\\.md",
+]
+
+# Additional patterns to ignore (false positives)
+regexes = [
+    # Git commit hashes that might look like tokens
+    '''[a-f0-9]{40}''',
+    # UUIDs
+    '''[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}''',
+]
+
+# Custom rules can be added here if needed
+# [[rules]]
+# id = "custom-rule"
+# description = "Custom rule description"
+# regex = '''pattern'''

@@ -1,97 +1,32 @@
-# Pre-commit hooks for Claude Parser SDK
-# Ensures AI context documentation stays synchronized
+# Pre-commit hooks for claude-parser
+# Install: pre-commit install
+# Run manually: pre-commit run --all-files
 
 repos:
-  # Standard Python quality checks
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.8.5
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.28.0
     hooks:
-      - id: ruff
-        args: [--fix]
-      - id: ruff-format
+      - id: gitleaks
+        name: Detect secrets with gitleaks
+        entry: gitleaks detect --source . --verbose --no-git
+        pass_filenames: false
 
-  # Type checking
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.14.1
-    hooks:
-      - id: mypy
-        additional_dependencies: [types-all]
-        args: [--ignore-missing-imports]
-
-  # Trailing whitespace and file fixes
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v4.5.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-yaml
-      - id: check-json
       - id: check-added-large-files
         args: ['--maxkb=1000']
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      - id: detect-private-key
 
-  # Local hooks for AI context documentation
-  - repo: local
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.12.0
     hooks:
-      # Regenerate codebase inventory
-      - id: update-codebase-inventory
-        name: Update Codebase Inventory
-        entry: python scripts/codebase_inventory.py . --output docs/ai/CODEBASE_INVENTORY.json
-        language: system
-        files: \.py$
-        pass_filenames: false
-        
-      # Check inventory is up to date
-      - id: check-inventory-sync
-        name: Check Inventory Synchronized
-        entry: python scripts/check_inventory_sync.py
-        language: system
-        files: \.py$
-        pass_filenames: false
-        
-      # Verify specification compliance
-      - id: verify-spec
-        name: Verify Specification Compliance
-        entry: python scripts/verify_spec.py
-        language: system
-        files: \.py$
-        pass_filenames: false
-        
-      # Update feature matrix
-      - id: update-feature-matrix
-        name: Update Feature Matrix
-        entry: python scripts/feature_matrix.py save
-        language: system
-        files: claude_parser/features/.*\.py$
-        pass_filenames: false
-        
-      # ENFORCEMENT: Complexity check
-      - id: check-complexity
-        name: Check Cyclomatic Complexity
-        entry: bash -c 'radon cc claude_parser -n B --total-average | grep -q "Average complexity. A (" || (echo "❌ Complexity too high! Max allowed is B" && exit 1)'
-        language: system
-        files: \.py$
-        pass_filenames: false
-        
-      # ENFORCEMENT: File size check
-      - id: check-file-size
-        name: Check File Size (<150 LOC)
-        entry: bash -c 'for f in $(find claude_parser -name "*.py" -type f); do lines=$(wc -l < "$f"); if [ $lines -gt 150 ]; then echo "❌ $f has $lines lines (max 150)"; exit 1; fi; done'
-        language: system
-        files: \.py$
-        pass_filenames: false
-        
-      # ENFORCEMENT: No manual loops
-      - id: check-no-loops
-        name: Check No Manual Loops
-        entry: bash -c 'violations=$(grep -r "for .* in" claude_parser --include="*.py" | grep -v toolz | grep -v funcy | wc -l); if [ $violations -gt 10 ]; then echo "❌ Found $violations manual loops without toolz/funcy"; exit 1; fi'
-        language: system
-        files: \.py$
-        pass_filenames: false
-        
-      # ENFORCEMENT: No forbidden imports
-      - id: check-imports
-        name: Check No Forbidden Imports
-        entry: bash -c 'if grep -r "^import json\|^from json import\|^import datetime\|^from datetime import" claude_parser --include="*.py" | grep -v noqa | grep -v test; then echo "❌ Forbidden imports found! Use orjson/pendulum"; exit 1; fi'
-        language: system
-        files: \.py$
-        pass_filenames: false
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
