@@ -82,10 +82,12 @@ class MemoryExporter:
         # Extract memories from user-assistant pairs
         user_messages = list(conversation.user_messages)
         assistant_messages = list(conversation.assistant_messages)
-        
+
         # Build response map for O(n) lookup instead of O(n²)
         # Maps user_uuid -> assistant_message that has this as parent_uuid
-        response_map = {msg.parent_uuid: msg for msg in assistant_messages if msg.parent_uuid}
+        response_map = {
+            msg.parent_uuid: msg for msg in assistant_messages if msg.parent_uuid
+        }
 
         for user_msg in user_messages:
             # Direct O(1) lookup using parent-child relationship
@@ -231,8 +233,8 @@ class MemoryExporter:
 
         metadata = {
             "type": "summary",
-            "uuid": getattr(summary, 'uuid', getattr(summary, 'leaf_uuid', 'unknown')),
-            "timestamp": getattr(summary, 'timestamp', None),
+            "uuid": getattr(summary, "uuid", getattr(summary, "leaf_uuid", "unknown")),
+            "timestamp": getattr(summary, "timestamp", None),
         }
 
         memory = ConversationMemory(
@@ -253,11 +255,7 @@ class MemoryExporter:
         """
         memories = self.export(conversation)
         return [
-            {
-                'text': memory.content,
-                'metadata': memory.metadata
-            }
-            for memory in memories
+            {"text": memory.content, "metadata": memory.metadata} for memory in memories
         ]
 
     def export_project(self, project_path: str):
@@ -277,8 +275,10 @@ class MemoryExporter:
         if not project_info:
             return
 
-        project_dir = Path.home() / ".claude" / "projects" / project_info["encoded_name"]
-        
+        project_dir = (
+            Path.home() / ".claude" / "projects" / project_info["encoded_name"]
+        )
+
         for jsonl_file in project_dir.glob("*.jsonl"):
             try:
                 conv = load(str(jsonl_file))

@@ -5,8 +5,7 @@ Following the principle: test OUR code, not watchfiles library.
 """
 
 import asyncio
-from unittest.mock import AsyncMock, patch, MagicMock
-from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
@@ -21,7 +20,7 @@ class TestAsyncWatch:
     async def test_watch_async_processes_changes(self, tmp_path):
         """Test that our code correctly processes file changes from watchfiles."""
         test_file = tmp_path / "test.jsonl"
-        
+
         # Write both messages initially
         test_file.write_text(
             '{"type": "user", "uuid": "u1", "timestamp": "2025-08-21T00:00:00Z", "session_id": "test", "message": {"content": "Hello"}}\n'
@@ -33,7 +32,7 @@ class TestAsyncWatch:
             yield {("added", str(test_file))}
 
         all_messages = []
-        
+
         with patch("claude_parser.watch.async_watcher.awatch", mock_awatch):
             async for conv, new_messages in watch_async(test_file):
                 all_messages.extend(new_messages)
@@ -48,7 +47,7 @@ class TestAsyncWatch:
     async def test_watch_async_with_message_filter(self, tmp_path):
         """Test that message filtering works correctly."""
         test_file = tmp_path / "test.jsonl"
-        
+
         # Create file with mixed message types
         test_file.write_text(
             '{"type": "user", "uuid": "u1", "timestamp": "2025-08-21T00:00:00Z", "session_id": "test", "message": {"content": "User msg"}}\n'
@@ -63,8 +62,7 @@ class TestAsyncWatch:
         with patch("claude_parser.watch.async_watcher.awatch", mock_awatch):
             # Test filtering for assistant messages only
             async for conv, new_messages in watch_async(
-                test_file, 
-                message_types=["assistant"]
+                test_file, message_types=["assistant"]
             ):
                 # Should only get assistant messages
                 assert all(msg.type == MessageType.ASSISTANT for msg in new_messages)
@@ -76,11 +74,11 @@ class TestAsyncWatch:
     async def test_watch_async_handles_malformed_json(self, tmp_path):
         """Test that malformed JSON is handled gracefully."""
         test_file = tmp_path / "test.jsonl"
-        
+
         # Create file with some malformed lines
         test_file.write_text(
             '{"type": "user", "uuid": "u1", "timestamp": "2025-08-21T00:00:00Z", "session_id": "test", "message": {"content": "Valid"}}\n'
-            'INVALID JSON LINE\n'
+            "INVALID JSON LINE\n"
             '{"broken": json\n'
             '{"type": "assistant", "uuid": "a1", "timestamp": "2025-08-21T00:00:01Z", "session_id": "test", "message": {"content": "Also valid"}}\n'
         )
@@ -101,7 +99,7 @@ class TestAsyncWatch:
     async def test_watch_async_with_uuid_checkpoint(self, tmp_path):
         """Test resuming from UUID checkpoint."""
         test_file = tmp_path / "test.jsonl"
-        
+
         # Create file with multiple messages
         test_file.write_text(
             '{"type": "user", "uuid": "u1", "timestamp": "2025-08-21T00:00:00Z", "session_id": "test", "message": {"content": "First"}}\n'
@@ -142,7 +140,9 @@ class TestAsyncWatch:
                 await asyncio.sleep(0.01)
 
         with patch("claude_parser.watch.async_watcher.awatch", mock_awatch):
-            async for conv, new_messages in watch_async(test_file, stop_event=stop_event):
+            async for conv, new_messages in watch_async(
+                test_file, stop_event=stop_event
+            ):
                 iterations += 1
                 if iterations >= 2:
                     stop_event.set()  # Stop after 2 iterations
@@ -158,18 +158,20 @@ class TestAsyncWatchPerformance:
     async def test_watch_async_handles_large_file(self, tmp_path):
         """Test that large files are handled efficiently."""
         test_file = tmp_path / "large.jsonl"
-        
+
         # Create a large file
         with open(test_file, "w") as f:
             for i in range(1000):
-                f.write(f'{{"type": "user", "uuid": "u{i}", "timestamp": "2025-08-21T00:00:00Z", "session_id": "test", "message": {{"content": "Message {i}"}}}}\n')
+                f.write(
+                    f'{{"type": "user", "uuid": "u{i}", "timestamp": "2025-08-21T00:00:00Z", "session_id": "test", "message": {{"content": "Message {i}"}}}}\n'
+                )
 
         # Mock watchfiles
         async def mock_awatch(path, **kwargs):
             yield {("added", str(test_file))}
 
         message_count = 0
-        
+
         with patch("claude_parser.watch.async_watcher.awatch", mock_awatch):
             async for conv, new_messages in watch_async(test_file):
                 message_count = len(new_messages)
@@ -202,12 +204,12 @@ class TestAsyncWatchPerformance:
                     break
 
         elapsed = asyncio.get_event_loop().time() - start_time
-        
+
         # Should process events quickly
         assert events_received >= 1  # At least one event processed
         assert elapsed < 1.0  # Should be fast
 
-    @pytest.mark.asyncio 
+    @pytest.mark.asyncio
     async def test_watch_async_waits_for_file_creation(self, tmp_path):
         """Test waiting for file to be created."""
         test_file = tmp_path / "not_yet.jsonl"

@@ -8,11 +8,9 @@ DDD: Entity with identity (session_id).
 
 from typing import Iterator, List, Optional
 
-from toolz import filter as toolz_filter
 
 from ...models import AssistantMessage, Message, Summary, UserMessage
 from ...models.content import ToolUseContent, ToolResultContent
-from ..filters import ErrorFilter
 from ..value_objects.metadata import ConversationMetadata
 from ..delegates import MessageFilter, MessageNavigator, SessionAnalyzer
 

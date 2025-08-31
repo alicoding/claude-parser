@@ -7,24 +7,24 @@ Strategy Pattern: Each format has its own strategy class.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Iterator, List
+from typing import Any, Dict, List
 
 import orjson
 
 
 class FormatStrategy(ABC):
     """Abstract base class for format strategies."""
-    
+
     @abstractmethod
     def format_message(self, message: Dict[str, Any]) -> str:
         """Format a single message."""
         pass
-    
+
     @abstractmethod
     def format_batch(self, messages: List[Dict[str, Any]]) -> str:
         """Format a batch of messages."""
         pass
-    
+
     @abstractmethod
     def get_content_type(self) -> str:
         """Get the content type for this format."""
@@ -33,15 +33,15 @@ class FormatStrategy(ABC):
 
 class PlainTextFormatStrategy(FormatStrategy):
     """Plain text format strategy."""
-    
+
     def format_message(self, message: Dict[str, Any]) -> str:
         """Format message as plain text."""
         return f"{message}\n"
-    
+
     def format_batch(self, messages: List[Dict[str, Any]]) -> str:
         """Format batch as plain text."""
         return "\n".join(str(msg) for msg in messages)
-    
+
     def get_content_type(self) -> str:
         """Return plain text content type."""
         return "text/plain"
@@ -49,15 +49,15 @@ class PlainTextFormatStrategy(FormatStrategy):
 
 class JSONFormatStrategy(FormatStrategy):
     """JSON format strategy."""
-    
+
     def format_message(self, message: Dict[str, Any]) -> str:
         """Format message as JSON."""
         return orjson.dumps(message).decode()
-    
+
     def format_batch(self, messages: List[Dict[str, Any]]) -> str:
         """Format batch as JSON array."""
         return orjson.dumps(messages).decode()
-    
+
     def get_content_type(self) -> str:
         """Return JSON content type."""
         return "application/json"
@@ -65,16 +65,16 @@ class JSONFormatStrategy(FormatStrategy):
 
 class SSEFormatStrategy(FormatStrategy):
     """Server-Sent Events format strategy."""
-    
+
     def format_message(self, message: Dict[str, Any]) -> str:
         """Format message as SSE."""
         json_str = orjson.dumps(message).decode()
         return f"data: {json_str}\n\n"
-    
+
     def format_batch(self, messages: List[Dict[str, Any]]) -> str:
         """Format batch as SSE stream."""
         return "".join(self.format_message(msg) for msg in messages)
-    
+
     def get_content_type(self) -> str:
         """Return SSE content type."""
         return "text/event-stream"
@@ -82,15 +82,15 @@ class SSEFormatStrategy(FormatStrategy):
 
 class NDJSONFormatStrategy(FormatStrategy):
     """Newline-delimited JSON format strategy."""
-    
+
     def format_message(self, message: Dict[str, Any]) -> str:
         """Format message as NDJSON."""
         return orjson.dumps(message).decode() + "\n"
-    
+
     def format_batch(self, messages: List[Dict[str, Any]]) -> str:
         """Format batch as NDJSON."""
         return "".join(self.format_message(msg) for msg in messages)
-    
+
     def get_content_type(self) -> str:
         """Return NDJSON content type."""
         return "application/x-ndjson"
@@ -98,14 +98,14 @@ class NDJSONFormatStrategy(FormatStrategy):
 
 class FormatStrategyFactory:
     """Factory for creating format strategies."""
-    
+
     _strategies = {
         "plain": PlainTextFormatStrategy,
         "json": JSONFormatStrategy,
         "sse": SSEFormatStrategy,
         "ndjson": NDJSONFormatStrategy,
     }
-    
+
     @classmethod
     def create(cls, format_name: str) -> FormatStrategy:
         """Create a format strategy by name."""
@@ -113,7 +113,7 @@ class FormatStrategyFactory:
         if not strategy_class:
             raise ValueError(f"Unknown format: {format_name}")
         return strategy_class()
-    
+
     @classmethod
     def register(cls, name: str, strategy_class: type):
         """Register a new format strategy."""
@@ -122,10 +122,10 @@ class FormatStrategyFactory:
 
 # Export for convenience
 __all__ = [
-    'FormatStrategy',
-    'PlainTextFormatStrategy',
-    'JSONFormatStrategy',
-    'SSEFormatStrategy',
-    'NDJSONFormatStrategy',
-    'FormatStrategyFactory',
+    "FormatStrategy",
+    "PlainTextFormatStrategy",
+    "JSONFormatStrategy",
+    "SSEFormatStrategy",
+    "NDJSONFormatStrategy",
+    "FormatStrategyFactory",
 ]

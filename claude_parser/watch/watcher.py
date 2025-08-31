@@ -50,6 +50,7 @@ class UUIDBasedReader:
 
             # Get new messages using UUID tracking
             import asyncio
+
             loop = asyncio.new_event_loop()
             try:
                 messages = loop.run_until_complete(
@@ -84,7 +85,7 @@ def watch(
             # Client can track: last_uuid = new_msgs[-1].uuid
 
         watch("session.jsonl", on_new)  # Blocks, monitors forever
-        
+
         # Or resume from checkpoint:
         watch("session.jsonl", on_new, after_uuid="abc-123")
     """
@@ -108,7 +109,7 @@ def watch(
         # Mark all as processed without callback
         if initial_messages:
             for msg in initial_messages:
-                if uuid := msg.get('uuid'):
+                if uuid := msg.get("uuid"):
                     reader.reader.processed_uuids.add(uuid)
                     reader.reader.last_uuid = uuid
 
@@ -148,7 +149,9 @@ def _process_file_changes(
         raw_messages = reader.get_new_messages()
 
         if raw_messages:
-            new_messages = _parse_new_messages_from_dicts(raw_messages, message_type_filter)
+            new_messages = _parse_new_messages_from_dicts(
+                raw_messages, message_type_filter
+            )
 
             if new_messages:
                 full_conversation = load(file_path)

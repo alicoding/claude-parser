@@ -82,7 +82,7 @@ class TestTrue95_5Streaming:
             # This is the correct behavior - clients should track their checkpoint
             reader2 = StreamingJSONLReader(test_file)
             reader2.set_checkpoint("msg-9999")  # Last message UUID
-            
+
             # Now it should get ONLY the new message after checkpoint
             new_messages = await reader2.get_new_messages()
             assert len(new_messages) == 1
@@ -139,9 +139,9 @@ class TestTrue95_5Streaming:
             await asyncio.sleep(0.1)
 
             # Simulate proper log rotation: move old file and create new one
-            rotated_file = test_file.with_suffix('.jsonl.1')
+            rotated_file = test_file.with_suffix(".jsonl.1")
             os.rename(test_file, rotated_file)
-            
+
             # Create new file at original path
             with open(test_file, "w") as f:
                 for i in range(2):
@@ -152,7 +152,7 @@ class TestTrue95_5Streaming:
                         "message": {"role": "assistant", "content": f"New message {i}"},
                     }
                     f.write(orjson.dumps(msg).decode() + "\n")
-            
+
             # Give watchfiles time to detect the change
             await asyncio.sleep(0.2)
 
@@ -214,11 +214,11 @@ class TestTrue95_5Streaming:
             # Second read returns nothing (all UUIDs already processed)
             messages = await reader.get_new_messages()
             assert len(messages) == 0
-            
+
             # Test checkpoint resume - start fresh reader from msg-1
             reader2 = StreamingJSONLReader(test_file)
             reader2.set_checkpoint("msg-1")
-            
+
             # Should only get msg-2
             messages = await reader2.get_new_messages(after_uuid="msg-1")
             assert len(messages) == 1

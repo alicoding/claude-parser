@@ -8,4 +8,4 @@ DRY: Eliminate duplication
 
 from .file_processor import FileProcessor
 
-__all__ = ['FileProcessor']
+__all__ = ["FileProcessor"]

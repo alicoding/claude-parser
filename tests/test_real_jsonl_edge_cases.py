@@ -223,20 +223,22 @@ class TestRealJSONLEdgeCases:
         """Test streaming large files efficiently - TRUE 95/5 with tmp_path_factory."""
         # TRUE 95/5: Let pytest create and manage the temp file
         large_file = tmp_path_factory.mktemp("data") / "large.jsonl"
-        
+
         # Generate a large file (10MB+) with realistic Claude messages
         import orjson
+
         with open(large_file, "wb") as f:
             for i in range(10000):  # 10k messages ~= 10MB
                 msg = {
                     "type": "user" if i % 2 == 0 else "assistant",
                     "uuid": f"msg-{i}",
                     "sessionId": "test-session",
-                    "timestamp": f"2025-01-01T{i//3600:02d}:{(i//60)%60:02d}:{i%60:02d}Z",
+                    "timestamp": f"2025-01-01T{i // 3600:02d}:{(i // 60) % 60:02d}:{i % 60:02d}Z",
                     "message": {
                         "role": "user" if i % 2 == 0 else "assistant",
-                        "content": f"This is message {i} with some content to make it realistic size " * 10
-                    }
+                        "content": f"This is message {i} with some content to make it realistic size "
+                        * 10,
+                    },
                 }
                 f.write(orjson.dumps(msg) + b"\n")
 

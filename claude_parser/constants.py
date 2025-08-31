@@ -38,8 +38,15 @@ SUMMARY_TYPE = "summary"
 
 # Tool names
 COMMON_TOOLS = [
-    "Read", "Write", "Edit", "Bash", "Grep", 
-    "LS", "Search", "WebSearch", "WebFetch"
+    "Read",
+    "Write",
+    "Edit",
+    "Bash",
+    "Grep",
+    "LS",
+    "Search",
+    "WebSearch",
+    "WebFetch",
 ]
 
 # Error messages
@@ -57,7 +64,7 @@ LOG_PREFIX_DEBUG = "[DEBUG]"
 
 class ProcessingStatus(Enum):
     """Processing status constants."""
-    
+
     PENDING = "pending"
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
@@ -67,7 +74,7 @@ class ProcessingStatus(Enum):
 
 class HookEventType(Enum):
     """Hook event type constants."""
-    
+
     PRE_TOOL_USE = "PreToolUse"
     POST_TOOL_USE = "PostToolUse"
     USER_PROMPT_SUBMIT = "UserPromptSubmit"
@@ -81,39 +88,39 @@ class HookEventType(Enum):
 # Export for convenience
 __all__ = [
     # Patterns
-    'JSONL_EXTENSION',
-    'JSONL_PATTERN',
+    "JSONL_EXTENSION",
+    "JSONL_PATTERN",
     # Limits
-    'MAX_LINE_LENGTH',
-    'DEFAULT_BATCH_SIZE',
+    "MAX_LINE_LENGTH",
+    "DEFAULT_BATCH_SIZE",
     # Performance
-    'MAX_PROCESSING_TIME',
-    'MIN_PERFORMANCE_RATIO',
+    "MAX_PROCESSING_TIME",
+    "MIN_PERFORMANCE_RATIO",
     # Defaults
-    'DEFAULT_MODEL',
-    'DEFAULT_ENCODING',
+    "DEFAULT_MODEL",
+    "DEFAULT_ENCODING",
     # Session
-    'SESSION_ID_LENGTH',
-    'SESSION_ID_PATTERN',
+    "SESSION_ID_LENGTH",
+    "SESSION_ID_PATTERN",
     # Message types
-    'USER_MESSAGE_TYPE',
-    'ASSISTANT_MESSAGE_TYPE',
-    'TOOL_USE_TYPE',
-    'TOOL_RESULT_TYPE',
-    'SUMMARY_TYPE',
+    "USER_MESSAGE_TYPE",
+    "ASSISTANT_MESSAGE_TYPE",
+    "TOOL_USE_TYPE",
+    "TOOL_RESULT_TYPE",
+    "SUMMARY_TYPE",
     # Tools
-    'COMMON_TOOLS',
+    "COMMON_TOOLS",
     # Errors
-    'ERROR_FILE_NOT_FOUND',
-    'ERROR_INVALID_JSON',
-    'ERROR_MISSING_FIELD',
-    'ERROR_INVALID_TYPE',
+    "ERROR_FILE_NOT_FOUND",
+    "ERROR_INVALID_JSON",
+    "ERROR_MISSING_FIELD",
+    "ERROR_INVALID_TYPE",
     # Logging
-    'LOG_PREFIX_INFO',
-    'LOG_PREFIX_WARNING',
-    'LOG_PREFIX_ERROR',
-    'LOG_PREFIX_DEBUG',
+    "LOG_PREFIX_INFO",
+    "LOG_PREFIX_WARNING",
+    "LOG_PREFIX_ERROR",
+    "LOG_PREFIX_DEBUG",
     # Enums
-    'ProcessingStatus',
-    'HookEventType',
+    "ProcessingStatus",
+    "HookEventType",
 ]

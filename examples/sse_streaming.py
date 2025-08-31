@@ -21,32 +21,32 @@ app = FastAPI()
 # 95% Use Case: One-liner SSE endpoint
 # ============================================
 
+
 @app.get("/api/stream/simple")
 async def simple_stream():
     """
     Simplest possible SSE endpoint - one line!
-    
+
     This replaces ~500 lines of WebSocket/polling code.
     """
-    return EventSourceResponse(
-        stream_for_sse("session.jsonl")
-    )
+    return EventSourceResponse(stream_for_sse("session.jsonl"))
 
 
 # ============================================
 # Custom formatting for specific project needs
 # ============================================
 
+
 @app.get("/api/v2/projects/{project_name}/stream")
 async def memory_project_stream(project_name: str, session_id: str = None):
     """
     Memory project compatible SSE endpoint.
-    
+
     No threading, no polling, no complexity!
     """
     # Get the JSONL file path for this project
     jsonl_path = Path.home() / ".claude" / "projects" / project_name / "current.jsonl"
-    
+
     async def generate_events():
         """Generate SSE events from file changes."""
         async for conv, new_messages in watch_async(jsonl_path):
@@ -54,7 +54,7 @@ async def memory_project_stream(project_name: str, session_id: str = None):
                 # Filter by session if provided
                 if session_id and msg.session_id != session_id:
                     continue
-                
+
                 # Format for memory project frontend
                 event_data = {
                     "id": msg.uuid,
@@ -67,13 +67,13 @@ async def memory_project_stream(project_name: str, session_id: str = None):
                         "project": project_name,
                         "parent_uuid": msg.parent_uuid,
                         # Tool-specific fields
-                        "tool_name": getattr(msg, 'tool_name', None),
-                        "tool_use_id": getattr(msg, 'tool_use_id', None),
-                    }
+                        "tool_name": getattr(msg, "tool_name", None),
+                        "tool_use_id": getattr(msg, "tool_use_id", None),
+                    },
                 }
-                
+
                 yield {"data": orjson.dumps(event_data).decode()}
-    
+
     return EventSourceResponse(generate_events())
 
 
@@ -86,6 +86,7 @@ import asyncio
 # Store active connections
 active_streams = {}
 
+
 @app.get("/api/stream/controlled/{session_id}")
 async def controlled_stream(session_id: str):
     """
@@ -94,22 +95,22 @@ async def controlled_stream(session_id: str):
     # Create stop event for this session
     stop_event = asyncio.Event()
     active_streams[session_id] = stop_event
-    
+
     async def generate_with_control():
         try:
             async for conv, new_messages in watch_async(
-                f"sessions/{session_id}.jsonl",
-                stop_event=stop_event
+                f"sessions/{session_id}.jsonl", stop_event=stop_event
             ):
                 for msg in new_messages:
-                    yield {"data": orjson.dumps({
-                        "type": msg.type.value,
-                        "content": msg.text_content
-                    }).decode()}
+                    yield {
+                        "data": orjson.dumps(
+                            {"type": msg.type.value, "content": msg.text_content}
+                        ).decode()
+                    }
         finally:
             # Clean up when done
             active_streams.pop(session_id, None)
-    
+
     return EventSourceResponse(generate_with_control())
 
 
@@ -126,29 +127,30 @@ async def stop_stream(session_id: str):
 # Filter by message type
 # ============================================
 
+
 @app.get("/api/stream/tools")
 async def stream_tool_operations():
     """
     Stream only tool-related messages.
-    
+
     Perfect for monitoring tool usage in real-time.
     """
+
     async def tool_events():
         # Only watch for tool messages
         async for conv, new_messages in watch_async(
-            "session.jsonl",
-            message_types=["tool_use", "tool_result"]
+            "session.jsonl", message_types=["tool_use", "tool_result"]
         ):
             for msg in new_messages:
                 event = {
                     "type": msg.type.value,
-                    "tool_name": getattr(msg, 'tool_name', None),
-                    "tool_use_id": getattr(msg, 'tool_use_id', None),
+                    "tool_name": getattr(msg, "tool_name", None),
+                    "tool_use_id": getattr(msg, "tool_use_id", None),
                     "content": msg.text_content,
-                    "timestamp": msg.timestamp
+                    "timestamp": msg.timestamp,
                 }
                 yield {"data": orjson.dumps(event).decode()}
-    
+
     return EventSourceResponse(tool_events())
 
 
@@ -156,57 +158,60 @@ async def stream_tool_operations():
 # With heartbeat for connection keep-alive
 # ============================================
 
+
 @app.get("/api/stream/with-heartbeat")
 async def stream_with_heartbeat():
     """
     Stream with periodic heartbeats to keep connection alive.
     """
+
     async def events_with_heartbeat():
         import asyncio
-        
+
         # Create a queue for messages
         queue = asyncio.Queue()
-        
+
         # Start file watching in background
         async def watch_task():
             async for conv, new_messages in watch_async("session.jsonl"):
                 for msg in new_messages:
                     await queue.put(msg)
-        
+
         # Start watcher
         asyncio.create_task(watch_task())
-        
+
         # Stream with heartbeats
         while True:
             try:
                 # Wait for message with timeout
                 msg = await asyncio.wait_for(queue.get(), timeout=30.0)
-                yield {"data": orjson.dumps({
-                    "type": msg.type.value,
-                    "content": msg.text_content
-                }).decode()}
+                yield {
+                    "data": orjson.dumps(
+                        {"type": msg.type.value, "content": msg.text_content}
+                    ).decode()
+                }
             except asyncio.TimeoutError:
                 # Send heartbeat if no messages for 30s
                 yield {"data": orjson.dumps({"type": "heartbeat"}).decode()}
-    
+
     return EventSourceResponse(events_with_heartbeat())
 
 
 if __name__ == "__main__":
     import uvicorn
-    
+
     print("""
     🚀 95/5 SSE Streaming Server
-    
+
     No manual threading needed - watchfiles handles it all!
-    
+
     Endpoints:
     - http://localhost:8000/api/stream/simple - Basic streaming
     - http://localhost:8000/api/stream/tools - Tool operations only
     - http://localhost:8000/api/v2/projects/{name}/stream - Memory project format
-    
+
     Test with:
     curl -N http://localhost:8000/api/stream/simple
     """)
-    
+
     uvicorn.run(app, host="0.0.0.0", port=8000)

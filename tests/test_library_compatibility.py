@@ -45,7 +45,7 @@ class TestOrjsonCompatibility:
 
         # TRUE 95/5: Let pytest-benchmark do all the work
         result = benchmark(orjson.dumps, large_data)
-        
+
         # Just verify it works correctly
         assert orjson.loads(result) == large_data
 
