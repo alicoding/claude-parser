@@ -21,22 +21,8 @@ def sample_jsonl(tmp_path):
     Returns:
         Path to real Claude Code JSONL file or valid test file
     """
-    # Try production files in order of preference
-    prod_files = [
-        Path(
-            # Removed - use synthetic test data instead
-        ),
-        Path(
-            # Removed - use synthetic test data instead
-        ),
-        Path(
-            # Removed - use synthetic test data instead
-        ),
-    ]
-
-    for real_file in prod_files:
-        if real_file.exists():
-            return real_file
+    # Skip checking for production files - always use synthetic data
+    # This ensures tests are self-contained and don't depend on external files
 
     # NO SKIP - Create minimal valid JSONL that matches production structure
     test_file = tmp_path / "test_claude.jsonl"
