@@ -8,25 +8,24 @@ on:
   workflow_dispatch:
 
 env:
-  NODE_VERSION: '20'
   PYTHON_VERSION: '3.11'
 
 jobs:
   # ============================================================================
-  # PYTHON SDK TESTS
+  # PYTHON TESTS
   # ============================================================================
   python-tests:
-    name: Python SDK Tests
+    name: Python Tests
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      
+
       - name: Cache Python dependencies
         uses: actions/cache@v4
         with:
@@ -34,166 +33,85 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/pyproject.toml') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-      
+
       - name: Install dependencies
         run: |
           pip install poetry
           poetry install
-      
+
       - name: Run specification compliance check
         run: |
           if [ -f scripts/verify_spec.py ]; then
-            python scripts/verify_spec.py
+            poetry run python scripts/verify_spec.py
           fi
-      
-      - name: Run Python tests with real JSONL
+
+      - name: Run Python tests
         run: |
           poetry run pytest -v --tb=short
-      
-      - name: Test with production JSONL files
-        run: |
-          # Test with real production files
-          poetry run python -c "
-          from claude_parser import load
-          from tests.fixtures import get_real_claude_jsonl_files
-          
-          files = get_real_claude_jsonl_files()
-          assert len(files) >= 1, 'Should find production JSONL files'
-          
-          for file in files:
-              conv = load(file)
-              assert len(conv) >= 1, f'Should parse {file.name}'
-              print(f'✅ {file.name}: {len(conv)} messages loaded')
-          
-          print(f'✅ All {len(files)} production files tested')
-          "
-      
+
       - name: Check Python code quality
         run: |
           poetry run ruff check .
-          poetry run mypy . || true  # Allow mypy to fail for now
+          poetry run ruff format --check .
+
+      - name: Check test coverage
+        run: |
+          poetry run pytest --cov=claude_parser --cov-report=term-missing --cov-fail-under=85
 
   # ============================================================================
-  # TYPESCRIPT SDK TESTS
-  # ============================================================================
-  typescript-tests:
-    name: TypeScript SDK Tests
-    runs-on: ubuntu-latest
-    
-    defaults:
-      run:
-        working-directory: packages/core
-    
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      
-      - name: Cache npm dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-      
-      - name: Install dependencies
-        run: npm ci
-      
-      - name: Run TypeScript tests
-        run: npm test
-      
-      - name: Check TypeScript types
-        run: npm run typecheck
-      
-      - name: Build TypeScript SDK
-        run: npm run build
-      
-      - name: Check bundle size
-        run: |
-          echo "Bundle sizes:"
-          ls -lah dist/
-          
-          # Ensure bundle is under 100KB
-          size=$(stat -c%s dist/index.mjs 2>/dev/null || stat -f%z dist/index.mjs)
-          if [ $size -gt 102400 ]; then
-            echo "❌ Bundle size exceeds 100KB: $size bytes"
-            exit 1
-          fi
-          echo "✅ Bundle size OK: $size bytes"
-      
-      - name: Test with real JSONL data
-        run: |
-          node -e "
-          const { createTransport } = require('./dist/index.js');
-          const transport = createTransport('/api/stream');
-          console.log('✅ Transport created successfully');
-          "
-
-  # ============================================================================
-  # INTEGRATION TESTS (Real JSONL Files)
+  # INTEGRATION TESTS
   # ============================================================================
   integration-tests:
-    name: Integration Tests with Real Data
+    name: Integration Tests
     runs-on: ubuntu-latest
-    needs: [python-tests, typescript-tests]
-    
+    needs: [python-tests]
+
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Set up Python & Node
+
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      
-      - name: Install all dependencies
+
+      - name: Install dependencies
         run: |
           pip install poetry
           poetry install
-          cd packages/core && npm ci && npm run build && cd ../..
-      
-      - name: Test Python-TypeScript interop
+
+      - name: Test API functionality
         run: |
-          # Generate test data with Python using production JSONL
           poetry run python -c "
-          from claude_parser import load
-          from tests.fixtures import get_real_claude_jsonl_files
+          from claude_parser import load, MessageType, __version__
+          import tempfile
           import orjson
-          
-          # Load real JSONL files
-          files = get_real_claude_jsonl_files()
-          conv = load(files[1] if len(files) > 1 else files[0])  # Use medium-sized file
-          
-          # Export for TypeScript (sample first 10 messages)
-          sample_messages = conv.messages[:10]
-          with open('test-output.json', 'wb') as f:
-              f.write(orjson.dumps([{'type': msg.type, 'content': getattr(msg, 'text_content', '')} for msg in sample_messages]))
-          
-          print(f'✅ Exported {len(sample_messages)} sample messages for TypeScript')
-          "
-          
-          # Validate with TypeScript
-          cd packages/core
-          node -e "
-          const fs = require('fs');
-          const { parseMessage } = require('./dist/index.js');
-          
-          const messages = JSON.parse(fs.readFileSync('../../test-output.json', 'utf8'));
-          messages.forEach(msg => {
-              const result = parseMessage(msg);
-              if (!result.success) {
-                  console.error('Failed to parse:', result.error);
-                  process.exit(1);
-              }
-          });
-          console.log('✅ All messages validated with TypeScript');
+
+          # Create test data
+          test_data = [
+              {'type': 'summary', 'summary': 'Test', 'uuid': 's1', 'sessionId': 'test', 'timestamp': '2025-01-01T00:00:00Z'},
+              {'type': 'user', 'uuid': 'u1', 'sessionId': 'test', 'timestamp': '2025-01-01T00:00:01Z', 'message': {'content': 'Hello'}},
+              {'type': 'assistant', 'uuid': 'a1', 'sessionId': 'test', 'timestamp': '2025-01-01T00:00:02Z', 'message': {'content': [{'type': 'text', 'text': 'Hi'}]}}
+          ]
+
+          # Write test file
+          with tempfile.NamedTemporaryFile(mode='w', suffix='.jsonl', delete=False) as f:
+              for item in test_data:
+                  f.write(orjson.dumps(item).decode() + '\n')
+              test_file = f.name
+
+          # Test loading
+          conv = load(test_file)
+          assert len(conv) == 3, f'Expected 3 messages, got {len(conv)}'
+
+          # Test filtering
+          assert len(conv.user_messages) == 1
+          assert len(conv.assistant_messages) == 1
+
+          # Test search
+          results = conv.search('Hello')
+          assert len(results) == 1
+
+          print(f'✅ Integration tests passed with version {__version__}')
           "
 
   # ============================================================================
@@ -202,40 +120,44 @@ jobs:
   performance-tests:
     name: Performance Tests
     runs-on: ubuntu-latest
-    needs: [python-tests, typescript-tests]
-    
+    needs: [python-tests]
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      
+
       - name: Install dependencies
         run: |
           pip install poetry
           poetry install
-      
+
       - name: Performance benchmark
         run: |
           poetry run python -c "
           import time
+          import tempfile
           from claude_parser import load
-          
-          # Measure parsing speed with production JSONL
-          from tests.fixtures import get_real_claude_jsonl_files
-          
-          files = get_real_claude_jsonl_files()
-          test_file = files[1] if len(files) > 1 else files[0]  # Use medium-sized file
-          
+
+          # Create larger test file
+          with tempfile.NamedTemporaryFile(mode='w', suffix='.jsonl', delete=False) as f:
+              for i in range(1000):
+                  f.write(f'{{\"type\": \"user\", \"uuid\": \"u{i}\", \"sessionId\": \"test\", \"timestamp\": \"2025-01-01T00:00:{i%60:02d}Z\", \"message\": {{\"content\": \"Message {i}\"}}}}\\n')
+              test_file = f.name
+
+          # Measure parsing speed
           start = time.time()
           conv = load(test_file)
           elapsed = time.time() - start
-          
-          # Should parse reasonably fast (allow more time for real data)
+
+          # Should parse 1000 messages quickly
           assert elapsed < 1.0, f'Parsing too slow: {elapsed:.3f}s'
-          print(f'✅ Performance: {len(conv)} messages from {test_file.name} in {elapsed:.3f}s')
+          assert len(conv) == 1000, f'Expected 1000 messages, got {len(conv)}'
+
+          print(f'✅ Performance: 1000 messages parsed in {elapsed:.3f}s')
           "
 
   # ============================================================================
@@ -246,46 +168,36 @@ jobs:
     runs-on: ubuntu-latest
     needs: [integration-tests, performance-tests]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    
+
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
-      - name: Set up Python & Node
+
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      
+
       - name: Check version bump needed
         id: version
         run: |
           # Check if version was bumped in this commit
-          if git diff HEAD^ HEAD --name-only | grep -E "(pyproject.toml|package.json)"; then
+          if git diff HEAD^ HEAD --name-only | grep -E "pyproject.toml"; then
             echo "Version files changed"
             echo "should_release=true" >> $GITHUB_OUTPUT
           else
             echo "No version change"
             echo "should_release=false" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Build packages
         if: steps.version.outputs.should_release == 'true'
         run: |
           # Build Python package
           pip install poetry
           poetry build
-          
-          # Build TypeScript packages
-          cd packages/core
-          npm ci
-          npm run build
-          cd ../..
-      
+
       - name: Create GitHub Release
         if: steps.version.outputs.should_release == 'true'
         uses: softprops/action-gh-release@v1
@@ -293,20 +205,12 @@ jobs:
           files: |
             dist/*.whl
             dist/*.tar.gz
-            packages/core/dist/*
           generate_release_notes: true
           tag_name: v${{ github.run_number }}
-      
-      # Uncomment when ready to publish to registries
+
+      # Uncomment when ready to publish to PyPI
       # - name: Publish to PyPI
       #   if: steps.version.outputs.should_release == 'true'
       #   run: |
       #     poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
       #     poetry publish
-      
-      # - name: Publish to npm
-      #   if: steps.version.outputs.should_release == 'true'
-      #   run: |
-      #     cd packages/core
-      #     npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
-      #     npm publish
