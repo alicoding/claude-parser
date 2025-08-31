@@ -12,9 +12,7 @@ from claude_parser.models import AssistantMessage, MessageType, Summary, UserMes
 def real_claude_jsonl():
     """Use real production JSONL data - NEVER SKIP."""
     # Use actual production data from our test directory
-    prod_dir = Path(
-        "/Volumes/AliDev/ai-projects/claude-parser/jsonl-prod-data-for-test/-Volumes-AliDev-ai-projects-claude-parser"
-    )
+    prod_dir = Path("/path/to/test/data")
     real_file = (
         prod_dir / "3a7770b4-aba3-46dd-b677-8fc2d71d4e06.jsonl"
     )  # Medium file with 98 lines

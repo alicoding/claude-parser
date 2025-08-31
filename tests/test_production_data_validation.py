@@ -26,9 +26,7 @@ class TestProductionDataGroundTruth:
     @pytest.fixture
     def prod_data_dir(self):
         """Production data directory."""
-        return Path(
-            "/Volumes/AliDev/ai-projects/claude-parser/jsonl-prod-data-for-test/-Volumes-AliDev-ai-projects-claude-parser"
-        )
+        return Path("/path/to/test/data")
 
     @pytest.fixture
     def sample_conversation(self, prod_data_dir):

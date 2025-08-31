@@ -1,63 +1,62 @@
-# 🛡️ CLAUDE-PARSER WORKFLOW - ZERO TOLERANCE
+# Claude Parser Development Guidelines
 
-## 🔴 MANDATORY FIRST STEPS (NO EXCEPTIONS)
+## Quick Start
+
 ```bash
-pytest tests/ -x                    # MUST be 100% pass rate
-python scripts/verify_spec.py       # MUST pass all quality gates  
-python scripts/codebase_inventory.py --stats  # Explore before coding
+# Verify tests pass
+pytest tests/ -x
+
+# Check code quality
+python scripts/verify_spec.py
 ```
 
-## 🚨 QUALITY GATES (NON-NEGOTIABLE)
-- **Tests**: 100% pass rate, 90%+ coverage
-- **Architecture**: SOLID/DRY/DDD/TDD only
-- **Files**: Max 150 LOC per file
-- **Libraries**: 95% library, 5% glue code
-- **Imports**: All dependencies validated
-- **Research**: MANDATORY `research` tool before any implementation
+## Architecture Principles
 
-## ⚡ WORKFLOW PRINCIPLES
-1. **TDD**: Test → Code → Refactor (never Code → Test)
-2. **DRY**: Find conceptual duplication, not just copy/paste
-3. **Explore First**: Read existing code before writing new
-4. **Library First**: Use `research` tool before any custom code
-5. **Quality Gates**: Every commit must pass automated checks
+- **SOLID/DRY/DDD**: Follow Domain-Driven Design
+- **95/5 Rule**: 95% library code, 5% glue
+- **TDD**: Write tests first
+- **Small Files**: Max 150 lines per file
 
-## 🔍 RESEARCH FIRST - CRITICAL WORKFLOW
-**⚠️  MANDATORY: Research before implementing anything!**
+## Key Libraries
+
+- **JSON**: orjson (not json)
+- **Dates**: pendulum (not datetime)
+- **HTTP**: httpx (not requests)
+- **Logging**: loguru (not logging)
+- **CLI**: typer/click (not argparse)
+- **Validation**: pydantic
+- **Async**: watchfiles for file watching
+
+## Development Workflow
+
+1. Run tests before making changes
+2. Use existing patterns and conventions
+3. Keep changes focused and tested
+4. Verify all tests pass before committing
+
+## Testing
 
 ```bash
-# Global research tool - use for ALL library decisions
-research search "best Python library for parsing JSONL with TRUE 95/5"
-research compare "JSON parsing libraries" 
-research minimal "pydantic" "parse JSONL with validation"
+# Run all tests
+pytest
+
+# Run with coverage
+pytest --cov=claude_parser --cov-report=term-missing
+
+# Run specific test
+pytest tests/test_parser.py::test_specific_function
 ```
 
-**Why critical for claude-parser:**
-- Finds parsing libraries that handle edge cases automatically
-- Discovers validation frameworks (Pydantic) vs manual validation
-- Prevents 200-line custom parsers when 5-line solutions exist
-- Ensures SOLID/DDD compliance through library selection
+## Code Quality Gates
 
-**NEVER write parsers/validators without researching first!**
+- Tests: 100% pass rate required
+- Coverage: 90%+ required
+- Linting: Zero violations
+- Pre-commit: All hooks must pass
 
-## 🔒 ENFORCEMENT (AUTOMATED)
+## Pre-commit Setup
+
 ```bash
-# Pre-commit blocks bad commits
 pre-commit install
-
-# CI/CD blocks bad merges  
-.github/workflows/quality-gates.yml
-
-# One command validation
-make quality-check
+pre-commit run --all-files
 ```
-
-## 🏗️ CURRENT STATE REQUIREMENTS
-- Fix 50 failing tests through architecture fixes
-- Eliminate import dependency issues
-- Complete DDD value objects (SessionId, MessageUuid, TokenCount)
-- Establish proper dependency injection
-- Implement missing integration tests
-
----
-**VIOLATION = SESSION RESTART. NO EXCEPTIONS.**

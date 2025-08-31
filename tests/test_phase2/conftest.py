@@ -143,9 +143,7 @@ def real_transcript(tmp_path):
     Checks for actual transcript from hook-system-v2, otherwise creates test file.
     """
     # Try to use real file if available
-    real_path = Path(
-        "/Volumes/AliDev/ai-projects/claude-intelligence-center/hook-system-v2/jsonl-sample/6d0efa65-3f7f-4c79-9b58-1e7a23d57f11.jsonl"
-    )
+    real_path = Path("/path/to/test/data")
     if real_path.exists():
         return str(real_path)
 

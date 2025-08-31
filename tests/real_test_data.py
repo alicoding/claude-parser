@@ -13,7 +13,7 @@ REAL_USER_MESSAGE = {
     "parentUuid": None,
     "isSidechain": False,
     "userType": "external",
-    "cwd": "/Volumes/AliDev/ai-projects/claude-intelligence-center/hook-system-v2",
+    "cwd": "/path/to/test/data",
     "version": "1.0.83",
     "gitBranch": "main",
     "message": {"role": "user", "content": "Help me implement yank mode for vim"},

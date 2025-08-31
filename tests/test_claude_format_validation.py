@@ -154,7 +154,7 @@ class TestRealClaudeFileValidation:
         TDD: Test that real Claude export passes validation.
         Should FAIL initially.
         """
-        real_file = "/Users/ali/.claude/projects/-Volumes-AliDev-ai-projects-claude-intelligence-center-hook-system-v2/2f283580-c24a-40af-8129-1be80c07b965.jsonl"
+        real_file = "/path/to/test/data"
 
         if not Path(real_file).exists():
             pytest.skip("Real Claude JSONL file not available")

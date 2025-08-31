@@ -21,7 +21,7 @@ class TestToolResponseStringBug:
             "cwd": "/project",
             "hookEventName": "PostToolUse",
             "toolName": "LS",
-            "toolResponse": "- /Users/ali/.claude/projects/\n  - file.md\n  - subdir/\n",  # STRING!
+            "toolResponse": "- /path/to/projects/\n  - file.md\n  - subdir/\n",  # STRING!
         }
 
         # Should not raise validation error
@@ -129,11 +129,11 @@ class TestToolResponseStringBug:
         # This is real output captured from Claude
         hook_data = {
             "sessionId": "8f64b245-7268-4ecd-9b90-34037f3c5b75",
-            "transcriptPath": "/Users/ali/.claude/projects/session.jsonl",
-            "cwd": "/Users/ali/.claude/projects/claude-parser",
+            "transcriptPath": "/path/to/session.jsonl",
+            "cwd": "/path/to/claude-parser",
             "hookEventName": "PostToolUse",
             "toolName": "LS",
-            "toolResponse": """- /Users/ali/.claude/projects/
+            "toolResponse": """- /path/to/projects/
   - claude-parser/
     - docs/
       - api/

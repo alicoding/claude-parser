@@ -24,13 +24,13 @@ def sample_jsonl(tmp_path):
     # Try production files in order of preference
     prod_files = [
         Path(
-            "/Volumes/AliDev/ai-projects/claude-parser/jsonl-prod-data-for-test/-Volumes-AliDev-ai-projects-claude-parser/4762e53b-7ca8-4464-9eac-d1816c343c50.jsonl"
+            # Removed - use synthetic test data instead
         ),
         Path(
-            "/Volumes/AliDev/ai-projects/claude-parser/jsonl-prod-data-for-test/-Volumes-AliDev-ai-projects-claude-parser/3a7770b4-aba3-46dd-b677-8fc2d71d4e06.jsonl"
+            # Removed - use synthetic test data instead
         ),
         Path(
-            "/Volumes/AliDev/ai-projects/claude-parser/jsonl-prod-data-for-test/-Volumes-AliDev-ai-projects-claude-parser/840f9326-6f99-46d9-88dc-f32fb4754d36.jsonl"
+            # Removed - use synthetic test data instead
         ),
     ]
 
@@ -59,9 +59,7 @@ def large_jsonl(sample_jsonl):
     Returns:
         Path to larger Claude Code JSONL file (98 messages) or fallback
     """
-    real_file = Path(
-        "/Volumes/AliDev/ai-projects/claude-parser/jsonl-prod-data-for-test/-Volumes-AliDev-ai-projects-claude-parser/3a7770b4-aba3-46dd-b677-8fc2d71d4e06.jsonl"
-    )
+    real_file = Path("/path/to/test/data")
 
     if real_file.exists():
         return real_file
@@ -80,9 +78,7 @@ def medium_jsonl(sample_jsonl):
     Returns:
         Path to medium Claude Code JSONL file or fallback
     """
-    real_file = Path(
-        "/Volumes/AliDev/ai-projects/claude-parser/jsonl-prod-data-for-test/-Volumes-AliDev-ai-projects-claude-parser/840f9326-6f99-46d9-88dc-f32fb4754d36.jsonl"
-    )
+    real_file = Path("/path/to/test/data")
 
     if real_file.exists():
         return real_file
@@ -102,7 +98,7 @@ def production_data_dir(tmp_path):
         Path to directory containing real JSONL files or test directory
     """
     prod_dir = Path(
-        "/Volumes/AliDev/ai-projects/claude-parser/jsonl-prod-data-for-test/-Volumes-AliDev-ai-projects-claude-parser"
+        # Removed - use synthetic test data instead
     )
 
     if prod_dir.exists():

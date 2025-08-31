@@ -11,9 +11,7 @@ from claude_parser import load
 def test_load_conversation_with_toolz_map_bug():
     """Test that we can load a conversation file without toolz map error."""
     # Use one of the actual files that's failing
-    test_file = Path(
-        "/Users/ali/.claude/projects/-Volumes-AliDev-ai-projects-claude-intelligence-center-hook-system-v2/2f283580-c24a-40af-8129-1be80c07b965.jsonl"
-    )
+    test_file = Path("/path/to/test/data")
 
     if test_file.exists():
         # This should NOT raise "map() must have at least two arguments"

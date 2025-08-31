@@ -32,8 +32,8 @@ class TestRealClaudeFormatCompatibility:
                 }
             ],
             "sessionId": "abc123",
-            "transcriptPath": "/Users/ali/.claude/projects/session.jsonl",
-            "cwd": "/Volumes/AliDev/ai-projects/claude-intelligence-center/hook-system-v2",
+            "transcriptPath": "/path/to/session.jsonl",
+            "cwd": "/path/to/project",
         }
 
         # This should NOT raise ValidationError
@@ -41,7 +41,7 @@ class TestRealClaudeFormatCompatibility:
 
         # Verify all fields are accessible via snake_case
         assert hook_data.session_id == "abc123"
-        assert hook_data.transcript_path == "/Users/ali/.claude/projects/session.jsonl"
+        assert hook_data.transcript_path == "/path/to/session.jsonl"
         assert hook_data.hook_event_name == "PostToolUse"
         assert hook_data.tool_name == "Edit"
         assert hook_data.tool_input["file_path"] == "/path/to/file.md"
@@ -56,7 +56,7 @@ class TestRealClaudeFormatCompatibility:
         real_stop_json = {
             "hookEventName": "Stop",
             "sessionId": "xyz789",
-            "transcriptPath": "/Users/ali/.claude/projects/session.jsonl",
+            "transcriptPath": "/path/to/session.jsonl",
             "cwd": "/home/user/project",
         }
 
@@ -77,7 +77,7 @@ class TestRealClaudeFormatCompatibility:
                 "description": "List files in current directory",
             },
             "sessionId": "def456",
-            "transcriptPath": "/Users/ali/.claude/projects/session.jsonl",
+            "transcriptPath": "/path/to/session.jsonl",
             "cwd": "/home/user/project",
         }
 
@@ -151,7 +151,7 @@ class TestRealClaudeFormatCompatibility:
     def test_load_conversation_integration(self):
         """Test that load_conversation() works with real paths."""
         # Skip if real transcript doesn't exist
-        real_transcript = "/Users/ali/.claude/projects/-Volumes-AliDev-ai-projects-claude-intelligence-center-hook-system-v2/8f64b245-7268-4ecd-9b90-34037f3c5b75.jsonl"
+        real_transcript = "path/to/test.jsonl"  # Removed real path
 
         from pathlib import Path
 

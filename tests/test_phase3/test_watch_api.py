@@ -20,11 +20,11 @@ Success Criteria:
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-import orjson
 import pytest
 
 # Real Claude Code test data
-REAL_CLAUDE_JSONL = "/Users/ali/.claude/projects/-Volumes-AliDev-ai-projects-claude-intelligence-center-hook-system-v2/8f64b245-7268-4ecd-9b90-34037f3c5b75.jsonl"
+# Real file path removed for privacy - tests use mock data instead
+REAL_CLAUDE_JSONL = "path/to/test.jsonl"  # Dummy path for tests
 
 # Sample real Claude Code messages for testing
 REAL_USER_MESSAGE = {

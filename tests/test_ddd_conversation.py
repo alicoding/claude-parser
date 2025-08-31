@@ -16,9 +16,7 @@ from claude_parser.models import AssistantMessage, MessageType
 @pytest.fixture
 def real_claude_file():
     """Real Claude Code JSONL file for testing DDD implementation."""
-    real_file = Path(
-        "/Users/ali/.claude/projects/-Volumes-AliDev-ai-projects-claude-intelligence-center-hook-system-v2/8f64b245-7268-4ecd-9b90-34037f3c5b75.jsonl"
-    )
+    real_file = Path("/path/to/test/data")
     if not real_file.exists():
         pytest.skip(f"Real Claude Code file not found: {real_file}")
     return real_file

@@ -7,7 +7,8 @@ import pytest
 from claude_parser import MessageType, load
 
 # Path to real Claude JSONL file for testing
-REAL_JSONL_PATH = "/Users/ali/.claude/projects/-Volumes-AliDev-ai-projects-claude-intelligence-center-hook-system-v2/2f283580-c24a-40af-8129-1be80c07b965.jsonl"
+# Real file path removed for privacy - tests use mock data instead
+REAL_JSONL_PATH = "path/to/test.jsonl"  # Dummy path for tests to skip properly
 
 
 class TestRealClaudeExport:
