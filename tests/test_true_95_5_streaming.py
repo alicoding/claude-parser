@@ -138,7 +138,11 @@ class TestTrue95_5Streaming:
             task = asyncio.create_task(collect_with_rotation_detection())
             await asyncio.sleep(0.1)
 
-            # Simulate log rotation: truncate and write new content
+            # Simulate proper log rotation: move old file and create new one
+            rotated_file = test_file.with_suffix('.jsonl.1')
+            os.rename(test_file, rotated_file)
+            
+            # Create new file at original path
             with open(test_file, "w") as f:
                 for i in range(2):
                     msg = {
@@ -148,8 +152,16 @@ class TestTrue95_5Streaming:
                         "message": {"role": "assistant", "content": f"New message {i}"},
                     }
                     f.write(orjson.dumps(msg).decode() + "\n")
+            
+            # Give watchfiles time to detect the change
+            await asyncio.sleep(0.2)
 
-            await asyncio.wait_for(task, timeout=2.0)
+            try:
+                await asyncio.wait_for(task, timeout=2.0)
+            finally:
+                # Clean up rotated file
+                if rotated_file.exists():
+                    os.unlink(rotated_file)
 
             # Should have detected rotation and read new messages
             assert rotation_detected
@@ -161,10 +173,10 @@ class TestTrue95_5Streaming:
     @pytest.mark.asyncio
     async def test_seek_position_tracking(self):
         """
-        TRUE 95/5: Track file position to avoid re-reading.
+        TRUE 95/5: Track UUID checkpoints to avoid re-processing.
 
-        The implementation should track where it left off and
-        continue from that position (like tail -f).
+        The implementation should track UUIDs already processed
+        and only return new messages.
         """
         with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
             test_file = Path(f.name)
@@ -190,9 +202,9 @@ class TestTrue95_5Streaming:
             assert len(messages) == 1
             assert messages[0]["uuid"] == "msg-1"
 
-            # Position should be tracked
-            assert reader.position > 0
-            old_position = reader.position
+            # UUID checkpoint should be tracked
+            assert reader.last_uuid == "msg-1"
+            assert "msg-1" in reader.processed_uuids
 
             # Write second batch
             with open(test_file, "a") as f:
@@ -204,13 +216,18 @@ class TestTrue95_5Streaming:
                 }
                 f.write(orjson.dumps(msg2).decode() + "\n")
 
-            # Read second batch - should ONLY get the new message
+            # Read second batch - reader scans file and finds new message
             messages = await reader.get_new_messages()
             assert len(messages) == 1
             assert messages[0]["uuid"] == "msg-2"
 
-            # Position should have advanced
-            assert reader.position > old_position
+            # UUID checkpoint should have advanced
+            assert reader.last_uuid == "msg-2"
+            assert "msg-2" in reader.processed_uuids
+            
+            # Reading again without new data should return empty (all UUIDs processed)
+            messages = await reader.get_new_messages()
+            assert len(messages) == 0
 
         finally:
             os.unlink(test_file)
