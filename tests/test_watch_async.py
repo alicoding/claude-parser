@@ -17,7 +17,7 @@ class TestAsyncWatch:
     """Test async watch following TDD principles."""
 
     @pytest.mark.asyncio
-    @pytest.mark.skip(reason="Watchfiles has known issues with async cancellation in tests")
+    @pytest.mark.integration  # TRUE 95/5: Real integration test
     async def test_watch_async_detects_new_messages(self, tmp_path):
         """Test that watch_async detects new messages added to file."""
         # Create test file
@@ -98,7 +98,7 @@ class TestAsyncWatch:
         assert received[0].type == MessageType.ASSISTANT
 
     @pytest.mark.asyncio
-    @pytest.mark.skip(reason="Watchfiles has known issues with async cancellation in tests")
+    @pytest.mark.integration  # TRUE 95/5: Real integration test
     async def test_watch_async_handles_file_rotation(self, tmp_path):
         """Test that watch_async handles file truncation/rotation."""
         test_file = tmp_path / "test.jsonl"
@@ -211,7 +211,7 @@ class TestAsyncWatch:
         assert "Created" in received[0].text_content
 
     @pytest.mark.asyncio
-    @pytest.mark.skip(reason="Watchfiles has known issues with async cancellation in tests")
+    @pytest.mark.integration  # TRUE 95/5: Real integration test
     async def test_watch_async_handles_malformed_json(self, tmp_path):
         """Test that malformed JSON doesn't crash watch_async."""
         test_file = tmp_path / "test.jsonl"
@@ -282,7 +282,7 @@ class TestAsyncWatchPerformance:
         assert latency < 200, f"Detection took {latency}ms"
 
     @pytest.mark.asyncio
-    @pytest.mark.skip(reason="Watchfiles has known issues with async cancellation in tests")
+    @pytest.mark.integration  # TRUE 95/5: Real integration test
     async def test_watch_async_handles_large_file(self, tmp_path):
         """Test that watch_async handles large files efficiently."""
         test_file = tmp_path / "large.jsonl"

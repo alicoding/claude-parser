@@ -219,27 +219,32 @@ class TestRealJSONLEdgeCases:
         finally:
             test_file.unlink(missing_ok=True)
 
-    def test_large_file_streaming(self):
-        """Test streaming large files efficiently."""
-        # Find a large file (>10MB)
-        large_files = [
-            Path.home()
-            / ".claude/projects/-Volumes-AliDev-ai-projects-smart-prototyper/0128b69d-2ede-42e6-b715-87d8850a04d1.jsonl",  # 13MB
-            Path.home()
-            / ".claude/projects/-Volumes-AliDev-ai-projects-personal-assistant/0c8bb4c6-f1f8-4bd1-8cb8-773414fac973.jsonl",  # 3.6MB
-        ]
-
-        for file_path in large_files:
-            if file_path.exists():
-                break
-        else:
-            pytest.skip("No large JSONL files found for streaming test")
+    def test_large_file_streaming(self, tmp_path_factory):
+        """Test streaming large files efficiently - TRUE 95/5 with tmp_path_factory."""
+        # TRUE 95/5: Let pytest create and manage the temp file
+        large_file = tmp_path_factory.mktemp("data") / "large.jsonl"
+        
+        # Generate a large file (10MB+) with realistic Claude messages
+        import orjson
+        with open(large_file, "wb") as f:
+            for i in range(10000):  # 10k messages ~= 10MB
+                msg = {
+                    "type": "user" if i % 2 == 0 else "assistant",
+                    "uuid": f"msg-{i}",
+                    "sessionId": "test-session",
+                    "timestamp": f"2025-01-01T{i//3600:02d}:{(i//60)%60:02d}:{i%60:02d}Z",
+                    "message": {
+                        "role": "user" if i % 2 == 0 else "assistant",
+                        "content": f"This is message {i} with some content to make it realistic size " * 10
+                    }
+                }
+                f.write(orjson.dumps(msg) + b"\n")
 
         # Test streaming parse
         from claude_parser.infrastructure.jsonl_parser import parse_jsonl_streaming
 
         message_count = 0
-        for msg in parse_jsonl_streaming(file_path):
+        for msg in parse_jsonl_streaming(large_file):
             message_count += 1
             if message_count > 100:  # Just test first 100 for speed
                 break
