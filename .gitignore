@@ -96,3 +96,4 @@ jsonl-prod-data-for-test/*
 !jsonl-prod-data-for-test/test-data/
 full_failures.jsonl
 test_failures.jsonl
+jsonl-prod-data-for-test/
