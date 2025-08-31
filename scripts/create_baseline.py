@@ -5,7 +5,6 @@ This captures the current state for regression testing.
 """
 
 import inspect
-import json
 import subprocess
 import sys
 from pathlib import Path
@@ -215,10 +214,10 @@ def create_baseline():
     """Create complete baseline snapshot."""
     print("Creating baseline snapshot...")
     
-    from datetime import datetime
+    import pendulum
     
     baseline = {
-        'timestamp': datetime.now().isoformat(),
+        'timestamp': pendulum.now().isoformat(),
         'apis': capture_public_apis(),
         'tests': capture_test_results(),
         'coverage': capture_coverage(),

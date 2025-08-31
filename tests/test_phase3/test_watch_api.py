@@ -129,14 +129,12 @@ class TestWatchDomainAPI:
                 # Mock one change event
                 mock_watchfiles.return_value = iter([{("modified", REAL_CLAUDE_JSONL)}])
 
-                # Mock the incremental reader to return some new lines
+                # Mock the UUID-based reader to return some new messages
                 with patch(
-                    "claude_parser.watch.watcher.IncrementalReader.get_new_lines"
-                ) as mock_get_lines:
-                    # Return one real message line
-                    mock_get_lines.return_value = [
-                        orjson.dumps(REAL_ASSISTANT_MESSAGE).decode("utf-8")
-                    ]
+                    "claude_parser.watch.watcher.UUIDBasedReader.get_new_messages"
+                ) as mock_get_messages:
+                    # Return one real message dict
+                    mock_get_messages.return_value = [REAL_ASSISTANT_MESSAGE]
 
                     # Run watch - should call callback once
                     watch(REAL_CLAUDE_JSONL, callback)

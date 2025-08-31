@@ -33,16 +33,29 @@ if data.tool_name == "Write": exit_block("No writes")
 exit_success()
 ```
 
-### ✅ Available Now
+### ✅ Available Now - Watch with UUID Checkpoints
 
 ```python  
-# Watch Domain (Phase 2 complete)
-from claude_parser.watch import watch
+# Watch Domain with Native UUID Tracking (No byte positions!)
+from claude_parser.watch import watch, watch_async
 
 def on_new(conv, new_msgs):
     print(f"Got {len(new_msgs)} new messages")
+    # Client tracks: last_uuid = new_msgs[-1].uuid
 
-watch("session.jsonl", on_new)  # 1 line monitoring
+# Simple watching
+watch("session.jsonl", on_new)
+
+# Resume from UUID checkpoint
+watch("session.jsonl", on_new, after_uuid="msg-123")
+
+# Async with checkpoint
+import asyncio
+async def async_watch():
+    async for conv, new_msgs in watch_async("session.jsonl", after_uuid="msg-456"):
+        process(new_msgs)
+        
+asyncio.run(async_watch())
 ```
 
 ## 🎯 95% Use Cases
@@ -72,6 +85,9 @@ exit_success()
 | Hooks | hook_input() | 1 | < 1ms | 100% |
 | Hooks | exit_*() | 1 | < 1ms | 100% |
 | Watch | watch() | 1 | < 100ms | 100% |
+| Watch | watch_async() | 1 | < 100ms | 100% |
+| Memory | MemoryExporter | 3 | < 10ms | 100% |
+| UUID | Checkpoints | 1 | < 1ms | 100% |
 
 ## 🔍 Hook Types Reference
 

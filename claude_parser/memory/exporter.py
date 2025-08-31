@@ -11,10 +11,9 @@ from typing import Any, Dict, List, Optional
 from ..domain.entities.conversation import Conversation
 from ..models import (
     AssistantMessage,
-    ToolResult,
-    ToolUse,
     UserMessage,
 )
+from ..models.tool import ToolResultMessage, ToolUseMessage
 
 
 @dataclass
@@ -54,6 +53,7 @@ class MemoryExporter:
         chunk_size: int = 1000,
         include_metadata: bool = True,
         batch_size: int = 100,
+        exclude_tools: bool = False,
     ):
         """Initialize the memory exporter.
 
@@ -61,10 +61,12 @@ class MemoryExporter:
             chunk_size: Maximum characters per memory chunk
             include_metadata: Whether to include message metadata
             batch_size: Number of memories to process at once
+            exclude_tools: Whether to exclude tool-related messages
         """
         self.chunk_size = chunk_size
         self.include_metadata = include_metadata
         self.batch_size = batch_size
+        self.exclude_tools = exclude_tools
 
     def export(self, conversation: Conversation) -> List[ConversationMemory]:
         """Export a conversation to memory format.
@@ -80,18 +82,23 @@ class MemoryExporter:
         # Extract memories from user-assistant pairs
         user_messages = list(conversation.user_messages)
         assistant_messages = list(conversation.assistant_messages)
+        
+        # Build response map for O(n) lookup instead of O(n²)
+        # Maps user_uuid -> assistant_message that has this as parent_uuid
+        response_map = {msg.parent_uuid: msg for msg in assistant_messages if msg.parent_uuid}
 
         for user_msg in user_messages:
-            # Find corresponding assistant response
-            assistant_response = self._find_response(user_msg, assistant_messages)
+            # Direct O(1) lookup using parent-child relationship
+            assistant_response = response_map.get(user_msg.uuid)
 
             if assistant_response:
                 memory = self._create_memory_pair(user_msg, assistant_response)
                 memories.append(memory)
 
-        # Extract memories from tool uses
-        tool_memories = self._extract_tool_memories(conversation)
-        memories.extend(tool_memories)
+        # Extract memories from tool uses (unless excluded)
+        if not self.exclude_tools:
+            tool_memories = self._extract_tool_memories(conversation)
+            memories.extend(tool_memories)
 
         # Extract summary if available
         summaries = conversation.summaries
@@ -177,7 +184,7 @@ class MemoryExporter:
         memories = []
 
         for msg in conversation.tool_uses:
-            if not isinstance(msg, ToolUse):
+            if not isinstance(msg, ToolUseMessage):
                 continue
 
             tool_use = msg
@@ -191,7 +198,7 @@ class MemoryExporter:
             # Find corresponding tool result
             for other_msg in conversation.tool_uses:
                 if (
-                    isinstance(other_msg, ToolResult)
+                    isinstance(other_msg, ToolResultMessage)
                     and other_msg.tool_use_id == tool_use.uuid
                 ):
                     result_str = (
@@ -220,17 +227,62 @@ class MemoryExporter:
     def _create_summary_memory(self, summary) -> ConversationMemory:
         """Create a memory from a summary."""
 
-        content = f"Conversation Summary:\n{summary.summary_content}"
+        content = f"Conversation Summary:\n{summary.summary}"
 
         metadata = {
             "type": "summary",
-            "uuid": summary.uuid,
-            "timestamp": summary.timestamp,
+            "uuid": getattr(summary, 'uuid', getattr(summary, 'leaf_uuid', 'unknown')),
+            "timestamp": getattr(summary, 'timestamp', None),
         }
 
         memory = ConversationMemory(
-            content=content, metadata=metadata, embedding_text=summary.summary_content
+            content=content, metadata=metadata, embedding_text=summary.summary
         )
         memory.generate_id()
 
         return memory
+
+    def export_as_dicts(self, conversation: Conversation) -> List[Dict[str, Any]]:
+        """Export conversation as plain dictionaries for LlamaIndex compatibility.
+
+        Args:
+            conversation: The conversation to export
+
+        Returns:
+            List of dictionaries with 'text' and 'metadata' keys
+        """
+        memories = self.export(conversation)
+        return [
+            {
+                'text': memory.content,
+                'metadata': memory.metadata
+            }
+            for memory in memories
+        ]
+
+    def export_project(self, project_path: str):
+        """Export all project conversations as a generator of dictionaries.
+
+        Args:
+            project_path: Path to the project directory
+
+        Yields:
+            Dictionary with 'text' and 'metadata' for each memory
+        """
+        from pathlib import Path
+        from ..discovery import find_project_by_original_path
+        from ..application.conversation_service import load
+
+        project_info = find_project_by_original_path(project_path)
+        if not project_info:
+            return
+
+        project_dir = Path.home() / ".claude" / "projects" / project_info["encoded_name"]
+        
+        for jsonl_file in project_dir.glob("*.jsonl"):
+            try:
+                conv = load(str(jsonl_file))
+                yield from self.export_as_dicts(conv)
+            except Exception:
+                # Skip files that can't be loaded
+                continue

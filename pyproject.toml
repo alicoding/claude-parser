@@ -42,6 +42,9 @@ mypy = "^1.0.0"
 ruff = "^0.12.0"
 typing-extensions = "^4.15.0"
 
+[tool.poetry.scripts]
+claude-parser = "claude_parser.cli:app"
+
 [tool.poetry.group.watch]
 optional = true
 

@@ -44,18 +44,21 @@ class AsyncWatcher:
         message_types: Optional[List[str]] = None,
         debounce: int = 100,
         stop_event: Optional[asyncio.Event] = None,
+        after_uuid: Optional[str] = None,
     ) -> AsyncGenerator[tuple[Conversation, List[Message]], None]:
         """
         Asynchronously watch a JSONL file for changes.
 
         Uses watchfiles.awatch internally - NO manual threading!
         The Rust backend runs in a separate thread automatically.
+        Uses native UUID checkpoints, not byte positions.
 
         Args:
             file_path: Path to JSONL file
             message_types: Optional filter for message types
             debounce: Milliseconds to debounce rapid changes
             stop_event: Optional event to stop watching
+            after_uuid: Optional UUID to resume after
 
         Yields:
             Tuple of (full_conversation, new_messages)
@@ -69,12 +72,15 @@ class AsyncWatcher:
                 if any(str(file_path) in path for _, path in changes):
                     break
 
-        # Initialize streaming reader
+        # Initialize streaming reader with UUID checkpoint
         self._streaming_reader = StreamingJSONLReader(file_path)
+        if after_uuid:
+            self._streaming_reader.set_checkpoint(after_uuid)
         self._all_messages = []
 
         # Initial load using TRUE streaming
-        if file_path.exists():
+        if file_path.exists() and not after_uuid:
+            # Only do initial yield if no checkpoint specified
             logger.debug(f"Initial load for {file_path}")
             result = await self._process_file_incremental(
                 file_path, message_types, initial=True
@@ -187,17 +193,20 @@ async def watch_async(
     file_path: str | Path,
     message_types: Optional[List[str]] = None,
     stop_event: Optional[asyncio.Event] = None,
+    after_uuid: Optional[str] = None,
 ) -> AsyncGenerator[tuple[Conversation, List[Message]], None]:
     """
     Watch a JSONL file asynchronously for changes.
 
     95/5 Principle: Dead simple async API - no threading needed!
     Uses watchfiles which runs Rust code in a separate thread.
+    Uses native UUID checkpoints, not byte positions.
 
     Args:
         file_path: Path to JSONL file
         message_types: Optional filter ["user", "assistant", etc]
         stop_event: Optional event to stop watching
+        after_uuid: Optional UUID to resume after
 
     Yields:
         (conversation, new_messages) on each change
@@ -206,9 +215,10 @@ async def watch_async(
         async for conv, new_messages in watch_async("session.jsonl"):
             for msg in new_messages:
                 print(f"{msg.type}: {msg.text_content}")
+                # Track: last_uuid = new_messages[-1].uuid
     """
     watcher = AsyncWatcher()
     async for result in watcher.watch_async(
-        file_path, message_types, stop_event=stop_event
+        file_path, message_types, stop_event=stop_event, after_uuid=after_uuid
     ):
         yield result

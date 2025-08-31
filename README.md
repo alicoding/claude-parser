@@ -13,15 +13,45 @@ Professional Python SDK for parsing Claude Code JSONL conversation exports with 
 - **🏗️ Enterprise Architecture** - Domain-Driven Design with clean separation of concerns
 - **⚡ High Performance** - orjson for 10x faster parsing, pydantic v2 for validation
 - **🔍 Rich Queries** - Search, filter, and analyze conversations with ease
-- **📱 Real-time** - Watch files for live conversation updates
+- **📱 Real-time** - Watch files for live conversation updates with UUID checkpoints
 - **🎯 Type Safe** - Full type hints and validation throughout
-- **🧪 Well Tested** - 84% coverage with 177 passing tests
+- **🔄 UUID Checkpoints** - Native Anthropic UUID tracking, no byte positions
+- **📊 Memory Export** - Export conversations for LlamaIndex/semantic search
+- **🧪 Well Tested** - 84% coverage with 390+ passing tests
 
 ## Quick Start
 
 ```bash
 pip install claude-parser
 ```
+
+### CLI Usage
+
+```bash
+# Parse a JSONL file
+claude-parser parse conversation.jsonl
+
+# Parse with detailed statistics
+claude-parser parse conversation.jsonl --stats
+
+# Find current Claude transcript
+claude-parser find
+
+# List all Claude projects
+claude-parser projects
+
+# Export for semantic search (outputs JSON lines)
+claude-parser export conversation.jsonl > memories.jsonl
+claude-parser export conversation.jsonl --no-tools  # Exclude tool messages
+
+# Watch file for live updates
+claude-parser watch conversation.jsonl
+
+# Resume watching from UUID checkpoint
+claude-parser watch conversation.jsonl --after-uuid msg-123
+```
+
+### Python SDK Usage
 
 ```python
 from claude_parser import load
@@ -60,16 +90,47 @@ analyzer = ConversationAnalyzer(conv)
 stats = analyzer.get_stats()
 ```
 
-### Real-time File Watching
+### Real-time File Watching with UUID Checkpoints
 
 ```python
-from claude_parser.watch import watch
+from claude_parser.watch import watch, watch_async
 
 def on_new_messages(conv, new_messages):
     print(f"Received {len(new_messages)} new messages")
+    # Track checkpoint: last_uuid = new_messages[-1].uuid
     
 # Watch for live updates
 watch("session.jsonl", on_new_messages)
+
+# Resume from UUID checkpoint (no byte positions!)
+watch("session.jsonl", on_new_messages, after_uuid="msg-123")
+
+# Async watching with checkpoint
+import asyncio
+async def watch_with_checkpoint():
+    async for conv, new_messages in watch_async("session.jsonl", after_uuid="msg-456"):
+        print(f"New: {len(new_messages)}")
+        
+asyncio.run(watch_with_checkpoint())
+```
+
+### Memory Export for Semantic Search
+
+```python
+from claude_parser.memory import MemoryExporter
+
+# Export conversations as simple dicts for LlamaIndex
+exporter = MemoryExporter(exclude_tools=True)
+
+# Single conversation
+conv = load("session.jsonl")
+memories = exporter.export_as_dicts(conv)
+# Returns: [{"text": "...", "metadata": {...}}, ...]
+
+# Entire project (generator for efficiency)
+for memory_dict in exporter.export_project("/path/to/project"):
+    # Each dict ready for LlamaIndex Document creation
+    semantic_search.index(memory_dict)
 ```
 
 ### Discovery and Navigation
@@ -89,6 +150,8 @@ projects = list_all_projects()
 ## Documentation
 
 - **[API Reference](docs/api/)** - Complete API documentation
+- **[Watch API with UUID Checkpoints](docs/api/watch-uuid-api.md)** - Real-time watching with resume support
+- **[Memory Export API](docs/api/memory-export-api.md)** - Export for LlamaIndex/semantic search
 - **[DDD Architecture](docs/api/ddd-architecture.md)** - Enterprise architecture overview
 - **[Quick Reference](docs/api/QUICK_REFERENCE.md)** - Common patterns and examples
 
@@ -106,6 +169,9 @@ git clone https://github.com/anthropics/claude-parser
 cd claude-parser
 poetry install
 poetry run pytest
+
+# Run the CLI
+poetry run claude-parser --help
 ```
 
 ## Architecture
