@@ -81,6 +81,41 @@ jobs:
             exit 1
           fi
 
+      - name: Test CG CLI Commands
+        run: |
+          # Test CG CLI unit tests
+          poetry run pytest tests/test_cg_cli.py tests/test_claude_code_timeline.py -v
+
+          # Test CG command availability
+          poetry run python -c "
+          import subprocess
+          import sys
+
+          # Test CG module can be imported
+          try:
+              from claude_parser.cg_cli import app
+              from claude_parser.domain.services.claude_code_timeline import ClaudeCodeTimeline
+              print('✅ CG modules imported successfully')
+          except ImportError as e:
+              print(f'❌ CG module import failed: {e}')
+              sys.exit(1)
+
+          # Test CG command line interface (should show help even without transcripts)
+          try:
+              result = subprocess.run(['python', '-m', 'claude_parser.cg_cli', '--help'],
+                                    capture_output=True, text=True, timeout=10)
+              if 'Git-like interface for Claude Code operations' in result.stdout:
+                  print('✅ CG CLI help works')
+              else:
+                  print(f'❌ CG CLI help output unexpected: {result.stdout[:200]}')
+                  sys.exit(1)
+          except Exception as e:
+              print(f'❌ CG CLI test failed: {e}')
+              sys.exit(1)
+
+          print('✅ All CG CLI tests passed')
+          "
+
   # ============================================================================
   # INTEGRATION TESTS
   # ============================================================================

@@ -45,6 +45,7 @@ pytest-benchmark = "^5.1.0"
 
 [tool.poetry.scripts]
 claude-parser = "claude_parser.cli:app"
+cg = "claude_parser.cg_cli:app"
 
 [tool.poetry.group.watch]
 optional = true

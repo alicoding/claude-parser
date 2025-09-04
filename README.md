@@ -5,10 +5,18 @@
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue)](https://python.org)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-Professional Python SDK for parsing Claude Code JSONL conversation exports with full type safety and enterprise-grade architecture.
+Professional Python SDK for parsing Claude Code JSONL conversation exports with full type safety, enterprise-grade architecture, and git-like navigation for multi-session workflows.
 
 ## Features
 
+### 🎯 Git-Like CLI Interface
+- **🔀 Multi-Session Support** - Track operations across concurrent Claude Code sessions
+- **⚡ `cg` Commands** - Git-style interface: `cg status`, `cg log`, `cg undo`, `cg checkout`
+- **🎯 Auto-Detection** - Finds Claude Code projects automatically from current directory
+- **🔄 Time Travel** - UUID-based navigation to any point in Claude conversation history
+- **📊 Session Intelligence** - See which sessions modified which files when
+
+### 🚀 Python SDK
 - **🚀 Simple API** - One line to parse conversations: `conv = load("session.jsonl")`
 - **🏗️ Enterprise Architecture** - Domain-Driven Design with clean separation of concerns
 - **⚡ High Performance** - orjson for 10x faster parsing, pydantic v2 for validation
@@ -25,7 +33,33 @@ Professional Python SDK for parsing Claude Code JSONL conversation exports with 
 pip install claude-parser
 ```
 
-### CLI Usage
+### Git-Like CLI Usage (New!)
+
+**System Requirements**: macOS/Linux with Claude Code installed
+
+```bash
+# Navigate to any project directory Claude Code has worked on
+cd /your/project
+
+# See current project state across all Claude sessions
+cg status
+cg status --sessions    # Multi-session view
+
+# View operation history (like git log)
+cg log                  # All operations across sessions
+cg log --file app.py    # History for specific file
+
+# Time travel to any operation (like git checkout)
+cg checkout <uuid>      # Restore files to exact state
+cg undo 3               # Go back 3 operations (any session)
+cg show <uuid>          # See what specific operation did
+
+# Compare states (like git diff)
+cg diff                 # Recent changes
+cg diff <uuid1>..<uuid2> # Compare two points
+```
+
+### SDK CLI Usage
 
 ```bash
 # Parse a JSONL file
@@ -149,6 +183,12 @@ projects = list_all_projects()
 
 ## Documentation
 
+### Git-Like CLI Documentation
+- **[`cg` Command Reference](docs/cg-command-reference.md)** - Complete git-like CLI guide with examples
+- **[Multi-Session Guide](docs/multi-session-guide.md)** - Handle concurrent Claude Code sessions
+- **[Real-World Scenarios](docs/cg-command-reference.md#real-world-scenarios)** - Practical workflow examples
+
+### SDK Documentation
 - **[API Reference](docs/api/)** - Complete API documentation
 - **[Watch API with UUID Checkpoints](docs/api/watch-uuid-api.md)** - Real-time watching with resume support
 - **[Memory Export API](docs/api/memory-export-api.md)** - Export for LlamaIndex/semantic search

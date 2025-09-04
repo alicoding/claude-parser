@@ -11,12 +11,14 @@ from .transcript_finder import (
     find_project_by_encoded_name,
     find_project_by_original_path,
     find_transcript_for_cwd,
+    find_all_transcripts_for_cwd,
     list_all_projects,
 )
 
 __all__ = [
     "find_current_transcript",
     "find_transcript_for_cwd",
+    "find_all_transcripts_for_cwd",
     "list_all_projects",
     "find_project_by_original_path",
     "find_project_by_encoded_name",

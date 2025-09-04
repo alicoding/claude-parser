@@ -5,7 +5,7 @@ Tests for Timeline domain - git-based JSONL navigation.
 import jsonlines
 import pytest
 
-from claude_parser.timeline import Timeline
+from claude_parser.domain.services import Timeline
 
 
 class TestTimeline:
