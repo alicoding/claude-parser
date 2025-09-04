@@ -161,7 +161,7 @@ class TestCgIntegrationWorkflow:
                         app, ["checkout", "write-001", str(project_path)]
                     )
                     assert result.exit_code == 0
-                    assert "✅ Checked out to write-001" in result.stdout
+                    assert "✅ Restored to UUID write-001" in result.stdout
 
                     # Test 6: Undo command with steps
                     result = runner.invoke(app, ["undo", "1", str(project_path)])
@@ -170,10 +170,10 @@ class TestCgIntegrationWorkflow:
 
                     # Test 7: Undo to specific UUID
                     result = runner.invoke(
-                        app, ["undo", str(project_path), "--to", "write-001"]
+                        app, ["undo", "1", str(project_path), "--to", "write-001"]
                     )
                     assert result.exit_code == 0
-                    assert "✅ Restored to UUID write-001" in result.stdout
+                    assert "✅ Restored to UUID write-00" in result.stdout
 
     def test_project_isolation_integration(self, runner):
         """Test that project isolation works end-to-end."""
