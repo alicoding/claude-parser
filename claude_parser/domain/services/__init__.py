@@ -12,6 +12,9 @@ from .session_analyzer import SessionAnalyzer, SessionStats
 from .timeline_service import Timeline
 from .claude_code_timeline import ClaudeCodeTimeline
 
+# Alias for backward compatibility and clearer naming in tests
+RealClaudeTimeline = ClaudeCodeTimeline
+
 __all__ = [
     "ConversationAnalyzer",
     "NavigationService",
@@ -22,5 +25,6 @@ __all__ = [
     "SessionStats",
     "Timeline",
     "ClaudeCodeTimeline",
+    "RealClaudeTimeline",
     "FileNavigator",
 ]
