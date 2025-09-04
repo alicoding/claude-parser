@@ -1,0 +1,21 @@
+# Act configuration for local GitHub Actions testing
+# Use larger runner image to match GitHub more closely
+-P ubuntu-latest=catthehacker/ubuntu:act-latest
+
+# Enable detailed output for debugging
+--verbose
+
+# Reuse containers for better performance
+--reuse
+
+# Don't pull images every time (faster subsequent runs)
+--pull=false
+
+# Use host network (helpful for some operations)
+--use-host-network
+
+# Set artifact server path
+--artifact-server-path /tmp/act-artifacts
+
+# Default event type
+--eventpath /dev/null
