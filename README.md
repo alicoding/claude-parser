@@ -7,6 +7,8 @@
 
 Professional Python SDK for parsing Claude Code JSONL conversation exports with full type safety, enterprise-grade architecture, and git-like navigation for multi-session workflows.
 
+> **🤖 AUTOMATED TESTING**: This project has automatic local CI that runs GitHub Actions locally before every push, preventing failed builds. See [`AUTOMATION.md`](AUTOMATION.md) for details.
+
 ## Features
 
 ### 🎯 Git-Like CLI Interface
