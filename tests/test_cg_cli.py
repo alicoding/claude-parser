@@ -422,18 +422,63 @@ class TestCgHelp:
 
     def test_status_help(self, runner):
         """Test status command help."""
-        result = runner.invoke(app, ["status", "--help"])
+        # Add debugging to help diagnose GitHub Actions issues
+        import os
+        import sys
 
-        assert result.exit_code == 0
-        assert "Show current project state and session information" in result.stdout
-        assert "--sessions" in result.stdout
+        print(f"DEBUG: Python version: {sys.version}")
+        print(f"DEBUG: Platform: {sys.platform}")
+        print(f"DEBUG: CWD: {os.getcwd()}")
+        print(f"DEBUG: HOME: {os.environ.get('HOME', 'not set')}")
+
+        try:
+            result = runner.invoke(app, ["status", "--help"])
+        except Exception as e:
+            print(f"DEBUG: Exception during invoke: {e}")
+            raise
+
+        print(f"DEBUG: Exit code: {result.exit_code}")
+        print(f"DEBUG: Stdout length: {len(result.stdout)}")
+        print(f"DEBUG: First 200 chars: {repr(result.stdout[:200])}")
+
+        assert result.exit_code == 0, f"Expected exit code 0, got {result.exit_code}"
+        assert "Show current project state and session information" in result.stdout, (
+            f"Expected help text not found in: {repr(result.stdout[:500])}"
+        )
+        assert "--sessions" in result.stdout, (
+            f"Expected --sessions option not found in: {repr(result.stdout)}"
+        )
 
     def test_log_help(self, runner):
         """Test log command help."""
-        result = runner.invoke(app, ["log", "--help"])
+        # Add debugging to help diagnose GitHub Actions issues
+        import os
+        import sys
 
-        assert result.exit_code == 0
-        assert "View operation history across all Claude Code sessions" in result.stdout
-        assert "--file" in result.stdout
-        assert "--limit" in result.stdout
-        assert "--sessions" in result.stdout
+        print(f"DEBUG: Python version: {sys.version}")
+        print(f"DEBUG: Platform: {sys.platform}")
+        print(f"DEBUG: CWD: {os.getcwd()}")
+
+        try:
+            result = runner.invoke(app, ["log", "--help"])
+        except Exception as e:
+            print(f"DEBUG: Exception during invoke: {e}")
+            raise
+
+        print(f"DEBUG: Exit code: {result.exit_code}")
+        print(f"DEBUG: Stdout length: {len(result.stdout)}")
+        print(f"DEBUG: First 200 chars: {repr(result.stdout[:200])}")
+
+        assert result.exit_code == 0, f"Expected exit code 0, got {result.exit_code}"
+        assert (
+            "View operation history across all Claude Code sessions" in result.stdout
+        ), f"Expected help text not found in: {repr(result.stdout[:500])}"
+        assert "--file" in result.stdout, (
+            f"Expected --file option not found in: {repr(result.stdout)}"
+        )
+        assert "--limit" in result.stdout, (
+            f"Expected --limit option not found in: {repr(result.stdout)}"
+        )
+        assert "--sessions" in result.stdout, (
+            f"Expected --sessions option not found in: {repr(result.stdout)}"
+        )
