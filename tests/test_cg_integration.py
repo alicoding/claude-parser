@@ -239,7 +239,7 @@ class TestCgIntegrationWorkflow:
                     result = runner.invoke(app, ["log", str(project_a)])
                     assert result.exit_code == 0
                     # Check for operation presence (using partial UUID)
-                    assert "project-a" in result.stdout
+                    assert "project_a" in result.stdout
                     assert "project-b-op1" not in result.stdout  # Should be isolated
                     assert "app_a.py" in result.stdout
                     assert "app_b.py" not in result.stdout  # Should be isolated
@@ -256,7 +256,7 @@ class TestCgIntegrationWorkflow:
                     result = runner.invoke(app, ["log", str(project_b)])
                     assert result.exit_code == 0
                     # Check for operation presence (using partial UUID)
-                    assert "project-b" in result.stdout
+                    assert "project_b" in result.stdout
                     assert "project-a-op1" not in result.stdout  # Should be isolated
                     assert "app_b.py" in result.stdout
                     assert "app_a.py" not in result.stdout  # Should be isolated
@@ -402,7 +402,7 @@ class TestCgIntegrationWorkflow:
 
                     # Test partial UUID works in undo --to
                     result = runner.invoke(
-                        app, ["undo", str(project_path), "--to", "abcd1234"]
+                        app, ["undo", "1", str(project_path), "--to", "abcd1234"]
                     )
                     assert result.exit_code == 0
                     assert "✅ Restored to UUID abcd1234" in result.stdout
