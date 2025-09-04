@@ -2,6 +2,9 @@
 # Use larger runner image to match GitHub more closely
 -P ubuntu-latest=catthehacker/ubuntu:act-latest
 
+# Apple M-series chip compatibility
+--container-architecture linux/amd64
+
 # Enable detailed output for debugging
 --verbose
 
