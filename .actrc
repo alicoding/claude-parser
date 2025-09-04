@@ -11,11 +11,5 @@
 # Don't pull images every time (faster subsequent runs)
 --pull=false
 
-# Use host network (helpful for some operations)
---use-host-network
-
 # Set artifact server path
 --artifact-server-path /tmp/act-artifacts
-
-# Default event type
---eventpath /dev/null
