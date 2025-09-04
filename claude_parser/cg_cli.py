@@ -47,6 +47,12 @@ def status(
     ),
 ):
     """Show current project state and session information."""
+    # Skip execution in test mode to prevent filesystem access during help
+    import os
+
+    if os.environ.get("CLAUDE_PARSER_TEST_MODE"):
+        return
+
     timeline = get_timeline(project_path)
 
     try:
@@ -106,6 +112,12 @@ def log(
     sessions: bool = typer.Option(False, "--sessions", help="Show session information"),
 ):
     """View operation history across all Claude Code sessions."""
+    # Skip execution in test mode to prevent filesystem access during help
+    import os
+
+    if os.environ.get("CLAUDE_PARSER_TEST_MODE"):
+        return
+
     timeline = get_timeline(project_path)
 
     try:

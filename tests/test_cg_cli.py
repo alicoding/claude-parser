@@ -422,63 +422,93 @@ class TestCgHelp:
 
     def test_status_help(self, runner):
         """Test status command help."""
-        # Add debugging to help diagnose GitHub Actions issues
+        # Use env variable to prevent filesystem discovery during help
         import os
-        import sys
 
-        print(f"DEBUG: Python version: {sys.version}")
-        print(f"DEBUG: Platform: {sys.platform}")
-        print(f"DEBUG: CWD: {os.getcwd()}")
-        print(f"DEBUG: HOME: {os.environ.get('HOME', 'not set')}")
+        # Set environment variable to prevent filesystem access
+        old_env = os.environ.get("CLAUDE_PARSER_TEST_MODE")
+        os.environ["CLAUDE_PARSER_TEST_MODE"] = "1"
 
         try:
-            result = runner.invoke(app, ["status", "--help"])
-        except Exception as e:
-            print(f"DEBUG: Exception during invoke: {e}")
-            raise
+            # Use timeout to prevent hanging in GitHub Actions
+            import signal
 
-        print(f"DEBUG: Exit code: {result.exit_code}")
-        print(f"DEBUG: Stdout length: {len(result.stdout)}")
-        print(f"DEBUG: First 200 chars: {repr(result.stdout[:200])}")
+            def timeout_handler(signum, frame):
+                raise TimeoutError("Help command timed out")
 
-        assert result.exit_code == 0, f"Expected exit code 0, got {result.exit_code}"
-        assert "Show current project state and session information" in result.stdout, (
-            f"Expected help text not found in: {repr(result.stdout[:500])}"
-        )
-        assert "--sessions" in result.stdout, (
-            f"Expected --sessions option not found in: {repr(result.stdout)}"
-        )
+            # Set a 30-second timeout for the help command
+            if hasattr(signal, "SIGALRM"):  # Unix only
+                signal.signal(signal.SIGALRM, timeout_handler)
+                signal.alarm(30)
+
+            try:
+                result = runner.invoke(app, ["status", "--help"])
+            finally:
+                if hasattr(signal, "SIGALRM"):
+                    signal.alarm(0)  # Cancel the alarm
+
+            assert result.exit_code == 0, (
+                f"Expected exit code 0, got {result.exit_code}. Output: {result.stdout[:500]}"
+            )
+            assert (
+                "Show current project state and session information" in result.stdout
+            ), f"Expected help text not found in: {repr(result.stdout[:500])}"
+            assert "--sessions" in result.stdout, (
+                f"Expected --sessions option not found in: {repr(result.stdout)}"
+            )
+        finally:
+            # Restore original environment
+            if old_env is None:
+                os.environ.pop("CLAUDE_PARSER_TEST_MODE", None)
+            else:
+                os.environ["CLAUDE_PARSER_TEST_MODE"] = old_env
 
     def test_log_help(self, runner):
         """Test log command help."""
-        # Add debugging to help diagnose GitHub Actions issues
+        # Use env variable to prevent filesystem discovery during help
         import os
-        import sys
 
-        print(f"DEBUG: Python version: {sys.version}")
-        print(f"DEBUG: Platform: {sys.platform}")
-        print(f"DEBUG: CWD: {os.getcwd()}")
+        # Set environment variable to prevent filesystem access
+        old_env = os.environ.get("CLAUDE_PARSER_TEST_MODE")
+        os.environ["CLAUDE_PARSER_TEST_MODE"] = "1"
 
         try:
-            result = runner.invoke(app, ["log", "--help"])
-        except Exception as e:
-            print(f"DEBUG: Exception during invoke: {e}")
-            raise
+            # Use timeout to prevent hanging in GitHub Actions
+            import signal
 
-        print(f"DEBUG: Exit code: {result.exit_code}")
-        print(f"DEBUG: Stdout length: {len(result.stdout)}")
-        print(f"DEBUG: First 200 chars: {repr(result.stdout[:200])}")
+            def timeout_handler(signum, frame):
+                raise TimeoutError("Help command timed out")
 
-        assert result.exit_code == 0, f"Expected exit code 0, got {result.exit_code}"
-        assert (
-            "View operation history across all Claude Code sessions" in result.stdout
-        ), f"Expected help text not found in: {repr(result.stdout[:500])}"
-        assert "--file" in result.stdout, (
-            f"Expected --file option not found in: {repr(result.stdout)}"
-        )
-        assert "--limit" in result.stdout, (
-            f"Expected --limit option not found in: {repr(result.stdout)}"
-        )
-        assert "--sessions" in result.stdout, (
-            f"Expected --sessions option not found in: {repr(result.stdout)}"
-        )
+            # Set a 30-second timeout for the help command
+            if hasattr(signal, "SIGALRM"):  # Unix only
+                signal.signal(signal.SIGALRM, timeout_handler)
+                signal.alarm(30)
+
+            try:
+                result = runner.invoke(app, ["log", "--help"])
+            finally:
+                if hasattr(signal, "SIGALRM"):
+                    signal.alarm(0)  # Cancel the alarm
+
+            assert result.exit_code == 0, (
+                f"Expected exit code 0, got {result.exit_code}. Output: {result.stdout[:500]}"
+            )
+            assert (
+                "View operation history across all Claude Code sessions"
+                in result.stdout
+            ), f"Expected help text not found in: {repr(result.stdout[:500])}"
+            assert "--file" in result.stdout, (
+                f"Expected --file option not found in: {repr(result.stdout)}"
+            )
+            assert "--limit" in result.stdout, (
+                f"Expected --limit option not found in: {repr(result.stdout)}"
+            )
+            assert "--sessions" in result.stdout, (
+                f"Expected --sessions option not found in: {repr(result.stdout)}"
+            )
+        finally:
+            # Restore original environment
+            if old_env is None:
+                os.environ.pop("CLAUDE_PARSER_TEST_MODE", None)
+            else:
+                os.environ["CLAUDE_PARSER_TEST_MODE"] = old_env
