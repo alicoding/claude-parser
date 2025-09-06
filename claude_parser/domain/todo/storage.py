@@ -2,11 +2,9 @@
 
 95% library (pathlib, orjson), 5% glue.
 """
-
 from pathlib import Path
-from typing import Dict, List, Optional
-
 import orjson
+from typing import List, Dict, Optional
 
 
 class TodoStorage:

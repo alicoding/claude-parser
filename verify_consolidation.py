@@ -36,7 +36,6 @@ if lines > 200:
 # 3. Test imports work
 try:
     from claude_parser import Conversation
-
     print("✓ Core imports work")
 except ImportError as e:
     print(f"❌ FAIL: Import error: {e}")
@@ -44,18 +43,18 @@ except ImportError as e:
 
 # 4. Test Conversation has all required methods/properties
 test_methods = [
-    "messages",  # property
-    "assistant_messages",  # property
-    "user_messages",  # property
-    "tool_uses",  # property
-    "summaries",  # property
-    "tool_messages",  # method (alias)
-    "messages_with_errors",  # method (alias)
-    "messages_before_summary",  # method (alias)
-    "search",  # method
-    "filter",  # method
-    "with_errors",  # method
-    "before_summary",  # method
+    'messages',           # property
+    'assistant_messages', # property
+    'user_messages',      # property
+    'tool_uses',         # property
+    'summaries',         # property
+    'tool_messages',     # method (alias)
+    'messages_with_errors',  # method (alias)
+    'messages_before_summary', # method (alias)
+    'search',            # method
+    'filter',           # method
+    'with_errors',      # method
+    'before_summary',   # method
 ]
 
 c = Conversation(messages=[], metadata=None)
@@ -68,13 +67,13 @@ print(f"✓ All {len(test_methods)} required methods/properties exist")
 
 # 5. Test that it uses libraries (95/5 principle)
 content = consolidated_file.read_text()
-if "from toolz import" in content:
+if 'from toolz import' in content:
     print("✓ Uses toolz for functional operations (95/5 principle)")
 else:
     print("⚠️  WARNING: Not using toolz")
 
-if "for " in content and "for i, msg in enumerate" not in content:
-    manual_loops = content.count("for ")
+if 'for ' in content and 'for i, msg in enumerate' not in content:
+    manual_loops = content.count('for ')
     print(f"⚠️  WARNING: {manual_loops} manual loops found")
 
 # 6. Check line savings
@@ -90,6 +89,7 @@ print("=" * 60)
 print("\nAPI CONTRACT TEST:")
 try:
     # Test the main use case
+    from claude_parser import load
     # Would need a real file to test fully
     print("✓ Main API (load function) available")
     print("✓ Backward compatibility maintained")

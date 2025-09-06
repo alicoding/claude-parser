@@ -70,7 +70,6 @@ class SessionAnalyzer:
     def get_messages_for_session(self, session_id: str) -> List["Message"]:
         """Get all messages for a specific session ID."""
         return [
-            msg
-            for msg in self._messages
+            msg for msg in self._messages
             if getattr(msg, "session_id", None) == session_id
         ]

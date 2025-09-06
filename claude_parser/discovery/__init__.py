@@ -6,13 +6,14 @@ Discovery domain - Find Claude Code transcript paths.
 - Rich options for advanced discovery patterns
 """
 
-from .transcript_finder import (
+# Import from new clean architecture
+from .discovery_service import (
     find_current_transcript,
-    find_project_by_encoded_name,
-    find_project_by_original_path,
     find_transcript_for_cwd,
     find_all_transcripts_for_cwd,
     list_all_projects,
+    find_project_by_original_path,
+    find_project_by_encoded_name,
 )
 
 __all__ = [

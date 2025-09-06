@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Set
 
 import orjson
-from loguru import logger
+from ..infrastructure.logger_config import logger
 
 
 class UUIDCheckpointReader:
@@ -36,9 +36,7 @@ class UUIDCheckpointReader:
         self.last_uuid = last_uuid
         logger.debug(f"Checkpoint set to UUID: {last_uuid}")
 
-    async def get_new_messages(
-        self, after_uuid: Optional[str] = None
-    ) -> List[Dict[str, Any]]:
+    async def get_new_messages(self, after_uuid: Optional[str] = None) -> List[Dict[str, Any]]:
         """
         Get messages after a specific UUID checkpoint.
 
@@ -57,11 +55,11 @@ class UUIDCheckpointReader:
 
         try:
             # Read ALL messages (we need to scan for UUID)
-            with open(self.filepath, "rb") as f:
+            with open(self.filepath, 'rb') as f:
                 for line in f:
                     try:
                         data = orjson.loads(line)
-                        current_uuid = data.get("uuid")
+                        current_uuid = data.get('uuid')
 
                         if not current_uuid:
                             continue
@@ -90,9 +88,7 @@ class UUIDCheckpointReader:
 
         return messages
 
-    def get_messages_between(
-        self, start_uuid: Optional[str], end_uuid: Optional[str]
-    ) -> List[Dict[str, Any]]:
+    def get_messages_between(self, start_uuid: Optional[str], end_uuid: Optional[str]) -> List[Dict[str, Any]]:
         """
         Get messages between two UUID checkpoints.
 
@@ -105,11 +101,11 @@ class UUIDCheckpointReader:
             return messages
 
         try:
-            with open(self.filepath, "rb") as f:
+            with open(self.filepath, 'rb') as f:
                 for line in f:
                     try:
                         data = orjson.loads(line)
-                        current_uuid = data.get("uuid")
+                        current_uuid = data.get('uuid')
 
                         if not current_uuid:
                             continue
@@ -173,13 +169,14 @@ class MultiFileUUIDTracker:
 
         return self.readers[filename]
 
-    async def get_new_messages_for_file(
-        self, filepath: Path | str
-    ) -> List[Dict[str, Any]]:
+    async def get_new_messages_for_file(self, filepath: Path | str) -> List[Dict[str, Any]]:
         """Get new messages for a specific file."""
         reader = self.get_reader(filepath)
         return await reader.get_new_messages()
 
     def get_current_checkpoints(self) -> Dict[str, Optional[str]]:
         """Get current checkpoint UUIDs for all tracked files."""
-        return {filename: reader.last_uuid for filename, reader in self.readers.items()}
+        return {
+            filename: reader.last_uuid
+            for filename, reader in self.readers.items()
+        }

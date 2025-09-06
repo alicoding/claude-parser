@@ -1,192 +1,19 @@
 """
-Async watcher implementation - Watch Domain.
+Async JSONL file watcher - clean architecture with dependency injection.
 
-SOLID Principles:
-- SRP: Single responsibility - async file watching
-- OCP: Open for extension via callbacks
-- LSP: Can substitute for sync watcher interface
-- ISP: Focused interface - watch_async only
-- DIP: Depends on abstractions (watchfiles library)
-
-95/5 Principle:
-- Uses watchfiles.awatch (NOT custom file polling)
-- Simple async generator interface
-- No manual threading (watchfiles handles it)
-- TRUE 95/5: Now uses incremental streaming for large files
+SINGLE RESPONSIBILITY: Watch file + stream new messages as they come.
+DIP: Depends on abstractions, not concrete implementations.
 """
 
 import asyncio
 from pathlib import Path
-from typing import Any, AsyncGenerator, Dict, List, Optional
-
-from loguru import logger
-from watchfiles import awatch
+from typing import AsyncGenerator, List, Optional
 
 from ..domain.entities.conversation import Conversation
-from ..infrastructure.message_repository import JsonlMessageRepository
+from ..domain.interfaces.data_processor import DataProcessor
+from ..infrastructure.data import create_data_processor
+from ..infrastructure.logger_config import logger
 from ..models import Message
-from ..models.parser import parse_message
-from .true_streaming import StreamingJSONLReader
-
-
-class AsyncWatcher:
-    """Async file watcher following DDD principles."""
-
-    def __init__(self, repository: Optional[JsonlMessageRepository] = None):
-        """Initialize with repository dependency injection."""
-        self._repository = repository or JsonlMessageRepository()
-        self._streaming_reader: Optional[StreamingJSONLReader] = None
-        self._all_messages: List[Dict[str, Any]] = []
-
-    async def watch_async(
-        self,
-        file_path: str | Path,
-        message_types: Optional[List[str]] = None,
-        debounce: int = 100,
-        stop_event: Optional[asyncio.Event] = None,
-        after_uuid: Optional[str] = None,
-    ) -> AsyncGenerator[tuple[Conversation, List[Message]], None]:
-        """
-        Asynchronously watch a JSONL file for changes.
-
-        Uses watchfiles.awatch internally - NO manual threading!
-        The Rust backend runs in a separate thread automatically.
-        Uses native UUID checkpoints, not byte positions.
-
-        Args:
-            file_path: Path to JSONL file
-            message_types: Optional filter for message types
-            debounce: Milliseconds to debounce rapid changes
-            stop_event: Optional event to stop watching
-            after_uuid: Optional UUID to resume after
-
-        Yields:
-            Tuple of (full_conversation, new_messages)
-        """
-        file_path = Path(file_path)
-
-        # Wait for file creation if needed
-        if not file_path.exists():
-            logger.info(f"Waiting for {file_path.name} to be created...")
-            async for changes in awatch(str(file_path.parent), stop_event=stop_event):
-                if any(str(file_path) in path for _, path in changes):
-                    break
-
-        # Initialize streaming reader with UUID checkpoint
-        self._streaming_reader = StreamingJSONLReader(file_path)
-        if after_uuid:
-            self._streaming_reader.set_checkpoint(after_uuid)
-        self._all_messages = []
-
-        # Initial load using TRUE streaming
-        if file_path.exists() and not after_uuid:
-            # Only do initial yield if no checkpoint specified
-            logger.debug(f"Initial load for {file_path}")
-            result = await self._process_file_incremental(
-                file_path, message_types, initial=True
-            )
-            if result:
-                logger.debug(f"Initial load yielded {len(result[1])} messages")
-                yield result
-            else:
-                logger.debug("Initial load returned no results")
-
-        # Watch for changes - awatch handles threading!
-        logger.info(f"Watching {file_path.name} asynchronously...")
-
-        async for changes in awatch(
-            str(file_path), debounce=debounce, stop_event=stop_event
-        ):
-            # Process any changes (not just modifications)
-            logger.debug(f"Detected changes: {changes}")
-            for change_type, path in changes:
-                logger.debug(f"Change type: {change_type}, path: {path}")
-                # Process on any change (modified, added, etc)
-                result = await self._process_file_incremental(file_path, message_types)
-                if result:
-                    logger.debug(f"Yielding {len(result[1])} new messages")
-                    yield result
-                    break  # Only process once per change set
-
-    async def _process_file_incremental(
-        self,
-        file_path: Path,
-        message_types: Optional[List[str]] = None,
-        initial: bool = False,
-    ) -> Optional[tuple[Conversation, List[Message]]]:
-        """Process file changes incrementally using TRUE streaming."""
-        try:
-            # Get new raw messages using TRUE streaming
-            new_raw_messages = await self._streaming_reader.get_new_messages()
-            logger.debug(
-                f"Got {len(new_raw_messages) if new_raw_messages else 0} raw messages"
-            )
-
-            if not new_raw_messages:
-                logger.debug("No new raw messages, returning None")
-                return None
-
-            # Add to our complete list
-            self._all_messages.extend(new_raw_messages)
-
-            # Convert raw messages to Message objects
-            new_messages = []
-            for raw_msg in new_raw_messages:
-                try:
-                    # Parse using the parse_message function
-                    msg = parse_message(raw_msg)
-                    if msg:
-                        # Handle list case (embedded tools)
-                        if isinstance(msg, list):
-                            for m in msg:
-                                if not message_types or m.type.value in message_types:
-                                    new_messages.append(m)
-                        else:
-                            if not message_types or msg.type.value in message_types:
-                                new_messages.append(msg)
-                except Exception as e:
-                    logger.warning(f"Failed to parse message: {e}")
-
-            if new_messages:
-                # Parse all messages for complete conversation
-                all_parsed_messages = []
-                for raw_msg in self._all_messages:
-                    try:
-                        msg = parse_message(raw_msg)
-                        if msg:
-                            if isinstance(msg, list):
-                                all_parsed_messages.extend(msg)
-                            else:
-                                all_parsed_messages.append(msg)
-                    except Exception:
-                        pass
-
-                # Create conversation with all messages
-                metadata = self._repository.get_metadata_from_messages(
-                    all_parsed_messages, file_path
-                )
-                conv = Conversation(all_parsed_messages, metadata)
-
-                return conv, new_messages
-
-        except Exception as e:
-            logger.error(f"Error processing file: {e}")
-            return None
-
-    # Keep old method for compatibility but deprecated
-    async def _process_file(
-        self,
-        file_path: Path,
-        message_types: Optional[List[str]] = None,
-        initial: bool = False,
-    ) -> Optional[tuple[Conversation, List[Message]]]:
-        """DEPRECATED: Old method kept for compatibility."""
-        return await self._process_file_incremental(file_path, message_types, initial)
-
-
-# ==========================================
-# 95/5 FACTORY FUNCTION (Main API)
-# ==========================================
 
 
 async def watch_async(
@@ -194,31 +21,83 @@ async def watch_async(
     message_types: Optional[List[str]] = None,
     stop_event: Optional[asyncio.Event] = None,
     after_uuid: Optional[str] = None,
+    data_processor: Optional[DataProcessor] = None,
 ) -> AsyncGenerator[tuple[Conversation, List[Message]], None]:
     """
-    Watch a JSONL file asynchronously for changes.
+    Watch a JSONL file and stream new messages as they come.
 
-    95/5 Principle: Dead simple async API - no threading needed!
-    Uses watchfiles which runs Rust code in a separate thread.
-    Uses native UUID checkpoints, not byte positions.
+    Core capability: File watching + message streaming.
+    Uses dependency injection - no concrete framework dependencies.
 
     Args:
         file_path: Path to JSONL file
         message_types: Optional filter ["user", "assistant", etc]
         stop_event: Optional event to stop watching
         after_uuid: Optional UUID to resume after
+        data_processor: Optional data processor (injected for testing)
 
     Yields:
         (conversation, new_messages) on each change
 
     Example:
         async for conv, new_messages in watch_async("session.jsonl"):
-            for msg in new_messages:
-                print(f"{msg.type}: {msg.text_content}")
-                # Track: last_uuid = new_messages[-1].uuid
+            print(f"Got {len(new_messages)} new messages")
     """
-    watcher = AsyncWatcher()
-    async for result in watcher.watch_async(
-        file_path, message_types, stop_event=stop_event, after_uuid=after_uuid
-    ):
-        yield result
+    file_path = Path(file_path)
+
+    # Wait for file creation if needed
+    if not file_path.exists():
+        logger.info(f"Waiting for {file_path.name} to be created...")
+        while not file_path.exists():
+            await asyncio.sleep(0.1)
+            if stop_event and stop_event.is_set():
+                return
+
+    logger.info(f"Watching {file_path.name} for changes...")
+
+    # Use dependency injection - clean architecture
+    processor = data_processor or create_data_processor()
+    last_conversation = None
+
+    while True:
+        if stop_event and stop_event.is_set():
+            break
+
+        try:
+            if file_path.exists():
+                # Parse messages using injected processor
+                all_messages = processor.parser.parse_jsonl_file(file_path)
+
+                # Build conversation with metadata
+                current_conversation = processor.builder.build_conversation(all_messages, file_path)
+
+                if last_conversation is None:
+                    # First load - find new messages after checkpoint
+                    new_messages = all_messages
+                    if after_uuid:
+                        new_messages = processor.filter.filter_after_uuid(new_messages, after_uuid)
+                        after_uuid = None  # Only apply once
+                else:
+                    # Find truly new messages
+                    new_messages = processor.filter.find_new_messages(
+                        last_conversation.messages,
+                        current_conversation.messages
+                    )
+
+                # Apply message type filter
+                if message_types:
+                    new_messages = processor.filter.filter_by_types(new_messages, message_types)
+
+                if new_messages:
+                    yield current_conversation, new_messages
+
+                last_conversation = current_conversation
+
+            await asyncio.sleep(0.1)  # Small delay
+
+        except Exception as e:
+            logger.error(f"Error watching file: {e}")
+            await asyncio.sleep(1)
+
+
+# Helper function removed - now handled by processor.filter.filter_after_uuid()

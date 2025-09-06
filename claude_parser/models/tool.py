@@ -5,8 +5,7 @@ SOLID: Single Responsibility - Tool messages only
 DDD: Value objects for tool use and results
 """
 
-from typing import Any, Dict, Optional, Union
-
+from typing import Optional, Any, Union, Dict
 from pydantic import Field
 
 from .base import BaseMessage, MessageType
@@ -17,9 +16,7 @@ class ToolUseMessage(BaseMessage):
 
     type: MessageType = MessageType.TOOL_USE
     name: Optional[str] = Field(None, description="Tool name")
-    tool_use_id: Optional[str] = Field(
-        None, alias="toolUseID", description="Tool use identifier"
-    )
+    tool_use_id: Optional[str] = Field(None, alias="toolUseID", description="Tool use identifier")
     input: Optional[Dict[str, Any]] = Field(None, description="Tool input parameters")
 
     @property
@@ -37,15 +34,13 @@ class ToolResultMessage(BaseMessage):
     """Tool result message - response from tool execution."""
 
     type: MessageType = MessageType.TOOL_RESULT
-    tool_use_id: Optional[str] = Field(
-        None, alias="toolUseID", description="Links to tool use"
-    )
+    tool_use_id: Optional[str] = Field(None, alias="toolUseID", description="Links to tool use")
     tool_use_result: Optional[Union[str, Dict[str, Any]]] = Field(
-        None, alias="toolUseResult", description="Tool execution result"
+        None,
+        alias="toolUseResult",
+        description="Tool execution result"
     )
-    is_error: Optional[bool] = Field(
-        None, alias="isError", description="True if tool execution failed"
-    )
+    is_error: Optional[bool] = Field(None, alias="isError", description="True if tool execution failed")
 
     @property
     def text_content(self) -> str:

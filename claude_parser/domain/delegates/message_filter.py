@@ -35,19 +35,16 @@ class MessageFilter:
     def assistant_messages(self) -> List["AssistantMessage"]:
         """Get assistant messages."""
         from ...models import AssistantMessage
-
         return self.by_type(AssistantMessage)
 
     def user_messages(self) -> List["UserMessage"]:
         """Get user messages."""
         from ...models import UserMessage
-
         return self.by_type(UserMessage)
 
     def summaries(self) -> List["Summary"]:
         """Get summary messages."""
         from ...models import Summary
-
         return self.by_type(Summary)
 
     def tool_blocks(self) -> List["ToolUseContent | ToolResultContent"]:
@@ -65,13 +62,10 @@ class MessageFilter:
     def with_errors(self) -> List["Message"]:
         """Find messages with errors."""
         from ..filters import ErrorFilter
-
         error_filter = ErrorFilter()
         return self.by_predicate(error_filter.matches)
 
-    def containing_text(
-        self, query: str, case_sensitive: bool = False
-    ) -> List["Message"]:
+    def containing_text(self, query: str, case_sensitive: bool = False) -> List["Message"]:
         """Filter messages containing specific text."""
         if case_sensitive:
             return self.by_predicate(lambda m: query in m.text_content)

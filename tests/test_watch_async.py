@@ -5,7 +5,8 @@ Following the principle: test OUR code, not watchfiles library.
 """
 
 import asyncio
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch, MagicMock
+from pathlib import Path
 
 import pytest
 
@@ -62,7 +63,8 @@ class TestAsyncWatch:
         with patch("claude_parser.watch.async_watcher.awatch", mock_awatch):
             # Test filtering for assistant messages only
             async for conv, new_messages in watch_async(
-                test_file, message_types=["assistant"]
+                test_file,
+                message_types=["assistant"]
             ):
                 # Should only get assistant messages
                 assert all(msg.type == MessageType.ASSISTANT for msg in new_messages)
@@ -78,7 +80,7 @@ class TestAsyncWatch:
         # Create file with some malformed lines
         test_file.write_text(
             '{"type": "user", "uuid": "u1", "timestamp": "2025-08-21T00:00:00Z", "session_id": "test", "message": {"content": "Valid"}}\n'
-            "INVALID JSON LINE\n"
+            'INVALID JSON LINE\n'
             '{"broken": json\n'
             '{"type": "assistant", "uuid": "a1", "timestamp": "2025-08-21T00:00:01Z", "session_id": "test", "message": {"content": "Also valid"}}\n'
         )
@@ -140,9 +142,7 @@ class TestAsyncWatch:
                 await asyncio.sleep(0.01)
 
         with patch("claude_parser.watch.async_watcher.awatch", mock_awatch):
-            async for conv, new_messages in watch_async(
-                test_file, stop_event=stop_event
-            ):
+            async for conv, new_messages in watch_async(test_file, stop_event=stop_event):
                 iterations += 1
                 if iterations >= 2:
                     stop_event.set()  # Stop after 2 iterations
@@ -162,9 +162,7 @@ class TestAsyncWatchPerformance:
         # Create a large file
         with open(test_file, "w") as f:
             for i in range(1000):
-                f.write(
-                    f'{{"type": "user", "uuid": "u{i}", "timestamp": "2025-08-21T00:00:00Z", "session_id": "test", "message": {{"content": "Message {i}"}}}}\n'
-                )
+                f.write(f'{{"type": "user", "uuid": "u{i}", "timestamp": "2025-08-21T00:00:00Z", "session_id": "test", "message": {{"content": "Message {i}"}}}}\n')
 
         # Mock watchfiles
         async def mock_awatch(path, **kwargs):

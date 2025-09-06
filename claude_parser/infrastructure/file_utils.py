@@ -3,15 +3,17 @@ File utilities for DRY principle compliance.
 
 SOLID: Single Responsibility - File operations
 DRY: Shared utilities to eliminate duplication
-95/5: Using pathlib and orjson libraries
+95/5: Using pathlib and central JSON service
 """
 
 from pathlib import Path
 from typing import Any, Iterator, Optional
 
-import orjson
-
+from ..memory.exporter import MemoryExporter
 from .logger_config import logger
+
+# Global instance for file utilities
+_exporter = MemoryExporter()
 
 
 def ensure_file_exists(filepath: Path) -> Path:
@@ -40,19 +42,18 @@ def read_jsonl_lines(filepath: Path) -> Iterator[tuple[int, bytes]]:
 
 
 def parse_json_safe(data: bytes, line_num: Optional[int] = None) -> tuple[bool, Any]:
-    """Parse JSON safely with error handling.
+    """Parse JSON safely with error handling using central serializer.
 
     DRY: Single place for JSON parsing with errors.
+    Uses central JsonSerializer service.
     Returns: (success, result_or_error)
     """
-    try:
-        return True, orjson.loads(data)
-    except orjson.JSONDecodeError as e:
-        if line_num:
-            logger.warning(f"Line {line_num}: Failed to parse JSON - {e}")
-        else:
-            logger.warning(f"Failed to parse JSON - {e}")
-        return False, str(e)
+    success, result = _exporter.parse_json_safe(data)
+    if not success and line_num:
+        logger.warning(f"Line {line_num}: Failed to parse JSON - {result}")
+    elif not success:
+        logger.warning(f"Failed to parse JSON - {result}")
+    return success, result
 
 
 def log_parse_results(success_count: int, error_count: int, filepath: Path) -> None:

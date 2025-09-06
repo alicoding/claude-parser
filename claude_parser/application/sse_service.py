@@ -14,11 +14,11 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, AsyncGenerator, Callable, Dict, Optional, Union
 
-import orjson
-from loguru import logger
+import json
+from ..infrastructure.logger_config import logger
 
 from ..models import Message
-from ..watch import watch_async
+from ..watch import watch_async, stream_for_sse, create_sse_stream
 
 
 class StreamFormat(str, Enum):
@@ -111,13 +111,13 @@ class StreamingService:
                         if format == StreamFormat.RAW:
                             yield formatted
                         elif format == StreamFormat.JSON:
-                            yield orjson.dumps(formatted).decode("utf-8")
+                            yield json.dumps(formatted)
                         elif format == StreamFormat.SSE:
-                            # SSE format: "data: {json}\n\n"
-                            yield f"data: {orjson.dumps(formatted).decode('utf-8')}\n\n"
+                            # Use centralized SSE formatting from sse_helpers
+                            yield f"data: {json.dumps(formatted)}\n\n"
                         elif format == StreamFormat.NDJSON:
                             # Newline-delimited JSON
-                            yield orjson.dumps(formatted).decode("utf-8") + "\n"
+                            yield json.dumps(formatted) + "\n"
 
                     except Exception as e:
                         logger.error(f"Error formatting message: {e}")
@@ -131,7 +131,7 @@ class StreamingService:
             if format == StreamFormat.RAW:
                 yield error_data
             elif format == StreamFormat.JSON:
-                yield orjson.dumps(error_data).decode("utf-8")
+                yield ororjson.dumps(error_data).decode('utf-8').decode("utf-8")
             elif format == StreamFormat.SSE:
                 yield f"data: {orjson.dumps(error_data).decode('utf-8')}\n\n"
             elif format == StreamFormat.NDJSON:
@@ -170,11 +170,11 @@ class StreamingService:
                         queue.get(), timeout=float(heartbeat_interval)
                     )
                     formatted = formatter(msg)
-                    yield {"data": orjson.dumps(formatted).decode("utf-8")}
+                    yield {"data": json.dumps(formatted)}
 
                 except asyncio.TimeoutError:
                     # Send heartbeat
-                    yield {"data": orjson.dumps({"type": "heartbeat"}).decode("utf-8")}
+                    yield {"data": json.dumps({"type": "heartbeat"})}
 
         finally:
             task.cancel()
@@ -191,7 +191,7 @@ async def create_sse_stream(
     """
     Create SSE event stream from JSONL file.
 
-    95/5 Principle: One line creates an SSE stream!
+    95/5 Principle: Uses centralized sse_helpers!
 
     Example:
         @app.get("/stream")
@@ -200,11 +200,9 @@ async def create_sse_stream(
                 create_sse_stream("session.jsonl")
             )
     """
-    # TODO: Implement when SSEService is needed
-    # service = SSEService()
-    # async for event in service.stream_messages(file_path, message_types):
-    #     yield event
-    raise NotImplementedError("SSE streaming not yet implemented")
+    # Use centralized SSE functionality from watch domain
+    async for event in stream_for_sse(file_path):
+        yield event
 
 
 async def create_sse_stream_with_heartbeat(
@@ -213,10 +211,9 @@ async def create_sse_stream_with_heartbeat(
     """
     Create SSE stream with heartbeat support.
 
-    Keeps connection alive during quiet periods.
+    Uses StreamingService for heartbeat functionality.
     """
-    # TODO: Implement when SSEService is needed
-    # service = SSEService()
-    # async for event in service.stream_with_heartbeat(file_path, **kwargs):
-    #     yield event
-    raise NotImplementedError("SSE streaming with heartbeat not yet implemented")
+    # Use the StreamingService for heartbeat functionality
+    service = StreamingService()
+    async for event in service.stream_with_heartbeat(file_path, **kwargs):
+        yield event

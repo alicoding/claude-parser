@@ -6,6 +6,7 @@ everything works together properly.
 """
 
 import tempfile
+import jsonlines
 from pathlib import Path
 from unittest.mock import patch
 
@@ -33,17 +34,15 @@ class TestCgIntegrationWorkflow:
                 "sessionId": "session-1",
                 "timestamp": "2025-01-04T10:00:00Z",
                 "message": {
-                    "content": [
-                        {
-                            "type": "tool_use",
-                            "name": "Write",
-                            "input": {
-                                "file_path": str(project_path / "app.py"),
-                                "content": "def hello():\n    print('hello')\n",
-                            },
+                    "content": [{
+                        "type": "tool_use",
+                        "name": "Write",
+                        "input": {
+                            "file_path": str(project_path / "app.py"),
+                            "content": "def hello():\n    print('hello')\n"
                         }
-                    ]
-                },
+                    }]
+                }
             },
             # Edit operation
             {
@@ -52,18 +51,16 @@ class TestCgIntegrationWorkflow:
                 "sessionId": "session-1",
                 "timestamp": "2025-01-04T10:01:00Z",
                 "message": {
-                    "content": [
-                        {
-                            "type": "tool_use",
-                            "name": "Edit",
-                            "input": {
-                                "file_path": str(project_path / "app.py"),
-                                "old_string": "def hello():\n    print('hello')",
-                                "new_string": "def hello():\n    print('hello world')",
-                            },
+                    "content": [{
+                        "type": "tool_use",
+                        "name": "Edit",
+                        "input": {
+                            "file_path": str(project_path / "app.py"),
+                            "old_string": "def hello():\n    print('hello')",
+                            "new_string": "def hello():\n    print('hello world')"
                         }
-                    ]
-                },
+                    }]
+                }
             },
             # MultiEdit operation
             {
@@ -72,22 +69,20 @@ class TestCgIntegrationWorkflow:
                 "sessionId": "session-1",
                 "timestamp": "2025-01-04T10:02:00Z",
                 "message": {
-                    "content": [
-                        {
-                            "type": "tool_use",
-                            "name": "MultiEdit",
-                            "input": {
-                                "file_path": str(project_path / "app.py"),
-                                "edits": [
-                                    {
-                                        "old_string": "print('hello world')",
-                                        "new_string": "print('Hello, World!')",
-                                    }
-                                ],
-                            },
+                    "content": [{
+                        "type": "tool_use",
+                        "name": "MultiEdit",
+                        "input": {
+                            "file_path": str(project_path / "app.py"),
+                            "edits": [
+                                {
+                                    "old_string": "print('hello world')",
+                                    "new_string": "print('Hello, World!')"
+                                }
+                            ]
                         }
-                    ]
-                },
+                    }]
+                }
             },
             # Second session with new file
             {
@@ -96,18 +91,16 @@ class TestCgIntegrationWorkflow:
                 "sessionId": "session-2",
                 "timestamp": "2025-01-04T11:00:00Z",
                 "message": {
-                    "content": [
-                        {
-                            "type": "tool_use",
-                            "name": "Write",
-                            "input": {
-                                "file_path": str(project_path / "utils.py"),
-                                "content": "def utility_function():\n    return 'utils'\n",
-                            },
+                    "content": [{
+                        "type": "tool_use",
+                        "name": "Write",
+                        "input": {
+                            "file_path": str(project_path / "utils.py"),
+                            "content": "def utility_function():\n    return 'utils'\n"
                         }
-                    ]
-                },
-            },
+                    }]
+                }
+            }
         ]
 
     def test_complete_cg_workflow(self, runner):
@@ -117,63 +110,51 @@ class TestCgIntegrationWorkflow:
             project_path.mkdir()
 
             # Create realistic data with actual project path
-            realistic_transcript_data = self.realistic_transcript_data_factory(
-                project_path
-            )
+            realistic_transcript_data = self.realistic_transcript_data_factory(project_path)
 
             # Mock transcript discovery
-            with patch(
-                "claude_parser.domain.services.claude_code_timeline.find_all_transcripts_for_cwd"
-            ) as mock_find:
+            with patch('claude_parser.domain.services.claude_code_timeline.find_all_transcripts_for_cwd') as mock_find:
                 mock_find.return_value = [str(project_path / "session.jsonl")]
 
-                with patch("jsonlines.open") as mock_jsonlines:
-                    mock_jsonlines.return_value.__enter__.return_value = (
-                        realistic_transcript_data
-                    )
+                with patch('jsonlines.open') as mock_jsonlines:
+                    mock_jsonlines.return_value.__enter__.return_value = realistic_transcript_data
 
                     # Test 1: Status command
-                    result = runner.invoke(app, ["status", str(project_path)])
+                    result = runner.invoke(app, ['status', str(project_path)])
                     assert result.exit_code == 0
-                    assert "📊 Timeline Summary" in result.stdout
+                    assert '📊 Timeline Summary' in result.stdout
 
                     # Test 2: Log command
-                    result = runner.invoke(app, ["log", str(project_path)])
+                    result = runner.invoke(app, ['log', str(project_path)])
                     assert result.exit_code == 0
-                    assert "4 operations" in result.stdout
-                    assert "app.py: 3 operations" in result.stdout
-                    assert "utils.py: 1 operations" in result.stdout
+                    assert '4 operations' in result.stdout
+                    assert 'app.py: 3 operations' in result.stdout
+                    assert 'utils.py: 1 operations' in result.stdout
 
                     # Test 3: Show command with partial UUID
-                    result = runner.invoke(app, ["show", "edit-001", str(project_path)])
+                    result = runner.invoke(app, ['show', 'edit-001', str(project_path)])
                     assert result.exit_code == 0
-                    assert "🔍 Operation edit-001" in result.stdout
+                    assert '🔍 Operation edit-001' in result.stdout
 
                     # Test 4: Diff command
-                    result = runner.invoke(
-                        app, ["diff", "--uuid", "edit-001", str(project_path)]
-                    )
+                    result = runner.invoke(app, ['diff', '--uuid', 'edit-001', str(project_path)])
                     assert result.exit_code == 0
-                    assert "🔍 Changes at edit-001" in result.stdout
+                    assert '🔍 Changes at edit-001' in result.stdout
 
                     # Test 5: Checkout command
-                    result = runner.invoke(
-                        app, ["checkout", "write-001", str(project_path)]
-                    )
+                    result = runner.invoke(app, ['checkout', 'write-001', str(project_path)])
                     assert result.exit_code == 0
-                    assert "✅ Restored to UUID write-001" in result.stdout
+                    assert '✅ Checked out to write-001' in result.stdout
 
                     # Test 6: Undo command with steps
-                    result = runner.invoke(app, ["undo", "1", str(project_path)])
+                    result = runner.invoke(app, ['undo', '1', str(project_path)])
                     assert result.exit_code == 0
-                    assert "✅ Undid 1 change(s)" in result.stdout
+                    assert '✅ Undid 1 change(s)' in result.stdout
 
                     # Test 7: Undo to specific UUID
-                    result = runner.invoke(
-                        app, ["undo", "1", str(project_path), "--to", "write-001"]
-                    )
+                    result = runner.invoke(app, ['undo', str(project_path), '--to', 'write-001'])
                     assert result.exit_code == 0
-                    assert "✅ Restored to UUID write-00" in result.stdout
+                    assert '✅ Restored to UUID write-001' in result.stdout
 
     def test_project_isolation_integration(self, runner):
         """Test that project isolation works end-to-end."""
@@ -191,17 +172,15 @@ class TestCgIntegrationWorkflow:
                     "sessionId": "session-a",
                     "timestamp": "2025-01-04T10:00:00Z",
                     "message": {
-                        "content": [
-                            {
-                                "type": "tool_use",
-                                "name": "Write",
-                                "input": {
-                                    "file_path": str(project_a / "app_a.py"),
-                                    "content": "# Project A file\n",
-                                },
+                        "content": [{
+                            "type": "tool_use",
+                            "name": "Write",
+                            "input": {
+                                "file_path": str(project_a / "app_a.py"),
+                                "content": "# Project A file\n"
                             }
-                        ]
-                    },
+                        }]
+                    }
                 }
             ]
 
@@ -213,53 +192,47 @@ class TestCgIntegrationWorkflow:
                     "sessionId": "session-b",
                     "timestamp": "2025-01-04T10:00:00Z",
                     "message": {
-                        "content": [
-                            {
-                                "type": "tool_use",
-                                "name": "Write",
-                                "input": {
-                                    "file_path": str(project_b / "app_b.py"),
-                                    "content": "# Project B file\n",
-                                },
+                        "content": [{
+                            "type": "tool_use",
+                            "name": "Write",
+                            "input": {
+                                "file_path": str(project_b / "app_b.py"),
+                                "content": "# Project B file\n"
                             }
-                        ]
-                    },
+                        }]
+                    }
                 }
             ]
 
             # Test project A isolation
-            with patch(
-                "claude_parser.domain.services.claude_code_timeline.find_all_transcripts_for_cwd"
-            ) as mock_find:
+            with patch('claude_parser.domain.services.claude_code_timeline.find_all_transcripts_for_cwd') as mock_find:
                 mock_find.return_value = [str(project_a / "session_a.jsonl")]
 
-                with patch("jsonlines.open") as mock_jsonlines:
+                with patch('jsonlines.open') as mock_jsonlines:
                     mock_jsonlines.return_value.__enter__.return_value = project_a_data
 
-                    result = runner.invoke(app, ["log", str(project_a)])
+                    result = runner.invoke(app, ['log', str(project_a)])
                     assert result.exit_code == 0
                     # Check for operation presence (using partial UUID)
-                    assert "project_a" in result.stdout
-                    assert "project-b-op1" not in result.stdout  # Should be isolated
-                    assert "app_a.py" in result.stdout
-                    assert "app_b.py" not in result.stdout  # Should be isolated
+                    assert 'project-a' in result.stdout
+                    assert 'project-b-op1' not in result.stdout  # Should be isolated
+                    assert 'app_a.py' in result.stdout
+                    assert 'app_b.py' not in result.stdout  # Should be isolated
 
             # Test project B isolation
-            with patch(
-                "claude_parser.domain.services.claude_code_timeline.find_all_transcripts_for_cwd"
-            ) as mock_find:
+            with patch('claude_parser.domain.services.claude_code_timeline.find_all_transcripts_for_cwd') as mock_find:
                 mock_find.return_value = [str(project_b / "session_b.jsonl")]
 
-                with patch("jsonlines.open") as mock_jsonlines:
+                with patch('jsonlines.open') as mock_jsonlines:
                     mock_jsonlines.return_value.__enter__.return_value = project_b_data
 
-                    result = runner.invoke(app, ["log", str(project_b)])
+                    result = runner.invoke(app, ['log', str(project_b)])
                     assert result.exit_code == 0
                     # Check for operation presence (using partial UUID)
-                    assert "project_b" in result.stdout
-                    assert "project-a-op1" not in result.stdout  # Should be isolated
-                    assert "app_b.py" in result.stdout
-                    assert "app_a.py" not in result.stdout  # Should be isolated
+                    assert 'project-b' in result.stdout
+                    assert 'project-a-op1' not in result.stdout  # Should be isolated
+                    assert 'app_b.py' in result.stdout
+                    assert 'app_a.py' not in result.stdout  # Should be isolated
 
     def test_multi_session_support(self, runner):
         """Test multi-session functionality."""
@@ -275,17 +248,15 @@ class TestCgIntegrationWorkflow:
                     "sessionId": "session-1",
                     "timestamp": "2025-01-04T10:00:00Z",
                     "message": {
-                        "content": [
-                            {
-                                "type": "tool_use",
-                                "name": "Write",
-                                "input": {
-                                    "file_path": str(project_path / "file1.py"),
-                                    "content": "# Session 1 file\n",
-                                },
+                        "content": [{
+                            "type": "tool_use",
+                            "name": "Write",
+                            "input": {
+                                "file_path": str(project_path / "file1.py"),
+                                "content": "# Session 1 file\n"
                             }
-                        ]
-                    },
+                        }]
+                    }
                 },
                 # Session 2 operations
                 {
@@ -294,46 +265,36 @@ class TestCgIntegrationWorkflow:
                     "sessionId": "session-2",
                     "timestamp": "2025-01-04T11:00:00Z",
                     "message": {
-                        "content": [
-                            {
-                                "type": "tool_use",
-                                "name": "Write",
-                                "input": {
-                                    "file_path": str(project_path / "file2.py"),
-                                    "content": "# Session 2 file\n",
-                                },
+                        "content": [{
+                            "type": "tool_use",
+                            "name": "Write",
+                            "input": {
+                                "file_path": str(project_path / "file2.py"),
+                                "content": "# Session 2 file\n"
                             }
-                        ]
-                    },
-                },
+                        }]
+                    }
+                }
             ]
 
-            with patch(
-                "claude_parser.domain.services.claude_code_timeline.find_all_transcripts_for_cwd"
-            ) as mock_find:
+            with patch('claude_parser.domain.services.claude_code_timeline.find_all_transcripts_for_cwd') as mock_find:
                 mock_find.return_value = [str(project_path / "multi_session.jsonl")]
 
-                with patch("jsonlines.open") as mock_jsonlines:
-                    mock_jsonlines.return_value.__enter__.return_value = (
-                        multi_session_data
-                    )
+                with patch('jsonlines.open') as mock_jsonlines:
+                    mock_jsonlines.return_value.__enter__.return_value = multi_session_data
 
                     # Test sessions view
-                    result = runner.invoke(
-                        app, ["status", "--sessions", str(project_path)]
-                    )
+                    result = runner.invoke(app, ['status', '--sessions', str(project_path)])
                     assert result.exit_code == 0
-                    assert "Multi-Session Summary" in result.stdout
-                    assert "Sessions: 2" in result.stdout
+                    assert 'Multi-Session Summary' in result.stdout
+                    assert 'Sessions: 2' in result.stdout
 
                     # Test log with sessions
-                    result = runner.invoke(
-                        app, ["log", "--sessions", str(project_path)]
-                    )
+                    result = runner.invoke(app, ['log', '--sessions', str(project_path)])
                     assert result.exit_code == 0
                     # Check for operations from both sessions
-                    assert "s1-op1-u" in result.stdout or "session-1" in result.stdout
-                    assert "s2-op1-u" in result.stdout or "session-2" in result.stdout
+                    assert 's1-op1-u' in result.stdout or 'session-1' in result.stdout
+                    assert 's2-op1-u' in result.stdout or 'session-2' in result.stdout
 
     def test_error_handling_integration(self, runner):
         """Test error handling in integration scenarios."""
@@ -341,16 +302,14 @@ class TestCgIntegrationWorkflow:
             project_path = Path(temp_dir) / "nonexistent"
 
             # Test with no transcripts found
-            with patch(
-                "claude_parser.domain.services.claude_code_timeline.find_all_transcripts_for_cwd"
-            ) as mock_find:
+            with patch('claude_parser.domain.services.claude_code_timeline.find_all_transcripts_for_cwd') as mock_find:
                 mock_find.return_value = []
 
-                result = runner.invoke(app, ["status", str(project_path)])
+                result = runner.invoke(app, ['status', str(project_path)])
                 assert result.exit_code == 1
-                assert "No Claude Code transcripts found" in result.stdout
+                assert 'No Claude Code transcripts found' in result.stdout
 
-                result = runner.invoke(app, ["log", str(project_path)])
+                result = runner.invoke(app, ['log', str(project_path)])
                 assert result.exit_code == 1
 
     def test_uuid_expansion_integration(self, runner):
@@ -366,43 +325,35 @@ class TestCgIntegrationWorkflow:
                     "sessionId": "session-1",
                     "timestamp": "2025-01-04T10:00:00Z",
                     "message": {
-                        "content": [
-                            {
-                                "type": "tool_use",
-                                "name": "Write",
-                                "input": {
-                                    "file_path": str(project_path / "test.py"),
-                                    "content": "print('test')\n",
-                                },
+                        "content": [{
+                            "type": "tool_use",
+                            "name": "Write",
+                            "input": {
+                                "file_path": str(project_path / "test.py"),
+                                "content": "print('test')\n"
                             }
-                        ]
-                    },
+                        }]
+                    }
                 }
             ]
 
-            with patch(
-                "claude_parser.domain.services.claude_code_timeline.find_all_transcripts_for_cwd"
-            ) as mock_find:
+            with patch('claude_parser.domain.services.claude_code_timeline.find_all_transcripts_for_cwd') as mock_find:
                 mock_find.return_value = [str(project_path / "session.jsonl")]
 
-                with patch("jsonlines.open") as mock_jsonlines:
+                with patch('jsonlines.open') as mock_jsonlines:
                     mock_jsonlines.return_value.__enter__.return_value = test_data
 
                     # Test partial UUID works in show
-                    result = runner.invoke(app, ["show", "abcd1234", str(project_path)])
+                    result = runner.invoke(app, ['show', 'abcd1234', str(project_path)])
                     assert result.exit_code == 0
-                    assert "🔍 Operation abcd1234" in result.stdout
+                    assert '🔍 Operation abcd1234' in result.stdout
 
                     # Test partial UUID works in checkout
-                    result = runner.invoke(
-                        app, ["checkout", "abcd1234", str(project_path)]
-                    )
+                    result = runner.invoke(app, ['checkout', 'abcd1234', str(project_path)])
                     assert result.exit_code == 0
-                    assert "✅ Restored to UUID abcd1234" in result.stdout
+                    assert '✅ Restored to UUID abcd1234' in result.stdout
 
                     # Test partial UUID works in undo --to
-                    result = runner.invoke(
-                        app, ["undo", "1", str(project_path), "--to", "abcd1234"]
-                    )
+                    result = runner.invoke(app, ['undo', str(project_path), '--to', 'abcd1234'])
                     assert result.exit_code == 0
-                    assert "✅ Restored to UUID abcd1234" in result.stdout
+                    assert '✅ Restored to UUID abcd1234' in result.stdout

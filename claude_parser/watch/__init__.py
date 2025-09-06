@@ -18,9 +18,8 @@ Async Example:
         print(f"Got {len(new_messages)} new messages")
 """
 
-from .async_watcher import watch_async
-from .sse_helpers import create_sse_stream, stream_for_sse
-from .watcher import watch
+# Import from new clean architecture
+from .watch_service import watch_async, watch, stream_for_sse, create_sse_stream
 
 __all__ = [
     "watch",

@@ -17,7 +17,7 @@ def test_exit_success_outputs_continue_json(capsys):
 
     # Should output {"continue": true} to stdout
     captured = capsys.readouterr()
-    output = orjson.loads(captured.out)
+    output = ororjson.loads(captured.out)
     assert output == {"continue": True}
 
 

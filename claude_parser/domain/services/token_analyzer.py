@@ -111,8 +111,8 @@ class TokenAnalyzer:
             if total_input > 0:
                 stats.cache_hit_rate = stats.total_cache_read / total_input
 
-        # Calculate cost
-        stats.total_cost_usd = self._calculate_cost(stats)
+        # Calculate cost using unified service
+        stats.total_cost_usd = float(self._calculate_cost_with_service(stats))
 
         return stats
 

@@ -7,9 +7,9 @@ Strategy Pattern: Each format has its own strategy class.
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List
+from typing import Any, Dict, Iterator, List
 
-import orjson
+import msgspec
 
 
 class FormatStrategy(ABC):
@@ -52,11 +52,11 @@ class JSONFormatStrategy(FormatStrategy):
 
     def format_message(self, message: Dict[str, Any]) -> str:
         """Format message as JSON."""
-        return orjson.dumps(message).decode()
+        return msgspec.json.encode(message).decode()
 
     def format_batch(self, messages: List[Dict[str, Any]]) -> str:
         """Format batch as JSON array."""
-        return orjson.dumps(messages).decode()
+        return msgspec.json.encode(messages).decode()
 
     def get_content_type(self) -> str:
         """Return JSON content type."""
@@ -68,7 +68,7 @@ class SSEFormatStrategy(FormatStrategy):
 
     def format_message(self, message: Dict[str, Any]) -> str:
         """Format message as SSE."""
-        json_str = orjson.dumps(message).decode()
+        json_str = self._exporter.serialize_data(message)
         return f"data: {json_str}\n\n"
 
     def format_batch(self, messages: List[Dict[str, Any]]) -> str:
@@ -85,7 +85,7 @@ class NDJSONFormatStrategy(FormatStrategy):
 
     def format_message(self, message: Dict[str, Any]) -> str:
         """Format message as NDJSON."""
-        return orjson.dumps(message).decode() + "\n"
+        return self._exporter.serialize_data(message) + "\n"
 
     def format_batch(self, messages: List[Dict[str, Any]]) -> str:
         """Format batch as NDJSON."""
@@ -122,10 +122,10 @@ class FormatStrategyFactory:
 
 # Export for convenience
 __all__ = [
-    "FormatStrategy",
-    "PlainTextFormatStrategy",
-    "JSONFormatStrategy",
-    "SSEFormatStrategy",
-    "NDJSONFormatStrategy",
-    "FormatStrategyFactory",
+    'FormatStrategy',
+    'PlainTextFormatStrategy',
+    'JSONFormatStrategy',
+    'SSEFormatStrategy',
+    'NDJSONFormatStrategy',
+    'FormatStrategyFactory',
 ]

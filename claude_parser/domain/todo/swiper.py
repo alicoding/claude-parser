@@ -1,8 +1,9 @@
 """TodoSwiper - Tinder-like navigation through todo history."""
-
-from typing import Dict, List
-
+from typing import List, Dict, Optional
 from rich.console import Console
+from rich.panel import Panel
+from rich.text import Text
+import pendulum
 
 from .display import TodoDisplay
 
@@ -44,7 +45,7 @@ class TodoSwiper:
             return {
                 "display": "📋 No todo history found",
                 "timestamp": None,
-                "position": "0/0",
+                "position": "0/0"
             }
 
         todos = self.history[self.current_index]
@@ -63,7 +64,6 @@ class TodoSwiper:
 
         # Render tree to string using Rich console
         from io import StringIO
-
         from rich.console import Console
 
         string_io = StringIO()
@@ -82,8 +82,8 @@ class TodoSwiper:
             "progress": progress,
             "navigation": {
                 "can_swipe_left": self.can_swipe_left(),
-                "can_swipe_right": self.can_swipe_right(),
-            },
+                "can_swipe_right": self.can_swipe_right()
+            }
         }
 
     def show(self):
@@ -121,12 +121,12 @@ class TodoSwiper:
             try:
                 key = input("\nNavigation (←/→/q): ").strip().lower()
 
-                if key in ["q", "quit", "exit"]:
+                if key in ['q', 'quit', 'exit']:
                     break
-                elif key in ["<", "left", "←"]:
+                elif key in ['<', 'left', '←']:
                     if not self.swipe_left():
                         self.console.print("🚫 Already at oldest todos")
-                elif key in [">", "right", "→"]:
+                elif key in ['>', 'right', '→']:
                     if not self.swipe_right():
                         self.console.print("🚫 Already at newest todos")
                 else:
@@ -144,24 +144,21 @@ class TodoSwiper:
 
         all_snapshots = []
 
-        with open(transcript_path, "rb") as f:
+        with open(transcript_path, 'rb') as f:
             for line in f:
                 try:
                     data = orjson.loads(line)
 
                     # Look for TodoWrite in assistant messages
-                    if (
-                        data.get("type") == "assistant"
-                        and "message" in data
-                        and "content" in data["message"]
-                    ):
-                        for content_item in data["message"]["content"]:
-                            if (
-                                content_item.get("type") == "tool_use"
-                                and content_item.get("name") == "TodoWrite"
-                                and "input" in content_item
-                            ):
-                                todos = content_item["input"].get("todos", [])
+                    if (data.get('type') == 'assistant' and
+                        'message' in data and 'content' in data['message']):
+
+                        for content_item in data['message']['content']:
+                            if (content_item.get('type') == 'tool_use' and
+                                content_item.get('name') == 'TodoWrite' and
+                                'input' in content_item):
+
+                                todos = content_item['input'].get('todos', [])
                                 if todos:  # Only add non-empty snapshots
                                     all_snapshots.append(todos)
 
@@ -188,19 +185,17 @@ class TodoSwiper:
 
         for snapshot in snapshots:
             # Extract just the content strings for comparison
-            contents = {todo["content"] for todo in snapshot}
+            contents = {todo['content'] for todo in snapshot}
 
             # Try to find existing timeline with overlapping content
             matched_timeline = None
             for timeline in timelines:
                 if timeline:  # Check if timeline is not empty
                     last_snapshot = timeline[-1]
-                    last_contents = {todo["content"] for todo in last_snapshot}
+                    last_contents = {todo['content'] for todo in last_snapshot}
 
                     # If >50% content overlap, it's the same todo list progression
-                    overlap = len(contents & last_contents) / max(
-                        len(contents), len(last_contents)
-                    )
+                    overlap = len(contents & last_contents) / max(len(contents), len(last_contents))
                     if overlap > 0.5:
                         matched_timeline = timeline
                         break

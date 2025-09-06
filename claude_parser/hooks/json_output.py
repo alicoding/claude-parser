@@ -172,9 +172,39 @@ class AdvancedHooks:
         """Immediately halt all processing (universal method)."""
         json_output(continue_processing=False, stop_reason=reason)
 
+    @staticmethod
+    def accept(reason: str = "Tool results accepted") -> None:
+        """Accept PostToolUse results."""
+        json_output(decision="continue", reason=reason, hook_type="PostToolUse")
+
+    @staticmethod
+    def challenge(reason: str = "Tool results challenged") -> None:
+        """Challenge PostToolUse results (blocks with feedback to Claude)."""
+        json_output(decision="block", reason=reason, hook_type="PostToolUse")
+
+    @staticmethod
+    def ignore() -> None:
+        """Ignore PostToolUse results (no feedback to Claude)."""
+        json_output(decision="continue", hook_type="PostToolUse")
+
+    @staticmethod
+    def block_prompt(reason: str = "Prompt blocked by policy") -> None:
+        """Block UserPromptSubmit from processing."""
+        json_output(decision="block", reason=reason, hook_type="UserPromptSubmit")
+
+    @staticmethod
+    def halt(reason: str = "Processing halted") -> None:
+        """Immediately halt all processing (universal method)."""
+        json_output(continue_processing=False, stop_reason=reason)
+
 
 # Create singleton instance
 advanced = AdvancedHooks()
+
+# Convenience functions for common actions
+def halt(reason: str = "Processing halted") -> None:
+    """Universal halt function - stops processing immediately."""
+    json_output(continue_processing=False, stop_reason=reason)
 
 
 # Convenience functions for common actions

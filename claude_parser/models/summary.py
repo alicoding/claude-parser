@@ -3,29 +3,26 @@ Summary message model.
 
 SOLID: Single Responsibility - Summary messages only
 DDD: Value object for conversation summaries
+Framework: msgspec for serialization, domain logic preserved
 """
 
 from typing import Optional
+import msgspec
 
-from pydantic import BaseModel, ConfigDict, Field
-
-from .base import MessageType
+from ..msgspec_models import BaseMessage
 
 
-class Summary(BaseModel):
-    """Summary of conversation segment.
+class Summary(BaseMessage):
+    """Summary of conversation segment - SOLID/DDD with msgspec framework.
 
     Simplified model based on real JSONL structure:
     {"type":"summary","summary":"...","leafUuid":"..."}
     """
 
-    model_config = ConfigDict(
-        populate_by_name=True, str_strip_whitespace=True, extra="allow"
-    )
-
-    type: MessageType = MessageType.SUMMARY
-    summary: str = Field(..., min_length=1)
-    leaf_uuid: Optional[str] = Field(None, alias="leafUuid")
+    # SOLID: Summary specific fields only
+    type: str = "summary"
+    summary: str = ""
+    leaf_uuid: Optional[str] = msgspec.field(name="leafUuid", default=None)
 
     @property
     def text_content(self) -> str:

@@ -2,9 +2,6 @@
 # Use larger runner image to match GitHub more closely
 -P ubuntu-latest=catthehacker/ubuntu:act-latest
 
-# Apple M-series chip compatibility
---container-architecture linux/amd64
-
 # Enable detailed output for debugging
 --verbose
 
@@ -14,5 +11,11 @@
 # Don't pull images every time (faster subsequent runs)
 --pull=false
 
+# Use host network (helpful for some operations)
+--container-daemon-socket /var/run/docker.sock
+
 # Set artifact server path
 --artifact-server-path /tmp/act-artifacts
+
+# Default event type
+--eventpath /dev/null

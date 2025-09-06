@@ -10,6 +10,7 @@ Success criteria:
 
 import pytest
 from tests.constants import TestDefaults
+from tests.constants import TestDefaults
 
 
 def test_hook_input_parses_valid_json(mock_stdin, hook_sample):

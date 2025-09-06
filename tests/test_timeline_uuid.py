@@ -8,6 +8,7 @@ Tests that we:
 4. Use 95/5 principle (GitPython + libraries, minimal custom code)
 """
 
+import tempfile
 from pathlib import Path
 
 import jsonlines
@@ -286,7 +287,7 @@ def native_claude_jsonl(tmp_path):
             "timestamp": "2024-08-23T10:00:00Z",
             "tool_name": "Write",
             "file_path": "app.py",
-            "content": "def main():\n    pass\n",
+            "content": "def main():\n    pass\n"
         },
         {
             "uuid": "native-002",
@@ -294,8 +295,8 @@ def native_claude_jsonl(tmp_path):
             "tool_name": "Edit",
             "file_path": "app.py",
             "old_string": "def main():\n    pass",
-            "new_string": "def main():\n    print('Hello from Timeline!')",
-        },
+            "new_string": "def main():\n    print('Hello from Timeline!')"
+        }
     ]
 
     with jsonlines.open(jsonl_dir / "native.jsonl", mode="w") as writer:

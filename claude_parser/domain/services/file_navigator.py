@@ -8,7 +8,8 @@ Follows VSCode/Cursor command pattern with UUID-based state tracking.
 from typing import List, Optional, Dict, Any
 from functools import lru_cache
 
-from toolz import filter as toolz_filter, groupby
+from toolz import filter as toolz_filter, map as toolz_map, groupby
+from toolz.curried import take, drop
 
 from ...models.content import ToolUseContent
 
@@ -32,44 +33,36 @@ class FileNavigator:
     @lru_cache(maxsize=64)
     def get_file_operations(self, file_path: str) -> List[ToolUseContent]:
         """Get all operations for a specific file, ordered by UUID."""
-        file_ops = list(
-            toolz_filter(
-                lambda op: self._extract_file_path(op) == file_path, self._operations
-            )
-        )
+        file_ops = list(toolz_filter(
+            lambda op: self._extract_file_path(op) == file_path,
+            self._operations
+        ))
         return sorted(file_ops, key=lambda op: op.id)  # UUID ordering
 
-    def get_operations_after_uuid(
-        self, start_uuid: str, file_path: Optional[str] = None
-    ) -> List[ToolUseContent]:
+    def get_operations_after_uuid(self, start_uuid: str, file_path: Optional[str] = None) -> List[ToolUseContent]:
         """Get all operations after a specific UUID, optionally for one file."""
         operations = self._operations
         if file_path:
             operations = self.get_file_operations(file_path)
 
         # Find operations after start_uuid
-        after_ops = list(
-            toolz_filter(lambda op: self._is_uuid_after(op.id, start_uuid), operations)
-        )
+        after_ops = list(toolz_filter(
+            lambda op: self._is_uuid_after(op.id, start_uuid),
+            operations
+        ))
         return sorted(after_ops, key=lambda op: op.id)
 
-    def get_operations_between_uuids(
-        self, start_uuid: str, end_uuid: str, file_path: Optional[str] = None
-    ) -> List[ToolUseContent]:
+    def get_operations_between_uuids(self, start_uuid: str, end_uuid: str, file_path: Optional[str] = None) -> List[ToolUseContent]:
         """Get operations between two UUIDs (exclusive start, inclusive end)."""
         operations = self._operations
         if file_path:
             operations = self.get_file_operations(file_path)
 
-        between_ops = list(
-            toolz_filter(
-                lambda op: (
-                    self._is_uuid_after(op.id, start_uuid)
-                    and self._is_uuid_before_or_equal(op.id, end_uuid)
-                ),
-                operations,
-            )
-        )
+        between_ops = list(toolz_filter(
+            lambda op: (self._is_uuid_after(op.id, start_uuid) and
+                       self._is_uuid_before_or_equal(op.id, end_uuid)),
+            operations
+        ))
         return sorted(between_ops, key=lambda op: op.id)
 
     def get_file_navigation_timeline(self, file_path: str) -> List[Dict[str, Any]]:
@@ -78,16 +71,14 @@ class FileNavigator:
 
         timeline = []
         for i, op in enumerate(operations):
-            timeline.append(
-                {
-                    "step": i + 1,
-                    "uuid": op.id,
-                    "operation": op.name,  # Edit, Write, MultiEdit
-                    "input": op.input,
-                    "can_undo_to": i > 0,
-                    "can_redo_from": i < len(operations) - 1,
-                }
-            )
+            timeline.append({
+                "step": i + 1,
+                "uuid": op.id,
+                "operation": op.name,  # Edit, Write, MultiEdit
+                "input": op.input,
+                "can_undo_to": i > 0,
+                "can_redo_from": i < len(operations) - 1
+            })
         return timeline
 
     def get_modified_files_after_uuid(self, start_uuid: str) -> Dict[str, int]:
@@ -98,9 +89,7 @@ class FileNavigator:
         file_groups = groupby(self._extract_file_path, after_ops)
         return {file_path: len(list(ops)) for file_path, ops in file_groups.items()}
 
-    def get_operation_at_step(
-        self, file_path: str, step: int
-    ) -> Optional[ToolUseContent]:
+    def get_operation_at_step(self, file_path: str, step: int) -> Optional[ToolUseContent]:
         """Get operation at specific step number (1-indexed) for a file."""
         operations = self.get_file_operations(file_path)
         if 1 <= step <= len(operations):
@@ -120,9 +109,7 @@ class FileNavigator:
                 return i + 1
         return None
 
-    def get_navigation_context(
-        self, file_path: str, current_uuid: str
-    ) -> Dict[str, Any]:
+    def get_navigation_context(self, file_path: str, current_uuid: str) -> Dict[str, Any]:
         """Get navigation context (like VSCode's back/forward state)."""
         operations = self.get_file_operations(file_path)
         current_step = self.find_step_for_uuid(file_path, current_uuid)
@@ -137,20 +124,16 @@ class FileNavigator:
             "total_steps": len(operations),
             "can_go_back": current_step > 1,
             "can_go_forward": current_step < len(operations),
-            "previous_uuid": operations[current_step - 2].id
-            if current_step > 1
-            else None,
-            "next_uuid": operations[current_step].id
-            if current_step < len(operations)
-            else None,
+            "previous_uuid": operations[current_step - 2].id if current_step > 1 else None,
+            "next_uuid": operations[current_step].id if current_step < len(operations) else None,
         }
 
     # Helper methods
 
     def _extract_file_path(self, operation: ToolUseContent) -> Optional[str]:
         """Extract file path from tool operation input."""
-        if hasattr(operation, "input") and isinstance(operation.input, dict):
-            return operation.input.get("file_path")
+        if hasattr(operation, 'input') and isinstance(operation.input, dict):
+            return operation.input.get('file_path')
         return None
 
     def _is_uuid_after(self, uuid_a: str, uuid_b: str) -> bool:
@@ -182,7 +165,7 @@ class FileNavigator:
         summary = {
             "total_operations": len(self._operations),
             "files_modified": 0,
-            "file_details": {},
+            "file_details": {}
         }
 
         for file_path, ops in file_groups.items():
@@ -193,7 +176,7 @@ class FileNavigator:
                     "operations_count": len(ops_list),
                     "first_uuid": ops_list[0].id if ops_list else None,
                     "last_uuid": ops_list[-1].id if ops_list else None,
-                    "operation_types": list(set(op.name for op in ops_list)),
+                    "operation_types": list(set(op.name for op in ops_list))
                 }
 
         return summary

@@ -8,25 +8,23 @@ SOLID: Single Responsibility - Context window monitoring only
 95/5: Simple percentage API for common use, detailed info available
 """
 
+from typing import Optional, Dict, Tuple
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Tuple
 
 
 class ContextStatus(Enum):
     """Context window status levels."""
-
-    GREEN = "green"  # < 50% used
-    YELLOW = "yellow"  # 50-75% used
-    ORANGE = "orange"  # 75-90% used
-    RED = "red"  # > 90% used (auto-compact imminent)
-    CRITICAL = "critical"  # > 95% used (very close to limit)
+    GREEN = "green"      # < 50% used
+    YELLOW = "yellow"    # 50-75% used
+    ORANGE = "orange"    # 75-90% used
+    RED = "red"          # > 90% used (auto-compact imminent)
+    CRITICAL = "critical" # > 95% used (very close to limit)
 
 
 @dataclass
 class ContextWindowInfo:
     """Detailed context window information."""
-
     total_tokens: int
     context_limit: int
     percentage_used: float
@@ -46,11 +44,7 @@ class ContextWindowInfo:
     @property
     def needs_attention(self) -> bool:
         """Check if context usage needs attention."""
-        return self.status in [
-            ContextStatus.ORANGE,
-            ContextStatus.RED,
-            ContextStatus.CRITICAL,
-        ]
+        return self.status in [ContextStatus.ORANGE, ContextStatus.RED, ContextStatus.CRITICAL]
 
 
 class ContextWindowManager:
@@ -67,9 +61,9 @@ class ContextWindowManager:
 
     # Alert thresholds
     CRITICAL_THRESHOLD = 0.95  # 95% - very close to limit
-    RED_THRESHOLD = 0.90  # 90% - auto-compact imminent
-    ORANGE_THRESHOLD = 0.75  # 75% - getting high
-    YELLOW_THRESHOLD = 0.50  # 50% - halfway there
+    RED_THRESHOLD = 0.90       # 90% - auto-compact imminent
+    ORANGE_THRESHOLD = 0.75    # 75% - getting high
+    YELLOW_THRESHOLD = 0.50    # 50% - halfway there
 
     def __init__(self, context_limit: int = None):
         """Initialize with optional custom context limit."""
@@ -103,7 +97,9 @@ class ContextWindowManager:
         # Get emoji and message
         emoji = self._get_emoji(status)
         message = self._format_message(
-            percentage_used, tokens_until_compact, should_compact
+            percentage_used,
+            tokens_until_compact,
+            should_compact
         )
 
         return ContextWindowInfo(
@@ -116,7 +112,7 @@ class ContextWindowManager:
             status=status,
             should_compact=should_compact,
             emoji=emoji,
-            message=message,
+            message=message
         )
 
     def get_simple_status(self, total_tokens: int) -> Tuple[str, float]:
@@ -194,19 +190,20 @@ class ContextWindowManager:
             ContextStatus.YELLOW: "🟡",
             ContextStatus.ORANGE: "🟠",
             ContextStatus.RED: "🔴",
-            ContextStatus.CRITICAL: "🚨",
+            ContextStatus.CRITICAL: "🚨"
         }.get(status, "⚪")
 
     def _format_message(
-        self, percentage: float, tokens_until_compact: int, should_compact: bool
+        self,
+        percentage: float,
+        tokens_until_compact: int,
+        should_compact: bool
     ) -> str:
         """Format human-readable status message."""
         if should_compact:
-            return "⚠️ AUTO-COMPACT TRIGGERED! Context will be summarized."
+            return f"⚠️ AUTO-COMPACT TRIGGERED! Context will be summarized."
         elif percentage >= 95:
-            return (
-                f"🚨 CRITICAL: Only {tokens_until_compact:,} tokens until auto-compact!"
-            )
+            return f"🚨 CRITICAL: Only {tokens_until_compact:,} tokens until auto-compact!"
         elif percentage >= 90:
             return f"🔴 WARNING: {tokens_until_compact:,} tokens until auto-compact"
         elif percentage >= 75:
@@ -240,7 +237,7 @@ class ContextWindowManager:
             "tokens_limit": self.context_limit,
             "tokens_until_compact": info.tokens_until_compact,
             "should_compact": info.should_compact,
-            "message": info.message,
+            "message": info.message
         }
 
 

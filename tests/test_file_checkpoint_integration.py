@@ -10,7 +10,9 @@ Tests the full workflow:
 Follows 95/5 principle: GitPython + standard libraries, minimal custom code.
 """
 
+import tempfile
 from pathlib import Path
+from typing import Dict, Any
 
 import jsonlines
 import orjson
@@ -86,7 +88,7 @@ class TestFullWorkflowIntegration:
 
         # Parse messages first (to verify structure)
         jsonl_file = list(jsonl_dir.glob("*.jsonl"))[0]
-        with open(jsonl_file, "r") as f:
+        with open(jsonl_file, 'r') as f:
             messages = []
             for line in f:
                 if line.strip():
@@ -97,8 +99,8 @@ class TestFullWorkflowIntegration:
 
         # Should have parsed messages with proper Claude format
         assert len(messages) == 2
-        assert all(hasattr(msg, "uuid") for msg in messages)
-        assert all(hasattr(msg, "session_id") for msg in messages)
+        assert all(hasattr(msg, 'uuid') for msg in messages)
+        assert all(hasattr(msg, 'session_id') for msg in messages)
 
         # TODO: Bridge between parsed messages and Timeline
         # Currently Timeline expects simplified tool events, not full Claude messages
@@ -219,7 +221,6 @@ class TestPerformanceWithLargeData:
 
 # Fixtures for realistic test data
 
-
 @pytest.fixture
 def realistic_claude_session(tmp_path):
     """Create realistic Claude Code session with file operations."""
@@ -233,7 +234,7 @@ def realistic_claude_session(tmp_path):
             "timestamp": "2024-08-23T10:00:00Z",
             "tool_name": "Write",
             "file_path": "server.py",
-            "content": "from fastapi import FastAPI\n\napp = FastAPI()\n",
+            "content": "from fastapi import FastAPI\n\napp = FastAPI()\n"
         },
         # Add endpoint
         {
@@ -242,7 +243,7 @@ def realistic_claude_session(tmp_path):
             "tool_name": "Edit",
             "file_path": "server.py",
             "old_string": "app = FastAPI()",
-            "new_string": "app = FastAPI()\n\n@app.get('/')\ndef read_root():\n    return {'Hello': 'World'}",
+            "new_string": "app = FastAPI()\n\n@app.get('/')\ndef read_root():\n    return {'Hello': 'World'}"
         },
         # Create config file
         {
@@ -250,21 +251,17 @@ def realistic_claude_session(tmp_path):
             "timestamp": "2024-08-23T10:02:00Z",
             "tool_name": "Write",
             "file_path": "config.json",
-            "content": '{"port": 8000, "debug": true}',
-        },
+            "content": '{"port": 8000, "debug": true}'
+        }
     ]
 
     with jsonlines.open(jsonl_dir / "session.jsonl", mode="w") as writer:
         writer.write_all(events)
 
     expected_states = {
-        "session-001": {
-            "server.py": "from fastapi import FastAPI\n\napp = FastAPI()\n"
-        },
-        "session-002": {
-            "server.py": "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get('/')\ndef read_root():\n    return {'Hello': 'World'}"
-        },
-        "session-003": {"config.json": '{"port": 8000, "debug": true}'},
+        "session-001": {"server.py": "from fastapi import FastAPI\n\napp = FastAPI()\n"},
+        "session-002": {"server.py": "from fastapi import FastAPI\n\napp = FastAPI()\n\n@app.get('/')\ndef read_root():\n    return {'Hello': 'World'}"},
+        "session-003": {"config.json": '{"port": 8000, "debug": true}'}
     }
 
     return jsonl_dir, expected_states
@@ -277,37 +274,10 @@ def step_by_step_editing(tmp_path):
     jsonl_dir.mkdir()
 
     events = [
-        {
-            "uuid": "step-001",
-            "timestamp": "2024-08-23T10:00:00Z",
-            "tool_name": "Write",
-            "file_path": "app.py",
-            "content": "# App\n",
-        },
-        {
-            "uuid": "step-002",
-            "timestamp": "2024-08-23T10:01:00Z",
-            "tool_name": "Edit",
-            "file_path": "app.py",
-            "old_string": "# App\n",
-            "new_string": "# App\ndef main():\n    pass\n",
-        },
-        {
-            "uuid": "step-003",
-            "timestamp": "2024-08-23T10:02:00Z",
-            "tool_name": "Edit",
-            "file_path": "app.py",
-            "old_string": "def main():\n    pass",
-            "new_string": "def main():\n    print('Hello, World!')",
-        },
-        {
-            "uuid": "step-004",
-            "timestamp": "2024-08-23T10:03:00Z",
-            "tool_name": "Edit",
-            "file_path": "app.py",
-            "old_string": "print('Hello, World!')",
-            "new_string": "print('Hello, Universe!')",
-        },
+        {"uuid": "step-001", "timestamp": "2024-08-23T10:00:00Z", "tool_name": "Write", "file_path": "app.py", "content": "# App\n"},
+        {"uuid": "step-002", "timestamp": "2024-08-23T10:01:00Z", "tool_name": "Edit", "file_path": "app.py", "old_string": "# App\n", "new_string": "# App\ndef main():\n    pass\n"},
+        {"uuid": "step-003", "timestamp": "2024-08-23T10:02:00Z", "tool_name": "Edit", "file_path": "app.py", "old_string": "def main():\n    pass", "new_string": "def main():\n    print('Hello, World!')"},
+        {"uuid": "step-004", "timestamp": "2024-08-23T10:03:00Z", "tool_name": "Edit", "file_path": "app.py", "old_string": "print('Hello, World!')", "new_string": "print('Hello, Universe!')"},
     ]
 
     with jsonlines.open(jsonl_dir / "steps.jsonl", mode="w") as writer:
@@ -330,14 +300,9 @@ def native_tool_chain(tmp_path):
             "timestamp": "2024-08-23T10:00:00Z",
             "message": {
                 "content": [{"type": "text", "text": "Creating hello.py"}],
-                "usage": {
-                    "input_tokens": 10,
-                    "output_tokens": 5,
-                    "cache_read_input_tokens": 0,
-                    "cache_creation_input_tokens": 0,
-                },
-                "model": "claude-3-5-sonnet-20241022",
-            },
+                "usage": {"input_tokens": 10, "output_tokens": 5, "cache_read_input_tokens": 0, "cache_creation_input_tokens": 0},
+                "model": "claude-3-5-sonnet-20241022"
+            }
         },
         {
             "type": "assistant",
@@ -346,15 +311,10 @@ def native_tool_chain(tmp_path):
             "timestamp": "2024-08-23T10:00:01Z",
             "message": {
                 "content": [{"type": "text", "text": "Editing hello.py"}],
-                "usage": {
-                    "input_tokens": 15,
-                    "output_tokens": 8,
-                    "cache_read_input_tokens": 0,
-                    "cache_creation_input_tokens": 0,
-                },
-                "model": "claude-3-5-sonnet-20241022",
-            },
-        },
+                "usage": {"input_tokens": 15, "output_tokens": 8, "cache_read_input_tokens": 0, "cache_creation_input_tokens": 0},
+                "model": "claude-3-5-sonnet-20241022"
+            }
+        }
     ]
 
     with jsonlines.open(jsonl_dir / "native.jsonl", mode="w") as writer:
@@ -370,30 +330,10 @@ def multi_file_project(tmp_path):
     jsonl_dir.mkdir()
 
     events = [
-        {
-            "uuid": "multi-001",
-            "tool_name": "Write",
-            "file_path": "main.py",
-            "content": "from utils import helper\n\ndef main():\n    helper()\n",
-        },
-        {
-            "uuid": "multi-002",
-            "tool_name": "Write",
-            "file_path": "utils.py",
-            "content": "def helper():\n    return 'Helper'\n",
-        },
-        {
-            "uuid": "multi-003",
-            "tool_name": "Write",
-            "file_path": "requirements.txt",
-            "content": "requests==2.28.0\n",
-        },
-        {
-            "uuid": "multi-004",
-            "tool_name": "Write",
-            "file_path": "README.md",
-            "content": "# My Project\n\nA simple project.\n",
-        },
+        {"uuid": "multi-001", "tool_name": "Write", "file_path": "main.py", "content": "from utils import helper\n\ndef main():\n    helper()\n"},
+        {"uuid": "multi-002", "tool_name": "Write", "file_path": "utils.py", "content": "def helper():\n    return 'Helper'\n"},
+        {"uuid": "multi-003", "tool_name": "Write", "file_path": "requirements.txt", "content": "requests==2.28.0\n"},
+        {"uuid": "multi-004", "tool_name": "Write", "file_path": "README.md", "content": "# My Project\n\nA simple project.\n"},
     ]
 
     with jsonlines.open(jsonl_dir / "multi.jsonl", mode="w") as writer:
@@ -409,32 +349,10 @@ def cross_file_dependencies(tmp_path):
     jsonl_dir.mkdir()
 
     events = [
-        {
-            "uuid": "dep-001",
-            "tool_name": "Write",
-            "file_path": "utils.py",
-            "content": "def helper():\n    return 'Initial'\n",
-        },
-        {
-            "uuid": "dep-002",
-            "tool_name": "Write",
-            "file_path": "main.py",
-            "content": "from utils import helper\n\nprint(helper())\n",
-        },
-        {
-            "uuid": "dep-003",
-            "tool_name": "Edit",
-            "file_path": "utils.py",
-            "old_string": "return 'Initial'",
-            "new_string": "return 'Helper result'",
-        },
-        {
-            "uuid": "dep-004",
-            "tool_name": "Edit",
-            "file_path": "main.py",
-            "old_string": "print(helper())",
-            "new_string": "print('Using helper')\nprint(helper())",
-        },
+        {"uuid": "dep-001", "tool_name": "Write", "file_path": "utils.py", "content": "def helper():\n    return 'Initial'\n"},
+        {"uuid": "dep-002", "tool_name": "Write", "file_path": "main.py", "content": "from utils import helper\n\nprint(helper())\n"},
+        {"uuid": "dep-003", "tool_name": "Edit", "file_path": "utils.py", "old_string": "return 'Initial'", "new_string": "return 'Helper result'"},
+        {"uuid": "dep-004", "tool_name": "Edit", "file_path": "main.py", "old_string": "print(helper())", "new_string": "print('Using helper')\nprint(helper())"},
     ]
 
     with jsonlines.open(jsonl_dir / "deps.jsonl", mode="w") as writer:
@@ -450,25 +368,9 @@ def jsonl_with_missing_files(tmp_path):
     jsonl_dir.mkdir()
 
     events = [
-        {
-            "uuid": "miss-001",
-            "tool_name": "Write",
-            "file_path": "good_file.py",
-            "content": "# This file exists\n",
-        },
-        {
-            "uuid": "miss-002",
-            "tool_name": "Edit",
-            "file_path": "missing_file.py",
-            "old_string": "nonexistent",
-            "new_string": "still nonexistent",
-        },
-        {
-            "uuid": "miss-003",
-            "tool_name": "Write",
-            "file_path": "another_good.py",
-            "content": "# Another good file\n",
-        },
+        {"uuid": "miss-001", "tool_name": "Write", "file_path": "good_file.py", "content": "# This file exists\n"},
+        {"uuid": "miss-002", "tool_name": "Edit", "file_path": "missing_file.py", "old_string": "nonexistent", "new_string": "still nonexistent"},
+        {"uuid": "miss-003", "tool_name": "Write", "file_path": "another_good.py", "content": "# Another good file\n"},
     ]
 
     with jsonlines.open(jsonl_dir / "missing.jsonl", mode="w") as writer:
@@ -484,26 +386,9 @@ def jsonl_with_bad_edits(tmp_path):
     jsonl_dir.mkdir()
 
     events = [
-        {
-            "uuid": "bad-001",
-            "tool_name": "Write",
-            "file_path": "test.py",
-            "content": "original content\n",
-        },
-        {
-            "uuid": "bad-002",
-            "tool_name": "Edit",
-            "file_path": "test.py",
-            "old_string": "does not exist",
-            "new_string": "replacement",
-        },
-        {
-            "uuid": "bad-003",
-            "tool_name": "Edit",
-            "file_path": "test.py",
-            "old_string": "original content",
-            "new_string": "fixed content",
-        },
+        {"uuid": "bad-001", "tool_name": "Write", "file_path": "test.py", "content": "original content\n"},
+        {"uuid": "bad-002", "tool_name": "Edit", "file_path": "test.py", "old_string": "does not exist", "new_string": "replacement"},
+        {"uuid": "bad-003", "tool_name": "Edit", "file_path": "test.py", "old_string": "original content", "new_string": "fixed content"},
     ]
 
     with jsonlines.open(jsonl_dir / "bad.jsonl", mode="w") as writer:
@@ -520,14 +405,12 @@ def many_files_project(tmp_path):
 
     events = []
     for i in range(55):
-        events.append(
-            {
-                "uuid": f"many-{i:03d}",
-                "tool_name": "Write",
-                "file_path": f"file_{i:03d}.py",
-                "content": f"# File {i}\ndef func_{i}():\n    return {i}\n",
-            }
-        )
+        events.append({
+            "uuid": f"many-{i:03d}",
+            "tool_name": "Write",
+            "file_path": f"file_{i:03d}.py",
+            "content": f"# File {i}\ndef func_{i}():\n    return {i}\n"
+        })
 
     with jsonlines.open(jsonl_dir / "many.jsonl", mode="w") as writer:
         writer.write_all(events)
@@ -542,36 +425,27 @@ def many_edits_session(tmp_path):
     jsonl_dir.mkdir()
 
     events = [
-        {
-            "uuid": "edit-000",
-            "tool_name": "Write",
-            "file_path": "evolving_file.py",
-            "content": "# Version 0\n",
-        }
+        {"uuid": "edit-000", "tool_name": "Write", "file_path": "evolving_file.py", "content": "# Version 0\n"}
     ]
 
     # Add 100 edit operations
     for i in range(1, 101):
-        events.append(
-            {
-                "uuid": f"edit-{i:03d}",
-                "tool_name": "Edit",
-                "file_path": "evolving_file.py",
-                "old_string": f"# Version {i - 1}",
-                "new_string": f"# Version {i}",
-            }
-        )
-
-    # Final edit
-    events.append(
-        {
-            "uuid": "edit-101",
+        events.append({
+            "uuid": f"edit-{i:03d}",
             "tool_name": "Edit",
             "file_path": "evolving_file.py",
-            "old_string": "# Version 100",
-            "new_string": "# Final version",
-        }
-    )
+            "old_string": f"# Version {i-1}",
+            "new_string": f"# Version {i}"
+        })
+
+    # Final edit
+    events.append({
+        "uuid": "edit-101",
+        "tool_name": "Edit",
+        "file_path": "evolving_file.py",
+        "old_string": "# Version 100",
+        "new_string": "# Final version"
+    })
 
     with jsonlines.open(jsonl_dir / "edits.jsonl", mode="w") as writer:
         writer.write_all(events)

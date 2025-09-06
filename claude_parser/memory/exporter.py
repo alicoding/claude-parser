@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
 from ..domain.entities.conversation import Conversation
+from ..infrastructure.json_serializer import _json_serializer
 from ..models import (
     AssistantMessage,
     UserMessage,
@@ -33,19 +34,24 @@ class ConversationMemory:
 
 
 class MemoryExporter:
-    """Export conversations to memory format.
+    """THE centralized JSON service for the entire codebase.
 
-    This class provides methods to extract memories from conversations
-    and prepare them for storage in vector databases like mem0.
+    This class provides ALL JSON operations needed across the codebase.
+    No other class should call json_serializer directly - use these methods.
+
+    Zero duplication: ONE way to do JSON serialization/deserialization.
 
     Example:
         exporter = MemoryExporter()
-        memories = exporter.export(conversation)
 
-        # Memories are ready for mem0 or other systems
-        for memory in memories:
-            print(f"Memory: {memory.content[:100]}...")
-            print(f"Metadata: {memory.metadata}")
+        # For conversations
+        json_lines = exporter.export_as_json_lines(conversation)
+
+        # For any data
+        json_str = exporter.serialize_data({"key": "value"})
+
+        # For parsing
+        success, data = exporter.parse_json_safe(json_bytes)
     """
 
     def __init__(
@@ -179,6 +185,51 @@ class MemoryExporter:
 
         return memory
 
+    def export_as_dicts(self, conversation: Conversation) -> List[Dict[str, Any]]:
+        """Export conversation as plain dictionaries for LlamaIndex compatibility.
+
+        Args:
+            conversation: The conversation to export
+
+        Returns:
+            List of dictionaries with 'text' and 'metadata' keys
+        """
+        memories = self.export(conversation)
+        return [
+            {
+                'text': memory.content,
+                'metadata': memory.metadata
+            }
+            for memory in memories
+        ]
+
+    def export_project(self, project_path: str):
+        """Export all project conversations as a generator of dictionaries.
+
+        Args:
+            project_path: Path to the project directory
+
+        Yields:
+            Dictionary with 'text' and 'metadata' for each memory
+        """
+        from pathlib import Path
+        from ..discovery import find_project_by_original_path
+        from ..application.conversation_service import load
+
+        project_info = find_project_by_original_path(project_path)
+        if not project_info:
+            return
+
+        project_dir = Path.home() / ".claude" / "projects" / project_info["encoded_name"]
+
+        for jsonl_file in project_dir.glob("*.jsonl"):
+            try:
+                conv = load(str(jsonl_file))
+                yield from self.export_as_dicts(conv)
+            except Exception:
+                # Skip files that can't be loaded
+                continue
+
     def _extract_tool_memories(
         self, conversation: Conversation
     ) -> List[ConversationMemory]:
@@ -257,6 +308,37 @@ class MemoryExporter:
         return [
             {"text": memory.content, "metadata": memory.metadata} for memory in memories
         ]
+
+    def export_as_json_lines(self, conversation: Conversation) -> str:
+        """Export conversation as JSON Lines string.
+
+        Uses central JsonSerializer - no other files need to import JSON libs.
+
+        Args:
+            conversation: The conversation to export
+
+        Returns:
+            JSON Lines string ready for output/streaming
+        """
+        memories = self.export_as_dicts(conversation)
+        return _json_serializer.serialize_lines(memories)
+
+    # Universal JSON methods - THE interface for entire codebase
+    def serialize_data(self, data: Any) -> str:
+        """Serialize any data to JSON string. Use this instead of direct json calls."""
+        return _json_serializer.serialize(data)
+
+    def serialize_data_list(self, data_list: list[Any]) -> str:
+        """Serialize list to JSON Lines. Use this instead of direct json calls."""
+        return _json_serializer.serialize_lines(data_list)
+
+    def parse_json_safe(self, data: bytes) -> tuple[bool, Any]:
+        """Parse JSON safely. Use this instead of direct json calls."""
+        return _json_serializer.deserialize_safe(data)
+
+    def parse_message_safe(self, data: bytes) -> tuple[bool, Any]:
+        """Parse JSON as Message with validation. Use this instead of direct json calls."""
+        return _json_serializer.deserialize_message_safe(data)
 
     def export_project(self, project_path: str):
         """Export all project conversations as a generator of dictionaries.

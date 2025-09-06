@@ -2,9 +2,7 @@
 
 95% library (Rich), 5% glue.
 """
-
-from typing import Dict, List
-
+from typing import List, Dict
 from rich.tree import Tree
 
 
@@ -25,7 +23,10 @@ class TodoDisplay:
             return Tree("📋 No todos yet")
 
         # Find active (in_progress) task
-        active = next((t for t in todos if t.get("status") == "in_progress"), None)
+        active = next(
+            (t for t in todos if t.get("status") == "in_progress"),
+            None
+        )
 
         if active:
             # Rich Tree does the formatting (95% library)
@@ -57,7 +58,11 @@ class TodoDisplay:
         """
         total = len(todos)
         if total == 0:
-            return {"total": 0, "completed": 0, "percentage": 0}
+            return {
+                "total": 0,
+                "completed": 0,
+                "percentage": 0
+            }
 
         # Simple calculation, no manual loops
         completed = sum(1 for t in todos if t.get("status") == "completed")
@@ -66,5 +71,5 @@ class TodoDisplay:
             "total": total,
             "completed": completed,
             "pending": total - completed,
-            "percentage": round((completed / total * 100), 1),
+            "percentage": round((completed / total * 100), 1)
         }

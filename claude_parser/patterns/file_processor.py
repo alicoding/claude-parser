@@ -44,7 +44,7 @@ class FileProcessor:
         return pipe(
             self._get_files(base_path),
             toolz_filter(lambda p: not self._is_excluded(p)),
-            list,
+            list
         )
 
     def _get_files(self, base_path: str) -> List[Path]:
@@ -55,7 +55,9 @@ class FileProcessor:
             return []
 
         # Use functional approach with toolz
-        return list(concat(base.rglob(pattern) for pattern in self.patterns))
+        return list(concat(
+            base.rglob(pattern) for pattern in self.patterns
+        ))
 
     def _is_excluded(self, path: Path) -> bool:
         """Check if path contains any excluded pattern."""
@@ -64,26 +66,19 @@ class FileProcessor:
 
 
 # Convenience function for backward compatibility
-def get_python_files(
-    base_path: str, exclusions: Optional[List[str]] = None
-) -> List[Path]:
+def get_python_files(base_path: str, exclusions: Optional[List[str]] = None) -> List[Path]:
     """
     Get Python files from a directory - backward compatible wrapper.
 
     This maintains the original API while using FileProcessor internally.
     """
     default_exclusions = [
-        "node_modules",
-        ".venv",
-        "venv",
-        "__pycache__",
-        ".pytest_cache",
-        "research",
-        "verify_spec.py",
+        'node_modules', '.venv', 'venv', '__pycache__',
+        '.pytest_cache', 'research', 'verify_spec.py'
     ]
 
     # Use functional approach - concat instead of extend
     all_exclusions = list(concat([default_exclusions, exclusions or []]))
 
-    processor = FileProcessor(["*.py"], all_exclusions)
+    processor = FileProcessor(['*.py'], all_exclusions)
     return processor.process(base_path)

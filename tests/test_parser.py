@@ -1,39 +1,35 @@
-"""Tests for JSONL parser."""
+"""Tests for claude-parser SDK with central JSON service."""
 
-import orjson
 import pytest
-
-from claude_parser.infrastructure.jsonl_parser import (
-    count_messages,
-    parse_jsonl,
-    parse_jsonl_streaming,
-    validate_jsonl,
-)
+from claude_parser import load, load_many
 
 
 class TestParseJsonl:
     """Test JSONL parsing."""
 
-    def test_parse_valid_jsonl(self, tmp_path):
-        """Test parsing valid JSONL file."""
-        file = tmp_path / "test.jsonl"
-        file.write_text(
-            '{"type":"user","content":"Hi"}\n{"type":"assistant","content":"Hello"}'
-        )
+    def test_load_conversation_sdk(self, sample_claude_jsonl):
+        """Test loading conversation using SDK with real Claude JSONL format."""
+        # Use real Claude JSONL transcript, not fake data
+        conversation = load(sample_claude_jsonl)
 
-        messages = parse_jsonl(file)
-        assert len(messages) == 2
-        assert messages[0]["type"] == "user"
-        assert messages[0]["content"] == "Hi"
-        assert messages[1]["type"] == "assistant"
+        # Verify SDK returns proper conversation object
+        assert conversation is not None
+        assert len(conversation.messages) > 0
+        assert conversation.session_id is not None
 
-    def test_parse_empty_file(self, tmp_path):
-        """Test parsing empty file."""
+        # Test that our domain methods work
+        if conversation.user_messages:
+            assert hasattr(conversation.user_messages[0], 'text_content')
+        if conversation.assistant_messages:
+            assert hasattr(conversation.assistant_messages[0], 'text_content')
+
+    def test_load_empty_file_sdk(self, tmp_path):
+        """Test loading empty file using SDK."""
         file = tmp_path / "empty.jsonl"
         file.touch()
 
-        messages = parse_jsonl(file)
-        assert messages == []
+        conversation = load(str(file))
+        assert len(conversation.messages) == 0
 
     def test_parse_with_empty_lines(self, tmp_path):
         """Test parsing file with empty lines."""

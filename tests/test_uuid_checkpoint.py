@@ -9,9 +9,12 @@ Tests that we:
 5. Never use seek/tell/position tracking
 """
 
+import asyncio
 import orjson
 import tempfile
 from pathlib import Path
+from typing import List
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -38,18 +41,16 @@ class TestUUIDCheckpointReader:
     @pytest.fixture
     def temp_jsonl_file(self, sample_messages):
         """Create a temporary JSONL file with sample messages."""
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.jsonl', delete=False) as f:
             for msg in sample_messages:
-                f.write(orjson.dumps(msg).decode() + "\n")
+                f.write(orjson.dumps(msg).decode() + '\n')
             temp_path = Path(f.name)
 
         yield temp_path
         temp_path.unlink()  # Clean up
 
     @pytest.mark.asyncio
-    async def test_read_all_messages_no_checkpoint(
-        self, temp_jsonl_file, sample_messages
-    ):
+    async def test_read_all_messages_no_checkpoint(self, temp_jsonl_file, sample_messages):
         """Test reading all messages when no checkpoint is set."""
         reader = UUIDCheckpointReader(temp_jsonl_file)
         messages = await reader.get_new_messages()
@@ -119,11 +120,8 @@ class TestUUIDCheckpointReader:
     async def test_handles_missing_uuid_gracefully(self, temp_jsonl_file):
         """Test handling of messages without UUID field."""
         # Write a message without UUID
-        with open(temp_jsonl_file, "a") as f:
-            f.write(
-                orjson.dumps({"type": "system", "content": "No UUID here"}).decode()
-                + "\n"
-            )
+        with open(temp_jsonl_file, 'a') as f:
+            f.write(orjson.dumps({"type": "system", "content": "No UUID here"}).decode() + '\n')
 
         reader = UUIDCheckpointReader(temp_jsonl_file)
         messages = await reader.get_new_messages()
@@ -154,28 +152,16 @@ class TestMultiFileUUIDTracker:
 
         # Create session1.jsonl
         session1 = temp_path / "session1.jsonl"
-        with open(session1, "w") as f:
-            f.write(
-                orjson.dumps({"uuid": "s1-001", "content": "Session 1 start"}).decode()
-                + "\n"
-            )
-            f.write(
-                orjson.dumps({"uuid": "s1-002", "content": "Session 1 msg 2"}).decode()
-                + "\n"
-            )
+        with open(session1, 'w') as f:
+            f.write(orjson.dumps({"uuid": "s1-001", "content": "Session 1 start"}).decode() + '\n')
+            f.write(json.dumps({"uuid": "s1-002", "content": "Session 1 msg 2"}) + '\n')
         files["session1.jsonl"] = session1
 
         # Create session2.jsonl
         session2 = temp_path / "session2.jsonl"
-        with open(session2, "w") as f:
-            f.write(
-                orjson.dumps({"uuid": "s2-001", "content": "Session 2 start"}).decode()
-                + "\n"
-            )
-            f.write(
-                orjson.dumps({"uuid": "s2-002", "content": "Session 2 msg 2"}).decode()
-                + "\n"
-            )
+        with open(session2, 'w') as f:
+            f.write(json.dumps({"uuid": "s2-001", "content": "Session 2 start"}) + '\n')
+            f.write(json.dumps({"uuid": "s2-002", "content": "Session 2 msg 2"}) + '\n')
         files["session2.jsonl"] = session2
 
         yield files
@@ -189,9 +175,10 @@ class TestMultiFileUUIDTracker:
         """Test tracking checkpoints for multiple files."""
         tracker = MultiFileUUIDTracker()
 
-        tracker.set_checkpoints(
-            {"session1.jsonl": "s1-001", "session2.jsonl": "s2-001"}
-        )
+        tracker.set_checkpoints({
+            "session1.jsonl": "s1-001",
+            "session2.jsonl": "s2-001"
+        })
 
         assert tracker.checkpoints["session1.jsonl"] == "s1-001"
         assert tracker.checkpoints["session2.jsonl"] == "s2-001"
@@ -237,14 +224,14 @@ class TestNoBytePositionTracking:
         reader = UUIDCheckpointReader("dummy.jsonl")
 
         # Should NOT have these attributes
-        assert not hasattr(reader, "position")
-        assert not hasattr(reader, "last_position")
-        assert not hasattr(reader, "seek")
-        assert not hasattr(reader, "tell")
+        assert not hasattr(reader, 'position')
+        assert not hasattr(reader, 'last_position')
+        assert not hasattr(reader, 'seek')
+        assert not hasattr(reader, 'tell')
 
         # Should have UUID tracking
-        assert hasattr(reader, "last_uuid")
-        assert hasattr(reader, "processed_uuids")
+        assert hasattr(reader, 'last_uuid')
+        assert hasattr(reader, 'processed_uuids')
 
     def test_no_seek_or_tell_in_implementation(self):
         """Verify implementation doesn't use seek() or tell()."""
@@ -254,13 +241,13 @@ class TestNoBytePositionTracking:
         source = inspect.getsource(uuid_tracker)
 
         # These byte-position methods should NOT appear
-        assert "seek(" not in source
-        assert "tell(" not in source
-        assert "last_position" not in source
+        assert 'seek(' not in source
+        assert 'tell(' not in source
+        assert 'last_position' not in source
 
         # UUID tracking should appear
-        assert "last_uuid" in source
-        assert "processed_uuids" in source
+        assert 'last_uuid' in source
+        assert 'processed_uuids' in source
 
 
 class TestFileRotationHandling:
@@ -272,10 +259,8 @@ class TestFileRotationHandling:
         file_path = tmp_path / "rotating.jsonl"
 
         # Create initial file
-        with open(file_path, "w") as f:
-            f.write(
-                orjson.dumps({"uuid": "old-001", "content": "Old file"}).decode() + "\n"
-            )
+        with open(file_path, 'w') as f:
+            f.write(json.dumps({"uuid": "old-001", "content": "Old file"}) + '\n')
 
         reader = UUIDCheckpointReader(file_path)
 
@@ -286,14 +271,9 @@ class TestFileRotationHandling:
 
         # Simulate rotation (delete and recreate)
         file_path.unlink()
-        with open(file_path, "w") as f:
-            f.write(
-                orjson.dumps({"uuid": "new-001", "content": "New file"}).decode() + "\n"
-            )
-            f.write(
-                orjson.dumps({"uuid": "new-002", "content": "New file 2"}).decode()
-                + "\n"
-            )
+        with open(file_path, 'w') as f:
+            f.write(json.dumps({"uuid": "new-001", "content": "New file"}) + '\n')
+            f.write(json.dumps({"uuid": "new-002", "content": "New file 2"}) + '\n')
 
         # Read after rotation (implementation should detect inode change)
         # Note: The actual implementation checks inode in StreamingJSONLReader
@@ -312,13 +292,9 @@ class TestAsyncStreamingIntegration:
         """Verify StreamingJSONLReader uses UUID checkpoints."""
         from claude_parser.watch.true_streaming import StreamingJSONLReader
 
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
-            f.write(
-                orjson.dumps({"uuid": "test-001", "content": "Test"}).decode() + "\n"
-            )
-            f.write(
-                orjson.dumps({"uuid": "test-002", "content": "Test 2"}).decode() + "\n"
-            )
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.jsonl', delete=False) as f:
+            f.write(json.dumps({"uuid": "test-001", "content": "Test"}) + '\n')
+            f.write(json.dumps({"uuid": "test-002", "content": "Test 2"}) + '\n')
             temp_path = Path(f.name)
 
         try:
@@ -335,6 +311,7 @@ class TestAsyncStreamingIntegration:
 
     async def test_project_streaming_with_checkpoints(self):
         """Test project-wide streaming with UUID checkpoints."""
+        from claude_parser.watch.true_streaming import stream_project_incrementally
 
         # This would need mocking since it requires actual Claude project structure
         # Keeping as documentation of the intended API

@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """Demo TodoManager usage."""
-
 from claude_parser.domain.todo import TodoManager
-
+from pathlib import Path
 
 def main():
     """Demo todo operations."""
@@ -13,12 +12,12 @@ def main():
     manager = TodoManager(session_id=session_id)
 
     # Parse some todos (from TodoWrite output)
-    todo_json = """[
+    todo_json = '''[
         {"content": "Design TodoDomain", "status": "completed", "activeForm": "Designed TodoDomain"},
         {"content": "Write TDD tests", "status": "completed", "activeForm": "Wrote TDD tests"},
         {"content": "Implement with Rich", "status": "in_progress", "activeForm": "Implementing with Rich"},
         {"content": "Create documentation", "status": "pending", "activeForm": "Creating documentation"}
-    ]"""
+    ]'''
 
     todos = manager.parse(todo_json)
     print(f"Parsed {len(todos)} todos")
@@ -37,14 +36,11 @@ def main():
 
     # Show progress
     progress = manager.calculate_progress(read_todos)
-    print(
-        f"Progress: {progress['completed']}/{progress['total']} ({progress['percentage']}%)"
-    )
+    print(f"Progress: {progress['completed']}/{progress['total']} ({progress['percentage']}%)")
 
     # Cleanup
     manager.delete()
     print("\nDemo completed!")
-
 
 if __name__ == "__main__":
     main()

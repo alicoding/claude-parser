@@ -15,16 +15,20 @@ Example:
     print(f"Total tokens: {stats['total_tokens']}")
 """
 
-from .analyzer import ConversationAnalytics, ConversationStats
-from .statistics import MessageStatisticsCalculator, MessageStats
-from .time_analyzer import TimeAnalyzer
-from .tool_analyzer import ToolUsageAnalyzer
+from .analyzer import (
+    ConversationAnalytics,
+    ConversationStats,
+    MessageStatisticsCalculator,
+    TimeAnalyzer,
+    ToolUsageAnalyzer,
+    TokenCounter,
+)
 
 __all__ = [
     "ConversationAnalytics",
     "ConversationStats",
-    "MessageStats",
     "MessageStatisticsCalculator",
     "TimeAnalyzer",
     "ToolUsageAnalyzer",
+    "TokenCounter",
 ]

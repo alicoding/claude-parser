@@ -1,254 +1,166 @@
-"""Analytics analyzer for conversations.
+"""
+Analytics analyzer - Clean ResourceManager architecture.
 
-SOLID: Single Responsibility orchestrator that delegates to focused analyzers.
-DDD: Composes domain services for comprehensive analysis.
-95/5: Uses specialized classes, minimal orchestration logic.
+95/5 + Centralized Resources + Micro-Components pattern.
+All components 5-20 LOC, framework does heavy lifting.
 """
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
-
+from typing import Dict, List, Optional, Any
+from ..core.resources import get_resource_manager
+from ..components.message_counter import MessageCounter
+from ..components.stats_calculator import StatsCalculator
+from ..components.advanced_stats_calculator import AdvancedStatsCalculator
+from ..components.time_analyzer import TimeAnalyzer as TimeAnalyzerComponent
+from ..components.tool_analyzer import ToolAnalyzer as ToolAnalyzerComponent
 from ..domain.entities.conversation import Conversation
-from ..domain.value_objects.token_service import TokenService, default_token_service
-from ..models.base import BaseMessage
-from .statistics import MessageStatisticsCalculator, MessageStats
-from .time_analyzer import TimeAnalyzer
-from .tool_analyzer import ToolUsageAnalyzer
 
 
 @dataclass
 class ConversationStats:
-    """Comprehensive conversation statistics - aggregates all analyzers."""
+    """Simple conversation statistics - using micro-components."""
 
-    # Message statistics
+    # Basic statistics
     total_messages: int = 0
     user_messages: int = 0
     assistant_messages: int = 0
-    tool_uses: int = 0
-    tool_results: int = 0
-    errors_count: int = 0
-
-    # Token statistics
-    total_tokens: int = 0
-    user_tokens: int = 0
-    assistant_tokens: int = 0
-
-    # Length statistics
-    avg_message_length: float = 0.0
-    avg_response_length: float = 0.0
-
-    # Tool statistics
-    tools_by_name: Dict[str, int] = field(default_factory=dict)
-    tool_success_rates: Dict[str, float] = field(default_factory=dict)
-
-    # Time statistics
-    messages_by_hour: Dict[int, int] = field(default_factory=dict)
-    messages_by_day: Dict[str, int] = field(default_factory=dict)
-    conversation_duration_minutes: float = 0.0
-    response_times: List[float] = field(default_factory=list)
-
-    @classmethod
-    def from_components(
-        cls,
-        message_stats: MessageStats,
-        time_analyzer: TimeAnalyzer,
-        tool_analyzer: ToolUsageAnalyzer,
-        token_service: TokenService,
-    ) -> "ConversationStats":
-        """Create comprehensive stats from component analyzers.
-
-        SOLID: Factory method that composes results from focused analyzers
-        """
-        return cls(
-            # Message stats
-            total_messages=message_stats.total_messages,
-            user_messages=message_stats.user_messages,
-            assistant_messages=message_stats.assistant_messages,
-            tool_uses=message_stats.tool_uses,
-            tool_results=message_stats.tool_results,
-            errors_count=message_stats.errors_count,
-            avg_message_length=message_stats.avg_message_length,
-            avg_response_length=message_stats.avg_response_length,
-            # Tool stats
-            tools_by_name=tool_analyzer.get_tool_usage_counts(),
-            tool_success_rates=tool_analyzer.calculate_tool_success_rate(),
-            # Time stats
-            messages_by_hour=time_analyzer.get_hourly_distribution(),
-            messages_by_day=time_analyzer.get_daily_distribution(),
-            conversation_duration_minutes=time_analyzer.calculate_duration_minutes(),
-            response_times=time_analyzer.get_response_times(),
-        )
+    message_types: Dict[str, int] = field(default_factory=dict)
 
 
 class ConversationAnalytics:
-    """Analytics engine for conversations.
+    """Clean analytics service using ResourceManager pattern."""
 
-    SOLID: Single Responsibility - Conversation analytics only
-    DDD: Uses TokenService for token calculations
-    95/5: Delegates token counting to unified service
-
-    Example:
-        analytics = ConversationAnalytics(conversation)
-        stats = analytics.get_statistics()
-
-        print(f"Total messages: {stats.total_messages}")
-        print(f"Estimated tokens: {stats.total_tokens}")
-
-        # Get hourly distribution
-        hourly = analytics.get_hourly_distribution()
-        for hour, count in hourly.items():
-            print(f"{hour:02d}:00 - {count} messages")
-    """
-
-    def __init__(
-        self, conversation: Conversation, token_service: Optional[TokenService] = None
-    ):
-        """Initialize analytics orchestrator.
-
-        SOLID: Composes focused analyzers instead of doing everything
-
-        Args:
-            conversation: The conversation to analyze
-            token_service: Service for token calculations, uses default if None
-        """
+    def __init__(self, conversation: Conversation):
+        """Initialize with conversation and centralized resources."""
         self.conversation = conversation
-        self.token_service = token_service or default_token_service
+        self.resources = get_resource_manager()
 
-        # Initialize focused analyzers
-        self.message_calculator = MessageStatisticsCalculator(conversation)
-        self.time_analyzer = TimeAnalyzer(conversation)
-        self.tool_analyzer = ToolUsageAnalyzer(conversation)
+        # Initialize micro-components
+        self.message_counter = MessageCounter(self.resources)
+        self.stats_calculator = StatsCalculator(self.resources)
+        self.advanced_stats = AdvancedStatsCalculator(self.resources)
+        self.time_analyzer = TimeAnalyzerComponent(self.resources)
+        self.tool_analyzer = ToolAnalyzerComponent(self.resources)
 
-        self._stats: Optional[ConversationStats] = None
+        from ..components.token_counter import TokenCounter as TokenCounterComponent
+        self.token_counter = TokenCounterComponent(self.resources)
 
-    def get_statistics(self) -> ConversationStats:
-        """Get comprehensive statistics by composing focused analyzers.
+    def get_statistics(self) -> Dict[str, Any]:
+        """Get comprehensive statistics using micro-components."""
+        # Use micro-components for calculations
+        basic_stats = self.stats_calculator.calculate_basic_stats(self.conversation.messages)
+        type_counts = self.message_counter.count_by_type(self.conversation.messages)
+        extended_stats = self.advanced_stats.calculate_extended_stats(self.conversation.messages)
 
-        SOLID: Orchestrates specialized services instead of doing work itself
+        # Combine results
+        return {
+            **basic_stats,
+            **extended_stats,
+            'message_types': type_counts,
+        }
 
-        Returns:
-            ConversationStats object with all metrics
-        """
-        if self._stats is None:
-            # Delegate to focused analyzers
-            message_stats = self.message_calculator.calculate()
+    def get_time_analysis(self) -> Dict[str, Any]:
+        """Get time analysis using micro-component."""
+        return self.time_analyzer.analyze_time_patterns(self.conversation.messages)
 
-            # Create comprehensive stats from components
-            self._stats = ConversationStats.from_components(
-                message_stats=message_stats,
-                time_analyzer=self.time_analyzer,
-                tool_analyzer=self.tool_analyzer,
-                token_service=self.token_service,
-            )
+    def get_tool_analysis(self) -> Dict[str, Any]:
+        """Get tool analysis using micro-component."""
+        return self.tool_analyzer.analyze_tool_usage(self.conversation.messages)
 
-            # Add token estimates using unified service
-            self._add_token_estimates(self._stats)
 
-        return self._stats
-
-    def _add_token_estimates(self, stats: ConversationStats) -> None:
-        """Add token estimates to stats using unified service.
-
-        Args:
-            stats: Stats object to update with token counts
-        """
-        total_tokens = 0
-        user_tokens = 0
-        assistant_tokens = 0
-
-        for msg in self.conversation.messages:
-            if msg.text_content:
-                token_count = self.token_service.estimate_tokens_rough(msg.text_content)
-                total_tokens += token_count
-
-                msg_type = str(msg.type).lower()
-                if "user" in msg_type:
-                    user_tokens += token_count
-                elif "assistant" in msg_type:
-                    assistant_tokens += token_count
-
-        stats.total_tokens = total_tokens
-        stats.user_tokens = user_tokens
-        stats.assistant_tokens = assistant_tokens
-
-    def estimate_tokens(self, text: str) -> int:
-        """Estimate token count for text using unified service.
-
-        Delegates to TokenService for consistent estimation.
-
-        Args:
-            text: The text to count tokens for
-
-        Returns:
-            Estimated token count
-        """
-        return self.token_service.estimate_tokens_rough(text)
-
-    def get_hourly_distribution(self) -> Dict[int, int]:
-        """Get message distribution by hour of day - delegates to TimeAnalyzer."""
-        return self.time_analyzer.get_hourly_distribution()
-
-    def get_daily_distribution(self) -> Dict[str, int]:
-        """Get message distribution by day - delegates to TimeAnalyzer."""
-        return self.time_analyzer.get_daily_distribution()
-
-    def get_tool_usage(self) -> Dict[str, int]:
-        """Get tool usage statistics - delegates to ToolUsageAnalyzer."""
-        return self.tool_analyzer.get_tool_usage_counts()
-
-    def get_error_messages(self) -> List[BaseMessage]:
-        """Get all messages containing errors."""
-        return list(self.conversation.with_errors())
-
-    def get_response_times(self) -> List[float]:
-        """Calculate response times - delegates to TimeAnalyzer."""
-        return self.time_analyzer.get_response_times()
-
-    def get_conversation_duration(self) -> float:
-        """Get total conversation duration - delegates to TimeAnalyzer."""
-        return self.time_analyzer.calculate_duration_minutes()
-
+# Backward Compatibility Classes
 
 class TokenCounter:
-    """Utility class for accurate token counting.
+    """Token counter for backward compatibility."""
 
-    Note: For accurate token counting, install tiktoken:
-        pip install tiktoken
-
-    This class provides a fallback estimation if tiktoken
-    is not available.
-    """
-
-    def __init__(self, model: str = "claude-3"):
-        """Initialize token counter.
-
-        Args:
-            model: The model to use for tokenization
-        """
-        self.model = model
-        self._encoder = None
-
-        try:
-            import tiktoken
-
-            # Try to get encoder for the model
-            self._encoder = tiktoken.encoding_for_model("gpt-4")
-        except (ImportError, KeyError):
-            # Tiktoken not available or model not found
-            pass
+    def __init__(self):
+        """Initialize with centralized resources."""
+        self.resources = get_resource_manager()
+        from ..components.token_counter import TokenCounter as TokenCounterComponent
+        self._counter = TokenCounterComponent(self.resources)
 
     def count_tokens(self, text: str) -> int:
-        """Count tokens in text.
+        """Count tokens using micro-component."""
+        return self._counter.count(text)
 
-        Args:
-            text: The text to count tokens for
 
-        Returns:
-            Token count (exact if tiktoken available, estimate otherwise)
-        """
-        if self._encoder:
-            # Use tiktoken for accurate count
-            return len(self._encoder.encode(text))
-        else:
-            # Fall back to estimation
-            return ConversationAnalytics(None).estimate_tokens(text)
+class MessageStatisticsCalculator:
+    """Backward compatibility for legacy MessageStatisticsCalculator."""
+
+    def __init__(self, conversation: Conversation):
+        """Initialize with conversation."""
+        self.analytics = ConversationAnalytics(conversation)
+
+    def calculate(self):
+        """Calculate statistics - redirect to new implementation."""
+        stats = self.analytics.get_statistics()
+        # Convert to legacy format
+        from dataclasses import dataclass
+
+        @dataclass
+        class MessageStats:
+            total_messages: int = 0
+            user_messages: int = 0
+            assistant_messages: int = 0
+            tool_uses: int = 0
+            tool_results: int = 0
+            errors_count: int = 0
+            avg_message_length: float = 0.0
+            avg_response_length: float = 0.0
+
+        return MessageStats(
+            total_messages=stats.get('total_messages', 0),
+            user_messages=stats.get('user_messages', 0),
+            assistant_messages=stats.get('assistant_messages', 0),
+            tool_uses=stats.get('tool_uses', 0),
+            tool_results=stats.get('tool_results', 0),
+            errors_count=stats.get('errors_count', 0),
+            avg_message_length=stats.get('avg_message_length', 0.0),
+            avg_response_length=stats.get('avg_response_length', 0.0),
+        )
+
+
+class TimeAnalyzer:
+    """Backward compatibility for legacy TimeAnalyzer."""
+
+    def __init__(self, conversation: Conversation):
+        """Initialize with conversation."""
+        self.analytics = ConversationAnalytics(conversation)
+
+    def get_hourly_distribution(self) -> Dict[int, int]:
+        """Get hourly distribution."""
+        return self.analytics.get_time_analysis().get('hourly_distribution', {})
+
+    def get_daily_distribution(self) -> Dict[str, int]:
+        """Get daily distribution."""
+        return self.analytics.get_time_analysis().get('daily_distribution', {})
+
+    def calculate_duration_minutes(self) -> float:
+        """Get duration in minutes."""
+        return self.analytics.get_time_analysis().get('duration_minutes', 0.0)
+
+    def get_response_times(self) -> List[float]:
+        """Get response times."""
+        return self.analytics.get_time_analysis().get('response_times', [])
+
+    def get_peak_hours(self, limit: int = 3) -> List[int]:
+        """Get peak hours."""
+        peak_hours = self.analytics.get_time_analysis().get('peak_hours', [])
+        return [hour for hour, count in peak_hours[:limit]]
+
+
+class ToolUsageAnalyzer:
+    """Backward compatibility for legacy ToolUsageAnalyzer."""
+
+    def __init__(self, conversation: Conversation):
+        """Initialize with conversation."""
+        self.analytics = ConversationAnalytics(conversation)
+
+    def get_tool_usage_counts(self) -> Dict[str, int]:
+        """Get tool usage counts."""
+        return self.analytics.get_tool_analysis().get('tool_usage_counts', {})
+
+    def get_most_used_tools(self, limit: int = 5) -> List[tuple]:
+        """Get most used tools."""
+        most_used = self.analytics.get_tool_analysis().get('most_used_tools', [])
+        return most_used[:limit]

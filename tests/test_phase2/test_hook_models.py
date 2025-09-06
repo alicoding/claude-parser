@@ -10,6 +10,7 @@ Success criteria:
 
 import pytest
 from tests.constants import TestDefaults
+from tests.constants import TestDefaults
 
 
 def test_single_model_all_hooks(hook_sample, all_hook_types):

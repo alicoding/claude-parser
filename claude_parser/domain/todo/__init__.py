@@ -8,10 +8,10 @@ Domain Boundaries (DDD):
 - Swiper: Navigate todo history (timeline integration)
 """
 
-from .display import TodoDisplay
-from .manager import TodoManager
 from .parser import TodoParser
 from .storage import TodoStorage
+from .display import TodoDisplay
+from .manager import TodoManager
 from .swiper import TodoSwiper
 
 __all__ = ["TodoParser", "TodoStorage", "TodoDisplay", "TodoManager", "TodoSwiper"]

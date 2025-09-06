@@ -3,20 +3,34 @@ System message model.
 
 SOLID: Single Responsibility - System messages only
 DDD: Value object for system messages
+Framework: msgspec for serialization, domain logic preserved
 """
 
-from pydantic import Field
+from typing import Optional
+import msgspec
 
-from .base import BaseMessage, MessageType
-
-
-class SystemMessage(BaseMessage):
+class SystemMessage(msgspec.Struct, tag="system", kw_only=True):
     """System message (prompts, instructions)."""
 
-    type: MessageType = MessageType.SYSTEM
-    content: str = Field(..., min_length=1)
+    # Core identification (DRY: shared across all messages)
+    uuid: str
+    parent_uuid: Optional[str] = msgspec.field(name="parentUuid", default=None)
+    session_id: str = msgspec.field(name="sessionId")
+
+    # Context fields (DRY: shared across all messages)
+    cwd: str = ""
+    git_branch: str = msgspec.field(name="gitBranch", default="")
+    timestamp: Optional[str] = None
+
+    # SOLID: SystemMessage specific fields
+    content: str = ""
 
     @property
     def text_content(self) -> str:
         """Get searchable text content."""
         return f"System: {self.content}"
+
+    @property
+    def parsed_timestamp(self) -> Optional[str]:
+        """DRY: Shared timestamp parsing logic."""
+        return self.timestamp

@@ -3,6 +3,7 @@
 import orjson
 import orjson as json  # Use orjson everywhere per 95/5 principle
 import pytest
+import pytest
 
 
 class TestOrjsonCompatibility:
@@ -17,12 +18,12 @@ class TestOrjsonCompatibility:
             "bool": True,
             "null": None,
             "list": [1, 2, 3],
-            "dict": {"nested": "value"},
+            "dict": {"nested": "value"}
         }
 
         # Both should produce valid JSON
         json_output = json.dumps(data)
-        orjson_output = orjson.dumps(data).decode("utf-8")
+        orjson_output = orjson.dumps(data).decode('utf-8')
 
         # Both should be parseable
         assert json.loads(json_output) == data
@@ -38,16 +39,26 @@ class TestOrjsonCompatibility:
 
         assert json_result == orjson_result
 
-    @pytest.mark.benchmark(group="json-libs")
-    def test_orjson_is_faster(self, benchmark):
-        """Verify orjson is actually faster (why we use it) - TRUE 95/5 with pytest-benchmark."""
+    def test_orjson_is_faster(self):
+        """Verify orjson is actually faster (why we use it)."""
+        import time
+
         large_data = {"key" + str(i): i for i in range(1000)}
 
-        # TRUE 95/5: Let pytest-benchmark do all the work
-        result = benchmark(orjson.dumps, large_data)
+        # Time json
+        start = time.perf_counter()
+        for _ in range(100):
+            json.dumps(large_data)
+        json_time = time.perf_counter() - start
 
-        # Just verify it works correctly
-        assert orjson.loads(result) == large_data
+        # Time orjson
+        start = time.perf_counter()
+        for _ in range(100):
+            orjson.dumps(large_data)
+        orjson_time = time.perf_counter() - start
+
+        # orjson should be faster
+        assert orjson_time < json_time, f"orjson ({orjson_time:.3f}s) should be faster than json ({json_time:.3f}s)"
 
     def test_usage_in_our_code(self):
         """Test the specific usage patterns in our codebase."""
@@ -58,7 +69,7 @@ class TestOrjsonCompatibility:
         json_str = json.dumps(data)
 
         # orjson way (returns bytes, need decode)
-        orjson_str = orjson.dumps(data).decode("utf-8")
+        orjson_str = orjson.dumps(data).decode('utf-8')
 
         assert json.loads(json_str) == json.loads(orjson_str)
 

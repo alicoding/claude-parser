@@ -198,6 +198,45 @@ def find_all_transcripts_for_cwd(project_path: Path) -> List[str]:
     return [str(f) for f in jsonl_files]
 
 
+def find_all_transcripts_for_cwd(project_path: Path) -> List[str]:
+    """Find ALL transcript files for a project directory.
+
+    Critical for multi-session handling - gets all JSONL files, not just most recent.
+
+    Args:
+        project_path: Path to project directory
+
+    Returns:
+        List of paths to all transcript files for this project
+
+    Example:
+        # Get all sessions for current project
+        transcripts = find_all_transcripts_for_cwd(Path.cwd())
+        for transcript_path in transcripts:
+            timeline = Timeline(Path(transcript_path).parent)
+    """
+    claude_projects = Path.home() / ".claude" / "projects"
+
+    if not claude_projects.exists():
+        return []
+
+    # Normalize the project path
+    project_path = project_path.resolve()
+
+    # Find matching project directory
+    matching_dir = _find_matching_project_dir(claude_projects, project_path)
+    if not matching_dir:
+        return []
+
+    # Get ALL JSONL files (not just most recent)
+    jsonl_files = list(matching_dir.glob("*.jsonl"))
+
+    # Sort by modification time (most recent first)
+    jsonl_files.sort(key=lambda f: f.stat().st_mtime, reverse=True)
+
+    return [str(f) for f in jsonl_files]
+
+
 def find_project_by_encoded_name(encoded_name: str) -> Optional[dict]:
     """Find project info by encoded directory name.
 

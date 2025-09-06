@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """Demo TodoSwiper - Navigate todo history like Tinder."""
-
 import sys
 from pathlib import Path
 

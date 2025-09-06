@@ -66,13 +66,11 @@ def extract_text_from_content(content: List[Dict]) -> str:
                 return block["text"]
         return ""
 
-    return " ".join(
-        pipe(
-            content,
-            toolz_map(get_text),
-            toolz_filter(lambda x: x),  # Filter out empty strings
-        )
-    )
+    return " ".join(pipe(
+        content,
+        toolz_map(get_text),
+        toolz_filter(lambda x: x)  # Filter out empty strings
+    ))
 
 
 def extract_tool_blocks(content: List[Dict]) -> List[Dict]:
@@ -87,15 +85,13 @@ def extract_tool_blocks(content: List[Dict]) -> List[Dict]:
     # Use functional approach with toolz
     from toolz import filter as toolz_filter
 
-    return list(
-        toolz_filter(
-            lambda block: (
-                isinstance(block, dict)
-                and block.get("type", "") in ["tool_use", "tool_result"]
-            ),
-            content,
-        )
-    )
+    return list(toolz_filter(
+        lambda block: (
+            isinstance(block, dict) and
+            block.get("type", "") in ["tool_use", "tool_result"]
+        ),
+        content
+    ))
 
 
 def get_message_usage(msg: Any) -> Optional[Dict]:
@@ -164,14 +160,14 @@ def get_session_id(msg: Any) -> Optional[str]:
 
 # Export all utilities
 __all__ = [
-    "has_content_blocks",
-    "has_message_dict",
-    "get_message_content",
-    "get_content_blocks",
-    "extract_text_from_content",
-    "extract_tool_blocks",
-    "get_message_usage",
-    "get_message_model",
-    "is_compact_summary",
-    "get_session_id",
+    'has_content_blocks',
+    'has_message_dict',
+    'get_message_content',
+    'get_content_blocks',
+    'extract_text_from_content',
+    'extract_tool_blocks',
+    'get_message_usage',
+    'get_message_model',
+    'is_compact_summary',
+    'get_session_id',
 ]

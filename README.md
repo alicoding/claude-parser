@@ -1,249 +1,311 @@
-# Claude Parser SDK
+# Claude Parser 🎯
 
-[![Coverage](https://img.shields.io/badge/coverage-84%25-brightgreen)](https://github.com/anthropics/claude-parser)
-[![Tests](https://img.shields.io/badge/tests-177%20passing-brightgreen)](https://github.com/anthropics/claude-parser)
-[![Python](https://img.shields.io/badge/python-3.11%2B-blue)](https://python.org)
-[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+> **Git-like interface for navigating Claude Code conversations and file operations**
 
-Professional Python SDK for parsing Claude Code JSONL conversation exports with full type safety, enterprise-grade architecture, and git-like navigation for multi-session workflows.
+Transform your Claude Code workflow with intelligent multi-session navigation, UUID-based file restoration, and git-style commands.
 
-> **🤖 AUTOMATED TESTING**: This project has automatic local CI that runs GitHub Actions locally before every push, preventing failed builds. See [`AUTOMATION.md`](AUTOMATION.md) for details.
+## ✨ Features
 
-## Features
+- **🔀 Multi-Session Support**: Track operations across concurrent Claude Code sessions
+- **⚡ Git-Like Interface**: Familiar `cg` commands for navigation and undo operations
+- **🎯 Auto-Detection**: Automatically finds your Claude Code projects
+- **📝 UUID Navigation**: Jump to any specific operation state
+- **🔄 File Restoration**: Restore files to exact state at any point
+- **📊 Session Intelligence**: View which sessions modified which files
 
-### 🎯 Git-Like CLI Interface
-- **🔀 Multi-Session Support** - Track operations across concurrent Claude Code sessions
-- **⚡ `cg` Commands** - Git-style interface: `cg status`, `cg log`, `cg undo`, `cg checkout`
-- **🎯 Auto-Detection** - Finds Claude Code projects automatically from current directory
-- **🔄 Time Travel** - UUID-based navigation to any point in Claude conversation history
-- **📊 Session Intelligence** - See which sessions modified which files when
+## 🚀 Quick Start
 
-### 🚀 Python SDK
-- **🚀 Simple API** - One line to parse conversations: `conv = load("session.jsonl")`
-- **🏗️ Enterprise Architecture** - Domain-Driven Design with clean separation of concerns
-- **⚡ High Performance** - orjson for 10x faster parsing, pydantic v2 for validation
-- **🔍 Rich Queries** - Search, filter, and analyze conversations with ease
-- **📱 Real-time** - Watch files for live conversation updates with UUID checkpoints
-- **🎯 Type Safe** - Full type hints and validation throughout
-- **🔄 UUID Checkpoints** - Native Anthropic UUID tracking, no byte positions
-- **📊 Memory Export** - Export conversations for LlamaIndex/semantic search
-- **🧪 Well Tested** - 84% coverage with 390+ passing tests
+### System Requirements
+- **Supported**: macOS, Linux (Unix-like systems)
+- **Requirements**: Claude Code installed with active projects
+- **Python**: 3.9+ with pip
 
-## Quick Start
+### Installation
 
 ```bash
 pip install claude-parser
 ```
 
-### Git-Like CLI Usage (New!)
-
-**System Requirements**: macOS/Linux with Claude Code installed
+### Verify Setup
 
 ```bash
-# Navigate to any project directory Claude Code has worked on
-cd /your/project
+# Check if Claude Code projects exist
+ls ~/.claude/projects
+# Should show directories like: -Volumes-Dev-my-project
 
-# See current project state across all Claude sessions
+# Test the cg command
 cg status
-cg status --sessions    # Multi-session view
-
-# View operation history (like git log)
-cg log                  # All operations across sessions
-cg log --file app.py    # History for specific file
-
-# Time travel to any operation (like git checkout)
-cg checkout <uuid>      # Restore files to exact state
-cg undo 3               # Go back 3 operations (any session)
-cg show <uuid>          # See what specific operation did
-
-# Compare states (like git diff)
-cg diff                 # Recent changes
-cg diff <uuid1>..<uuid2> # Compare two points
+# Should show your current project status
 ```
 
-### SDK CLI Usage
+## 🎮 Commands
+
+### Core Navigation
+```bash
+cg status              # Show current project and session info
+cg log                 # View operation history across all sessions
+cg log --file app.py   # Show history for specific file
+cg checkout <uuid>     # Restore to specific operation state
+```
+
+### Undo & Time Travel
+```bash
+cg undo 3              # Go back 3 operations (any file, any session)
+cg undo --to <uuid>    # Go back to specific UUID
+cg reset <uuid>        # Reset to operation (like git reset)
+```
+
+### Multi-Session Intelligence
+```bash
+cg status --sessions   # Show all sessions working on this project
+cg log --sessions      # History with session information
+cg diff <uuid1>..<uuid2>  # Compare states across sessions
+```
+
+### Information & Analysis
+```bash
+cg show <uuid>         # Detailed view of specific operation
+cg diff                # Show recent changes
+cg branch              # List available branches
+```
+
+## 🔄 Real-World Workflow
+
+### Scenario: Multi-Session File Conflicts
 
 ```bash
-# Parse a JSONL file
-claude-parser parse conversation.jsonl
+# You're working on app.py, Claude session A modifies it
+# Meanwhile, Claude session B also modifies app.py
+# Now you want to see what happened:
 
-# Parse with detailed statistics
-claude-parser parse conversation.jsonl --stats
+cg status --sessions
+# 📊 Multi-Session Summary
+#    Sessions: 2
+#    Operations: 8
+#    🔀 Session abc12345: 4 ops → app.py, config.py
+#    🔀 Session def67890: 4 ops → app.py, utils.py
 
-# Find current Claude transcript
-claude-parser find
+# View the timeline for app.py across both sessions
+cg log --file app.py
+# 📅 Timeline for app.py (6 operations)
+#    1. a1b2c3d4 (Write) [abc12345] 2025-01-04T10:15:30
+#    2. e5f6g7h8 (Edit) [abc12345] 2025-01-04T10:16:45
+#    3. i9j0k1l2 (Edit) [def67890] 2025-01-04T10:17:20
+#    ...
 
-# List all Claude projects
-claude-parser projects
+# Go back to before the conflict
+cg undo 3
+# ✅ Undid 3 changes. Restored app.py to state before conflicts
 
-# Export for semantic search (outputs JSON lines)
-claude-parser export conversation.jsonl > memories.jsonl
-claude-parser export conversation.jsonl --no-tools  # Exclude tool messages
-
-# Watch file for live updates
-claude-parser watch conversation.jsonl
-
-# Resume watching from UUID checkpoint
-claude-parser watch conversation.jsonl --after-uuid msg-123
+# Or jump to specific operation
+cg checkout e5f6g7h8
+# ✅ Restored to UUID e5f6g7h8 - Edit app.py (Session: abc12345)
 ```
 
-### Python SDK Usage
+### Scenario: "What Changed Recently?"
 
-```python
-from claude_parser import load
+```bash
+# After a complex Claude session, see what happened
+cg status
+# 📊 Timeline Summary (12 operations from 1 session)
+# 📂 Project: /Users/dev/my-app
+#   📄 app.py: 5 operations
+#   📄 config.py: 3 operations
+#   📄 utils.py: 4 operations
 
-# Load any Claude Code JSONL export
-conv = load("conversation.jsonl")
+# See recent changes
+cg log --oneline
+# a1b2c3d4 Write app.py
+# e5f6g7h8 Edit config.py
+# i9j0k1l2 MultiEdit utils.py
+# ...
 
-# Access messages with full typing
-print(f"Total messages: {len(conv.messages)}")
-print(f"Assistant messages: {len(conv.assistant_messages)}")
-print(f"User messages: {len(conv.user_messages)}")
-
-# Search and filter
-errors = conv.search("error")
-recent = conv.before_summary(limit=10)
-
-# Rich domain operations
-for msg in conv.assistant_messages:
-    print(f"{msg.timestamp}: {msg.text_content[:100]}...")
+# Undo the last 2 operations across all files
+cg undo 2
+# ✅ Undid 2 changes across app.py and utils.py
 ```
 
-## Enterprise Features
+## 🏗️ Architecture
 
-### Domain-Driven Design Architecture
+Claude Parser leverages your existing Claude Code setup:
 
-```python
-from claude_parser.application import ConversationService
-from claude_parser.domain import ConversationAnalyzer
-
-# Application layer for complex operations
-service = ConversationService()
-conv = service.load_conversation("session.jsonl")
-
-# Domain services for analysis
-analyzer = ConversationAnalyzer(conv)
-stats = analyzer.get_stats()
+```
+~/.claude/projects/     ← Your Claude Code transcripts
+       ↓
+   Discovery Service    ← Finds all sessions for project
+       ↓
+   RealClaudeTimeline  ← Processes JSONL into git-like commits
+       ↓
+   Navigation Service   ← UUID-based state restoration
+       ↓
+   cg Commands         ← Git-like CLI interface
 ```
 
-### Real-time File Watching with UUID Checkpoints
+### Multi-Session Intelligence
 
-```python
-from claude_parser.watch import watch, watch_async
-
-def on_new_messages(conv, new_messages):
-    print(f"Received {len(new_messages)} new messages")
-    # Track checkpoint: last_uuid = new_messages[-1].uuid
-
-# Watch for live updates
-watch("session.jsonl", on_new_messages)
-
-# Resume from UUID checkpoint (no byte positions!)
-watch("session.jsonl", on_new_messages, after_uuid="msg-123")
-
-# Async watching with checkpoint
-import asyncio
-async def watch_with_checkpoint():
-    async for conv, new_messages in watch_async("session.jsonl", after_uuid="msg-456"):
-        print(f"New: {len(new_messages)}")
-
-asyncio.run(watch_with_checkpoint())
+```mermaid
+graph TD
+    A[Claude Session A] --> D[Project Directory]
+    B[Claude Session B] --> D
+    C[Claude Session C] --> D
+    D --> E[Discovery Service]
+    E --> F[Timeline Aggregation]
+    F --> G[Chronological Operations]
+    G --> H[cg Commands]
 ```
 
-### Memory Export for Semantic Search
+## 📚 Advanced Usage
 
-```python
-from claude_parser.memory import MemoryExporter
+### Branch Operations
+```bash
+# List branches (from git repository in timeline)
+cg branch
+# * main
+#   feature-branch
+#   session-experiment
 
-# Export conversations as simple dicts for LlamaIndex
-exporter = MemoryExporter(exclude_tools=True)
+# Create branch at current operation
+cg branch new-feature
 
-# Single conversation
-conv = load("session.jsonl")
-memories = exporter.export_as_dicts(conv)
-# Returns: [{"text": "...", "metadata": {...}}, ...]
-
-# Entire project (generator for efficiency)
-for memory_dict in exporter.export_project("/path/to/project"):
-    # Each dict ready for LlamaIndex Document creation
-    semantic_search.index(memory_dict)
+# Switch branches
+cg checkout feature-branch
 ```
 
-### Discovery and Navigation
+### Detailed Analysis
+```bash
+# Compare two specific operations
+cg diff abc12345..def67890
+# Shows exact file changes between UUIDs
 
-```python
-from claude_parser.discovery import find_current_transcript, list_all_projects
+# Show what specific operation did
+cg show abc12345
+# 🔍 Operation abc12345
+#    Type: Edit
+#    File: app.py
+#    Session: abc12345
+#    Changes: +5 lines, -2 lines
 
-# Auto-discover transcripts
-transcript = find_current_transcript()
-if transcript:
-    conv = load(transcript)
-
-# List all available projects
-projects = list_all_projects()
+# Export operation history
+cg log --format=json > operations.json
 ```
 
-## Documentation
+## 🔧 Configuration
 
-### Git-Like CLI Documentation
-- **[`cg` Command Reference](docs/cg-command-reference.md)** - Complete git-like CLI guide with examples
-- **[Multi-Session Guide](docs/multi-session-guide.md)** - Handle concurrent Claude Code sessions
-- **[Real-World Scenarios](docs/cg-command-reference.md#real-world-scenarios)** - Practical workflow examples
+### Project Detection
+Claude Parser automatically detects your current project by:
+1. Looking for `~/.claude/projects/` directory matching current path
+2. Using current working directory for project identification
+3. Aggregating all JSONL files for that project
 
-### SDK Documentation
-- **[API Reference](docs/api/)** - Complete API documentation
-- **[Watch API with UUID Checkpoints](docs/api/watch-uuid-api.md)** - Real-time watching with resume support
-- **[Memory Export API](docs/api/memory-export-api.md)** - Export for LlamaIndex/semantic search
-- **[DDD Architecture](docs/api/ddd-architecture.md)** - Enterprise architecture overview
-- **[Quick Reference](docs/api/QUICK_REFERENCE.md)** - Common patterns and examples
+### Custom Paths
+```bash
+# Work with specific project
+cg --project /path/to/project status
 
-## Installation
+# Use different Claude directory (if non-standard setup)
+cg --claude-dir /custom/claude/path status
+```
 
-### Requirements
+## 🧪 Testing Your Setup
 
-- Python 3.11+
-- See [pyproject.toml](pyproject.toml) for dependencies
+```bash
+# Verify Claude Code integration
+ls ~/.claude/projects
+# Should show encoded project directories
+
+# Test with actual Claude-generated data
+cd /your/project
+cg status
+# Should show operations from your Claude Code sessions
+
+# Test multi-session detection
+cg log --sessions
+# Should show all Claude sessions that worked on this project
+```
+
+## 🚧 Platform Support
+
+### Currently Supported
+- ✅ **macOS**: Full support with `~/.claude/projects`
+- ✅ **Linux**: Full support with `~/.claude/projects`
+
+### Coming Soon
+- ⏳ **Windows**: Support for Windows Claude Code paths
+- ⏳ **Custom paths**: Configurable Claude directory locations
+
+## 🐛 Troubleshooting
+
+### "No Claude Code sessions found"
+```bash
+# Check Claude directory exists
+ls ~/.claude/projects
+# If empty or missing, run Claude Code first to generate projects
+
+# Check current directory is a Claude project
+pwd
+# Make sure you're in a directory that Claude Code has worked on
+```
+
+### "Cannot restore to UUID"
+```bash
+# Verify UUID exists
+cg log | grep <uuid>
+# UUID should appear in operation history
+
+# Check UUID format
+cg log --format=full
+# Copy exact UUID from output
+```
+
+### Multi-Session Issues
+```bash
+# Check all sessions detected
+cg status --sessions
+# Should show multiple sessions if you've had concurrent Claude work
+
+# Verify session isolation
+cg log --sessions
+# Each operation should show session ID in brackets [abc12345]
+```
+
+## 🤝 Contributing
+
+Claude Parser follows the 95/5 principle: 95% library code, 5% glue code.
 
 ### Development Setup
-
 ```bash
-git clone https://github.com/anthropics/claude-parser
+git clone https://github.com/your-org/claude-parser
 cd claude-parser
-poetry install
-poetry run pytest
-
-# Run the CLI
-poetry run claude-parser --help
+pip install -e ".[dev]"
+pytest tests/
 ```
 
-## Architecture
+### Testing with Real Data
+```bash
+# Test against your actual Claude Code projects
+cd /your/claude/project
+python -m claude_parser.cli status --sessions
 
-Claude Parser follows Domain-Driven Design principles:
+# Run integration tests
+pytest tests/test_real_claude_timeline.py -v
+```
 
-- **Domain Layer** - Core business logic and entities
-- **Infrastructure Layer** - Data access with Repository pattern
-- **Application Layer** - Use cases and orchestration
+## 📖 Documentation
 
-This ensures maintainability, testability, and extensibility for enterprise use.
+- [Command Reference](docs/cg-command-reference.md) - Complete `cg` command guide
+- [Multi-Session Guide](docs/multi-session-guide.md) - Handling concurrent Claude sessions
+- [Architecture](docs/architecture.md) - Technical implementation details
+- [API Reference](docs/api-reference.md) - Python API usage
 
-## Performance
+## 📄 License
 
-- **10x faster JSON parsing** with orjson
-- **Type-safe validation** with pydantic v2
-- **Memory efficient** streaming for large files
-- **O(1) message lookups** with built-in indexing
+MIT License - see LICENSE file for details.
 
-## Contributing
+## 🏆 Credits
 
-1. Read [CLAUDE.md](CLAUDE.md) for development rules
-2. Follow DDD architecture patterns
-3. Maintain 90%+ test coverage
-4. Use conventional commits
-
-## License
-
-MIT License - see [LICENSE](LICENSE) for details.
-
----
-
-**Enterprise Support**: This project follows enterprise-grade development practices with comprehensive testing, documentation, and clean architecture.# Test change
+Built with the 95/5 principle using:
+- **GitPython** - Git repository operations
+- **typer** - CLI framework
+- **rich** - Terminal output formatting
+- **pathlib** - Cross-platform path handling
+- **orjson** - Fast JSON processing

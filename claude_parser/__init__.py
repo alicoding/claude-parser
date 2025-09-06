@@ -9,7 +9,7 @@ For the remaining 5%, full power is available through the classes.
 Architecture:
 - Domain Driven Design (DDD) with clean separation of concerns
 - SOLID principles throughout the codebase
-- Uses orjson + pydantic per specification for maximum performance
+- Uses central JSON service for maximum performance and consistency
 """
 
 # Import DDD application layer (95/5 factory functions)
@@ -27,32 +27,23 @@ from .application.conversation_service import (
 # Import discovery tools
 from .discovery import find_current_transcript, find_transcript_for_cwd
 
+# Import export tools (new!)
+from .export import ProjectConversationExporter
+
 # Import domain entities
 from .domain.entities.conversation import Conversation
 from .domain.value_objects.metadata import ConversationMetadata
 
-# Import legacy parser functions (for backward compatibility)
-from .infrastructure.jsonl_parser import (
-    count_messages,
-    parse_jsonl,
-    parse_jsonl_streaming,
-    validate_claude_format,
-    validate_jsonl,
-)
-
-# Import models
+# Import models (structured data objects)
 from .models import (
     AssistantMessage,
-    BaseMessage,
     ContentBlock,
     Message,
-    MessageType,
     Summary,
     SystemMessage,
     ToolResultContent,
     ToolUseContent,
     UserMessage,
-    parse_message,
 )
 
 # Export all the important classes and functions
@@ -69,10 +60,9 @@ __all__ = [
     # Core classes (5% use case) - DDD domain layer
     "Conversation",
     "ConversationMetadata",
-    # Message types
-    "Message",
+    # Message types (structured data objects)
     "MessageType",
-    "BaseMessage",
+    "Message",
     "UserMessage",
     "AssistantMessage",
     "ContentBlock",
@@ -80,16 +70,11 @@ __all__ = [
     "ToolResultContent",
     "Summary",
     "SystemMessage",
-    "parse_message",
-    # Legacy parser functions (backward compatibility)
-    "parse_jsonl",
-    "parse_jsonl_streaming",
-    "count_messages",
-    "validate_jsonl",
-    "validate_claude_format",
     # Analytics tools
     "TokenCounter",
     "ConversationAnalytics",
+    # Export tools (new!)
+    "ProjectConversationExporter",
 ]
 
 __version__ = "0.1.0"

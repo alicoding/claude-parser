@@ -3,33 +3,29 @@ User message model.
 
 SOLID: Single Responsibility - User messages only
 DDD: Value object for user messages
+Framework: msgspec for serialization, domain logic preserved
 """
 
 from typing import Optional
-
-from pydantic import Field
+import msgspec
 
 from ..utils import get_message_content
-from .base import BaseMessage, MessageType
+from ..msgspec_models import BaseMessage
 
 
-class UserMessage(BaseMessage):
-    """User message in conversation."""
+class UserMessage(BaseMessage, tag="user"):
+    """User message in conversation - SOLID/DDD with msgspec framework."""
 
-    type: MessageType = MessageType.USER
-    content: str = Field(default="")  # Can be empty in some cases
+    # SOLID: UserMessage specific fields only
+    content: str = ""  # Can be empty in some cases
 
-    # Context fields
-    cwd: Optional[str] = Field(None, description="Current working directory")
-    git_branch: Optional[str] = Field(None, alias="gitBranch")
-
-    # Tool approval
-    tool_approval: Optional[str] = Field(None, alias="toolApproval")
+    # Tool approval (user-specific behavior)
+    tool_approval: Optional[str] = msgspec.field(name="toolApproval", default=None)
 
     @property
     def text_content(self) -> str:
-        """Get searchable text content from real JSONL structure."""
-        # Use utility function to get content
+        """SOLID: User-specific content extraction logic."""
+        # DRY: Use existing utility function
         content = get_message_content(self)
         if content:
             if isinstance(content, str):
@@ -47,3 +43,8 @@ class UserMessage(BaseMessage):
 
         # Fallback to direct content field
         return getattr(self, "content", "")
+
+    @property
+    def parsed_timestamp(self) -> Optional[str]:
+        """DRY: Shared timestamp parsing logic."""
+        return self.timestamp

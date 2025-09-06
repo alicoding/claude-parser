@@ -9,9 +9,7 @@ DDD: Value object for token operations
 from dataclasses import dataclass
 from decimal import Decimal
 from typing import Optional
-
 import tiktoken
-
 from claude_parser.models.usage import UsageInfo
 
 
@@ -19,10 +17,10 @@ from claude_parser.models.usage import UsageInfo
 class TokenPricing:
     """Immutable token pricing configuration."""
 
-    input: Decimal = Decimal("3.00")  # $3 per 1M input tokens
-    output: Decimal = Decimal("15.00")  # $15 per 1M output tokens
-    cache_write: Decimal = Decimal("3.75")  # $3.75 per 1M cache write
-    cache_read: Decimal = Decimal("0.30")  # $0.30 per 1M cache read
+    input: Decimal = Decimal("3.00")          # $3 per 1M input tokens
+    output: Decimal = Decimal("15.00")        # $15 per 1M output tokens
+    cache_write: Decimal = Decimal("3.75")    # $3.75 per 1M cache write
+    cache_read: Decimal = Decimal("0.30")     # $0.30 per 1M cache read
 
     def calculate_cost(self, usage: UsageInfo) -> Decimal:
         """Calculate USD cost from usage info."""
@@ -31,9 +29,7 @@ class TokenPricing:
 
         cost += (Decimal(usage.input_tokens) / million) * self.input
         cost += (Decimal(usage.output_tokens) / million) * self.output
-        cost += (
-            Decimal(usage.cache_creation_input_tokens) / million
-        ) * self.cache_write
+        cost += (Decimal(usage.cache_creation_input_tokens) / million) * self.cache_write
         cost += (Decimal(usage.cache_read_input_tokens) / million) * self.cache_read
 
         return cost.quantize(Decimal("0.0001"))
@@ -154,9 +150,7 @@ class TokenService:
         return UsageInfo(
             input_tokens=usage_data.get("input_tokens", 0),
             output_tokens=usage_data.get("output_tokens", 0),
-            cache_creation_input_tokens=usage_data.get(
-                "cache_creation_input_tokens", 0
-            ),
+            cache_creation_input_tokens=usage_data.get("cache_creation_input_tokens", 0),
             cache_read_input_tokens=usage_data.get("cache_read_input_tokens", 0),
             service_tier=usage_data.get("service_tier"),
         )
@@ -165,17 +159,14 @@ class TokenService:
 # Create default service instance for easy imports
 default_token_service = TokenService()
 
-
 # Convenience functions using default service
 def count_tokens(text: str) -> int:
     """Count tokens using default service."""
     return default_token_service.count_tokens(text)
 
-
 def calculate_cost(usage: UsageInfo) -> Decimal:
     """Calculate cost using default service."""
     return default_token_service.calculate_usage_cost(usage)
-
 
 def estimate_tokens(text: str) -> int:
     """Estimate tokens using default service."""

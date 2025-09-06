@@ -4,11 +4,13 @@ Conversation statistics calculation - SOLID Single Responsibility.
 Focused solely on calculating message counts and basic stats.
 """
 
-from dataclasses import dataclass
+from typing import Dict, List
+from dataclasses import dataclass, field
+from collections import defaultdict
 
 from ..domain.entities.conversation import Conversation
-from ..models import AssistantMessage, UserMessage
-from ..models.content import ToolResultContent, ToolUseContent
+from ..models import Message, AssistantMessage, UserMessage
+from ..models.content import ToolUseContent, ToolResultContent
 
 
 @dataclass
@@ -58,7 +60,7 @@ class MessageStatisticsCalculator:
                 response_length += message_length
 
                 # Count tool usage in content
-                if hasattr(msg, "content_blocks"):
+                if hasattr(msg, 'content_blocks'):
                     for block in msg.content_blocks:
                         if isinstance(block, ToolUseContent):
                             stats.tool_uses += 1
@@ -66,10 +68,8 @@ class MessageStatisticsCalculator:
                             stats.tool_results += 1
 
             # Check for errors (simple pattern matching)
-            if msg.text_content and (
-                "error" in msg.text_content.lower()
-                or "exception" in msg.text_content.lower()
-            ):
+            if msg.text_content and ('error' in msg.text_content.lower() or
+                                   'exception' in msg.text_content.lower()):
                 stats.errors_count += 1
 
         # Calculate averages

@@ -4,11 +4,11 @@ Tool usage analysis for conversations - SOLID Single Responsibility.
 Focused solely on tool usage patterns and statistics.
 """
 
-from collections import defaultdict
 from typing import Dict, List, Tuple
+from collections import defaultdict
 
 from ..domain.entities.conversation import Conversation
-from ..models.content import ToolResultContent, ToolUseContent
+from ..models.content import ToolUseContent, ToolResultContent
 
 
 class ToolUsageAnalyzer:
@@ -68,7 +68,7 @@ class ToolUsageAnalyzer:
         messages = self.conversation.messages
 
         for i, msg in enumerate(messages):
-            if hasattr(msg, "content_blocks"):
+            if hasattr(msg, 'content_blocks'):
                 for block in msg.content_blocks:
                     if isinstance(block, ToolUseContent):
                         tool_name = block.name
@@ -77,14 +77,13 @@ class ToolUsageAnalyzer:
                         # Look for corresponding result in next few messages
                         for j in range(i + 1, min(i + 3, len(messages))):
                             next_msg = messages[j]
-                            if hasattr(next_msg, "content_blocks"):
+                            if hasattr(next_msg, 'content_blocks'):
                                 for next_block in next_msg.content_blocks:
-                                    if (
-                                        isinstance(next_block, ToolResultContent)
-                                        and hasattr(next_block, "tool_use_id")
-                                        and hasattr(block, "id")
-                                        and next_block.tool_use_id == block.id
-                                    ):
+                                    if (isinstance(next_block, ToolResultContent) and
+                                        hasattr(next_block, 'tool_use_id') and
+                                        hasattr(block, 'id') and
+                                        next_block.tool_use_id == block.id):
+
                                         # Check if result indicates success
                                         if not self._is_error_result(next_block):
                                             tool_successes[tool_name] += 1
@@ -109,31 +108,25 @@ class ToolUsageAnalyzer:
         timeline = []
 
         for msg in self.conversation.messages:
-            if hasattr(msg, "content_blocks") and msg.parsed_timestamp:
+            if hasattr(msg, 'content_blocks') and msg.parsed_timestamp:
                 for block in msg.content_blocks:
                     if isinstance(block, ToolUseContent):
-                        timeline.append(
-                            {
-                                "timestamp": msg.parsed_timestamp,
-                                "tool_name": block.name,
-                                "type": "tool_use",
-                                "input_preview": str(block.input)[:100]
-                                if block.input
-                                else "",
-                            }
-                        )
+                        timeline.append({
+                            'timestamp': msg.parsed_timestamp,
+                            'tool_name': block.name,
+                            'type': 'tool_use',
+                            'input_preview': str(block.input)[:100] if block.input else ""
+                        })
                     elif isinstance(block, ToolResultContent):
-                        timeline.append(
-                            {
-                                "timestamp": msg.parsed_timestamp,
-                                "tool_name": getattr(block, "tool_name", "unknown"),
-                                "type": "tool_result",
-                                "success": not self._is_error_result(block),
-                            }
-                        )
+                        timeline.append({
+                            'timestamp': msg.parsed_timestamp,
+                            'tool_name': getattr(block, 'tool_name', 'unknown'),
+                            'type': 'tool_result',
+                            'success': not self._is_error_result(block)
+                        })
 
         # Sort by timestamp
-        timeline.sort(key=lambda x: x["timestamp"])
+        timeline.sort(key=lambda x: x['timestamp'])
         return timeline
 
     def _is_error_result(self, tool_result: ToolResultContent) -> bool:
@@ -151,13 +144,8 @@ class ToolUsageAnalyzer:
         # Check for common error indicators
         content_str = str(tool_result.content).lower()
         error_indicators = [
-            "error",
-            "exception",
-            "failed",
-            "denied",
-            "invalid",
-            "not found",
-            "permission denied",
+            'error', 'exception', 'failed', 'denied',
+            'invalid', 'not found', 'permission denied'
         ]
 
         return any(indicator in content_str for indicator in error_indicators)

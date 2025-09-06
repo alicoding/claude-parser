@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 """Demo TodoManager - Show current todos with discovery."""
-
 import sys
 from pathlib import Path
 

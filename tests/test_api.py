@@ -2,7 +2,8 @@
 
 import pytest
 
-from claude_parser import Conversation, MessageType, load, load_many
+from claude_parser import Conversation, load, load_many
+from tests.constants import TestDefaults
 from tests.constants import TestDefaults
 
 

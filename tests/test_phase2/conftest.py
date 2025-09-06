@@ -11,6 +11,7 @@ from typing import Any, Dict, Optional
 import orjson
 import pytest
 from tests.constants import TestDefaults
+from tests.constants import TestDefaults
 
 # Real hook JSON samples from Claude Code documentation
 HOOK_SAMPLES = {

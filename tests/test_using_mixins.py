@@ -7,6 +7,7 @@ REDUCTION: 70% less test code
 """
 
 import pytest
+from pathlib import Path
 
 from tests.test_mixins import (
     AssertionMixin,
@@ -53,7 +54,7 @@ class TestHookModelsWithMixins(HookTestMixin, AssertionMixin):
             session_id="test",
             transcript_path="/path.jsonl",
             cwd="/cwd",
-            hook_event_name="Stop",
+            hook_event_name="Stop"
         )
 
         # Use mixin to assert optional fields (using pydantic field names)
@@ -64,7 +65,10 @@ class TestHookModelsWithMixins(HookTestMixin, AssertionMixin):
 
 
 class TestConversationWithMixins(
-    ConversationTestMixin, MessageTestMixin, FileTestMixin, AssertionMixin
+    ConversationTestMixin,
+    MessageTestMixin,
+    FileTestMixin,
+    AssertionMixin
 ):
     """Conversation tests using multiple mixins."""
 
@@ -115,7 +119,10 @@ class TestPerformanceWithMixins(PerformanceTestMixin, FileTestMixin, MessageTest
         from claude_parser import load
 
         # Create large test file
-        messages = [self.create_user_message(f"Message {i}") for i in range(100)]
+        messages = [
+            self.create_user_message(f"Message {i}")
+            for i in range(100)
+        ]
         jsonl_path = self.create_temp_jsonl(messages)
 
         try:
@@ -123,7 +130,7 @@ class TestPerformanceWithMixins(PerformanceTestMixin, FileTestMixin, MessageTest
             conv = self.assert_performance(
                 load,
                 1.0,  # Must load in under 1 second
-                str(jsonl_path),
+                str(jsonl_path)
             )
             assert len(conv) == 100
         finally:
@@ -134,19 +141,10 @@ class TestPerformanceWithMixins(PerformanceTestMixin, FileTestMixin, MessageTest
 class TestAllHookTypesWithMixins(HookTestMixin, AssertionMixin):
     """Test all hook types using parameterization and mixins."""
 
-    @pytest.mark.parametrize(
-        "hook_type",
-        [
-            "PreToolUse",
-            "PostToolUse",
-            "Stop",
-            "UserPromptSubmit",
-            "Notification",
-            "SubagentStop",
-            "PreCompact",
-            "SessionStart",
-        ],
-    )
+    @pytest.mark.parametrize("hook_type", [
+        "PreToolUse", "PostToolUse", "Stop", "UserPromptSubmit",
+        "Notification", "SubagentStop", "PreCompact", "SessionStart"
+    ])
     def test_all_hooks_single_model(self, hook_type):
         """Single test for all hook types - ultimate DRY!"""
         from claude_parser.hooks.models import HookData

@@ -31,9 +31,9 @@ def monitor_context(jsonl_path: str):
     context_info = context_manager.analyze(stats.total_tokens)
 
     # Display comprehensive status
-    print("\n" + "=" * 60)
+    print("\n" + "="*60)
     print("CLAUDE CONTEXT MONITOR")
-    print("=" * 60)
+    print("="*60)
 
     # Basic info
     print(f"\nConversation: {conv.session_id}")
@@ -80,7 +80,7 @@ def monitor_context(jsonl_path: str):
         print(f"   POST https://your-webhook.com/claude-alert")
         print(f"   {webhook}")
 
-    print("\n" + "=" * 60)
+    print("\n" + "="*60)
 
     # Return status for scripting
     return {
@@ -88,7 +88,7 @@ def monitor_context(jsonl_path: str):
         "is_critical": context_info.is_critical,
         "should_compact": context_info.should_compact,
         "percentage_used": context_info.percentage_used,
-        "percentage_until_compact": context_info.percentage_until_compact,
+        "percentage_until_compact": context_info.percentage_until_compact
     }
 
 

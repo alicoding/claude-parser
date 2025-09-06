@@ -6,10 +6,10 @@ when approaching auto-compact threshold without watching UI.
 """
 
 import pytest
-
 from claude_parser.domain.services.context_window_manager import (
-    ContextStatus,
     ContextWindowManager,
+    ContextStatus,
+    ContextWindowInfo
 )
 
 
@@ -85,19 +85,18 @@ class TestContextWindowManager:
         """Verify tokens until compact is calculated correctly."""
         # Test at various levels
         test_cases = [
-            (50_000, 130_000),  # 50K used, 130K until compact
-            (100_000, 80_000),  # 100K used, 80K until compact
-            (150_000, 30_000),  # 150K used, 30K until compact
-            (170_000, 10_000),  # 170K used, 10K until compact
-            (180_000, 0),  # 180K used, 0 until compact (at threshold)
-            (190_000, 0),  # 190K used, 0 (past threshold)
+            (50_000, 130_000),   # 50K used, 130K until compact
+            (100_000, 80_000),   # 100K used, 80K until compact
+            (150_000, 30_000),   # 150K used, 30K until compact
+            (170_000, 10_000),   # 170K used, 10K until compact
+            (180_000, 0),        # 180K used, 0 until compact (at threshold)
+            (190_000, 0),        # 190K used, 0 (past threshold)
         ]
 
         for tokens_used, expected_until_compact in test_cases:
             info = manager.analyze(tokens_used)
-            assert info.tokens_until_compact == expected_until_compact, (
+            assert info.tokens_until_compact == expected_until_compact, \
                 f"At {tokens_used} tokens, expected {expected_until_compact} until compact"
-            )
 
     def test_percentage_until_compact(self, manager):
         """Verify percentage until compact calculation."""
@@ -203,7 +202,7 @@ class TestIntegrationWithSession:
         """Session banner should show percentage until compact."""
         from claude_parser.domain.services.session_analyzer import (
             SessionAnalyzer,
-            SessionStats,
+            SessionStats
         )
 
         analyzer = SessionAnalyzer()
@@ -213,7 +212,7 @@ class TestIntegrationWithSession:
             input_tokens=140_000,
             output_tokens=10_000,
             cache_hit_rate=0.85,
-            cost_usd=1.23,
+            cost_usd=1.23
         )
 
         banner = analyzer.format_session_banner(stats)

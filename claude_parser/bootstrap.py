@@ -12,6 +12,17 @@ SOLID: Single place for dependency configuration.
 """
 
 from dependency_injector import containers, providers
+from typing import Optional
+
+# Domain imports - all Value Objects centralized here
+from .domain.value_objects.ids import SessionId, MessageUuid, AgentId
+from .domain.value_objects.token_service import TokenService, TokenPricing, TokenCount
+from .domain.value_objects.metadata import ConversationMetadata
+
+# Domain services
+from .domain.services.session_analyzer import SessionAnalyzer
+from .domain.services.navigation import NavigationService
+from .domain.services.token_analyzer_service import TokenAnalyzer
 
 # Analytics components
 from .analytics.analyzer import ConversationAnalytics
@@ -21,15 +32,6 @@ from .analytics.tool_analyzer import ToolUsageAnalyzer
 
 # Application services
 from .application.conversation_service import ConversationService
-from .domain.services.navigation import NavigationService
-
-# Domain services
-from .domain.services.session_analyzer import SessionAnalyzer
-from .domain.services.token_analyzer import TokenAnalyzer
-
-# Domain imports - all Value Objects centralized here
-from .domain.value_objects.ids import AgentId, MessageUuid, SessionId
-from .domain.value_objects.token_service import TokenCount, TokenPricing, TokenService
 
 # Infrastructure
 from .infrastructure.message_repository import MessageRepository
@@ -59,7 +61,10 @@ class Container(containers.DeclarativeContainer):
 
     # Token service with pricing configuration
     token_pricing = providers.Singleton(TokenPricing)
-    token_service = providers.Singleton(TokenService, pricing=token_pricing)
+    token_service = providers.Singleton(
+        TokenService,
+        pricing=token_pricing
+    )
 
     # Infrastructure layer
     message_repository = providers.Factory(MessageRepository)
@@ -69,7 +74,10 @@ class Container(containers.DeclarativeContainer):
 
     navigation_service = providers.Factory(NavigationService)
 
-    token_analyzer = providers.Factory(TokenAnalyzer, token_service=token_service)
+    token_analyzer = providers.Factory(
+        TokenAnalyzer,
+        token_service=token_service
+    )
 
     # Analytics - Focused analyzers following SRP
     message_statistics_calculator = providers.Factory(MessageStatisticsCalculator)
@@ -78,14 +86,15 @@ class Container(containers.DeclarativeContainer):
 
     # Analytics orchestrator
     conversation_analytics = providers.Factory(
-        ConversationAnalytics, token_service=token_service
+        ConversationAnalytics,
+        token_service=token_service
     )
 
     # Application services
     conversation_service = providers.Factory(
         ConversationService,
         repository=message_repository,
-        session_analyzer=session_analyzer,
+        session_analyzer=session_analyzer
     )
 
 

@@ -3,7 +3,7 @@
 import orjson
 import pytest
 
-from claude_parser.hooks.json_output import json_output
+from claude_parser.hooks.json_output import orjson_output
 
 
 def test_json_output_with_kwargs(capsys):
@@ -17,7 +17,7 @@ def test_json_output_with_kwargs(capsys):
 
     # Should output valid JSON
     captured = capsys.readouterr()
-    output = orjson.loads(captured.out)
+    output = ororjson.loads(captured.out)
     assert output["decision"] == "continue"
 
 

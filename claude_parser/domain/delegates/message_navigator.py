@@ -8,7 +8,7 @@ SOLID: Single Responsibility - Only navigation/positional operations.
 from typing import List, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ...models import Message
+    from ...models import Message, Summary
 
 
 class MessageNavigator:

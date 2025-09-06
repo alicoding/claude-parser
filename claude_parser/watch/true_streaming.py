@@ -16,7 +16,7 @@ from typing import Any, AsyncGenerator, Dict, List, Optional, Set
 
 import aiofiles
 import orjson
-from loguru import logger
+from ..infrastructure.logger_config import logger
 from watchfiles import awatch
 
 
@@ -43,9 +43,7 @@ class StreamingJSONLReader:
         self.last_uuid = last_uuid
         logger.debug(f"Checkpoint set to UUID: {last_uuid}")
 
-    async def get_new_messages(
-        self, after_uuid: Optional[str] = None
-    ) -> List[Dict[str, Any]]:
+    async def get_new_messages(self, after_uuid: Optional[str] = None) -> List[Dict[str, Any]]:
         """
         Get new messages since last UUID checkpoint.
 
@@ -79,7 +77,7 @@ class StreamingJSONLReader:
                     try:
                         # Parse JSON line
                         data = orjson.loads(line)
-                        current_uuid = data.get("uuid")
+                        current_uuid = data.get('uuid')
 
                         if not current_uuid:
                             logger.warning("Message without UUID found, skipping")
@@ -117,7 +115,9 @@ class StreamingJSONLReader:
 
 
 async def stream_jsonl_incrementally(
-    filepath: Path | str, watch: bool = True, after_uuid: Optional[str] = None
+    filepath: Path | str,
+    watch: bool = True,
+    after_uuid: Optional[str] = None
 ) -> AsyncGenerator[List[Dict[str, Any]], None]:
     """
     TRUE 95/5 streaming function with UUID checkpoints.
@@ -153,7 +153,8 @@ async def stream_jsonl_incrementally(
 
 
 async def stream_project_incrementally(
-    project_path: str, checkpoints: Optional[Dict[str, str]] = None
+    project_path: str,
+    checkpoints: Optional[Dict[str, str]] = None
 ) -> AsyncGenerator[tuple[str, List[Dict[str, Any]]], None]:
     """
     Stream all JSONL files in a Claude project with UUID checkpoints.
@@ -188,9 +189,7 @@ async def stream_project_incrementally(
             readers[filename].set_checkpoint(checkpoints[filename])
 
     # Watch entire directory
-    async for changes in awatch(
-        str(project_dir), watch_filter=lambda c, p: p.endswith(".jsonl")
-    ):
+    async for changes in awatch(str(project_dir), watch_filter=lambda c, p: p.endswith('.jsonl')):
         for change_type, path in changes:
             filename = Path(path).name
 

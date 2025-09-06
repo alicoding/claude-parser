@@ -10,14 +10,18 @@ from typing import Optional
 
 import typer
 from rich import print
+from rich.table import Table
 from rich.console import Console
 
 from .domain.services import ClaudeCodeTimeline
+from .infrastructure.discovery import ConfigurableProjectDiscovery
+from .infrastructure.platform import get_claude_projects_dir
+from .discovery import find_all_transcripts_for_cwd
 
 app = typer.Typer(
     help="Git-like interface for Claude Code operations",
     add_completion=False,
-    no_args_is_help=True,
+    no_args_is_help=True
 )
 
 console = Console()
@@ -39,20 +43,10 @@ def get_timeline(project_path: Optional[Path] = None) -> ClaudeCodeTimeline:
 
 @app.command()
 def status(
-    project_path: Optional[Path] = typer.Argument(
-        None, help="Project path (auto-detects if omitted)"
-    ),
-    sessions: bool = typer.Option(
-        False, "--sessions", help="Show detailed multi-session view"
-    ),
+    project_path: Optional[Path] = typer.Argument(None, help="Project path (auto-detects if omitted)"),
+    sessions: bool = typer.Option(False, "--sessions", help="Show detailed multi-session view"),
 ):
     """Show current project state and session information."""
-    # Skip execution in test mode to prevent filesystem access during help
-    import os
-
-    if os.environ.get("CLAUDE_PARSER_TEST_MODE"):
-        return
-
     timeline = get_timeline(project_path)
 
     try:
@@ -65,9 +59,9 @@ def status(
             print(f"   Project: {project_path or Path.cwd()}")
             print()
 
-            for session_id, data in summary["sessions"].items():
+            for session_id, data in summary['sessions'].items():
                 short_id = session_id[:8] if session_id != "unknown" else session_id
-                files = ", ".join(Path(f).name for f in data["files_modified"])
+                files = ', '.join(Path(f).name for f in data['files_modified'])
                 print(f"   📋 Session {short_id}: {data['operations']} ops → {files}")
         else:
             # Basic project status
@@ -81,9 +75,7 @@ def status(
                 if session := op.get("sessionId"):
                     session_counts[session[:8]] = session_counts.get(session[:8], 0) + 1
 
-            print(
-                f"📊 Timeline Summary ({len(timeline.tool_operations)} operations from {len(session_counts)} sessions)"
-            )
+            print(f"📊 Timeline Summary ({len(timeline.tool_operations)} operations from {len(session_counts)} sessions)")
             print(f"📂 Project: {project_path or Path.cwd()}")
 
             for filename, count in sorted(file_counts.items()):
@@ -100,43 +92,28 @@ def status(
 
 @app.command()
 def log(
-    project_path: Optional[Path] = typer.Argument(
-        None, help="Project path (auto-detects if omitted)"
-    ),
-    file: Optional[str] = typer.Option(
-        None, "--file", help="Show history for specific file"
-    ),
-    limit: Optional[int] = typer.Option(
-        None, "--limit", help="Limit number of operations shown"
-    ),
+    project_path: Optional[Path] = typer.Argument(None, help="Project path (auto-detects if omitted)"),
+    file: Optional[str] = typer.Option(None, "--file", help="Show history for specific file"),
+    limit: Optional[int] = typer.Option(None, "--limit", help="Limit number of operations shown"),
     sessions: bool = typer.Option(False, "--sessions", help="Show session information"),
 ):
     """View operation history across all Claude Code sessions."""
-    # Skip execution in test mode to prevent filesystem access during help
-    import os
-
-    if os.environ.get("CLAUDE_PARSER_TEST_MODE"):
-        return
-
     timeline = get_timeline(project_path)
 
     try:
         if file:
             # File-specific timeline
-            file_ops = [
-                op
-                for op in timeline.tool_operations
-                if op.get("file_path", "").endswith(file)
-            ]
+            file_ops = [op for op in timeline.tool_operations
+                       if op.get('file_path', '').endswith(file)]
 
             print(f"📅 Timeline for {file} ({len(file_ops)} operations)")
 
             displayed_ops = file_ops[:limit] if limit else file_ops
             for i, op in enumerate(displayed_ops, 1):
-                uuid = op.get("uuid", "unknown")
-                tool = op.get("tool_name", "unknown")
-                session = op.get("sessionId", "unknown")[:8]
-                timestamp = op.get("timestamp", "")[:19]  # Just date/time
+                uuid = op.get('uuid', 'unknown')
+                tool = op.get('tool_name', 'unknown')
+                session = op.get('sessionId', 'unknown')[:8]
+                timestamp = op.get('timestamp', '')[:19]  # Just date/time
                 print(f"  {i:2d}. {uuid[:8]} ({tool}) [{session}] {timestamp}")
 
             if limit and len(file_ops) > limit:
@@ -154,9 +131,7 @@ def log(
                 if session := op.get("sessionId"):
                     session_counts[session[:8]] = session_counts.get(session[:8], 0) + 1
 
-            print(
-                f"📊 Timeline Summary ({len(timeline.tool_operations)} operations from {len(session_counts)} sessions)"
-            )
+            print(f"📊 Timeline Summary ({len(timeline.tool_operations)} operations from {len(session_counts)} sessions)")
             print(f"📂 Project: {project_path or Path.cwd()}")
 
             for filename, count in sorted(file_counts.items()):
@@ -169,20 +144,12 @@ def log(
 
             if sessions:
                 print(f"\n📋 Recent Operations:")
-                recent_ops = (
-                    timeline.tool_operations[-10:]
-                    if len(timeline.tool_operations) > 10
-                    else timeline.tool_operations
-                )
+                recent_ops = timeline.tool_operations[-10:] if len(timeline.tool_operations) > 10 else timeline.tool_operations
                 for i, op in enumerate(recent_ops, 1):
-                    uuid = op.get("uuid", "unknown")[:8]
-                    tool = op.get("tool_name", "unknown")
-                    filename = (
-                        Path(op.get("file_path", "")).name
-                        if op.get("file_path")
-                        else "unknown"
-                    )
-                    session = op.get("sessionId", "unknown")[:8]
+                    uuid = op.get('uuid', 'unknown')[:8]
+                    tool = op.get('tool_name', 'unknown')
+                    filename = Path(op.get('file_path', '')).name if op.get('file_path') else 'unknown'
+                    session = op.get('sessionId', 'unknown')[:8]
                     print(f"  {i:2d}. {uuid} ({tool}) {filename} [{session}]")
 
     finally:
@@ -192,9 +159,7 @@ def log(
 @app.command()
 def checkout(
     uuid: str = typer.Argument(..., help="UUID to checkout to"),
-    project_path: Optional[Path] = typer.Argument(
-        None, help="Project path (auto-detects if omitted)"
-    ),
+    project_path: Optional[Path] = typer.Argument(None, help="Project path (auto-detects if omitted)"),
 ):
     """Restore files to exact state at specific UUID operation."""
     timeline = get_timeline(project_path)
@@ -205,8 +170,8 @@ def checkout(
         if len(uuid) == 8:
             # Find full UUID from shortened version
             for op in timeline.tool_operations:
-                if op.get("uuid", "").startswith(uuid):
-                    full_uuid = op.get("uuid")
+                if op.get('uuid', '').startswith(uuid):
+                    full_uuid = op.get('uuid')
                     break
 
         state = timeline.checkout_by_uuid(full_uuid)
@@ -225,9 +190,7 @@ def checkout(
 @app.command()
 def undo(
     steps: int = typer.Argument(1, help="Number of operations to undo"),
-    project_path: Optional[Path] = typer.Argument(
-        None, help="Project path (auto-detects if omitted)"
-    ),
+    project_path: Optional[Path] = typer.Argument(None, help="Project path (auto-detects if omitted)"),
     to: Optional[str] = typer.Option(None, "--to", help="Undo to specific UUID"),
 ):
     """Go back N operations or to specific UUID."""
@@ -250,25 +213,16 @@ def undo(
                 return
 
             # Get Edit/Write operations (skip Read operations)
-            edit_operations = [
-                op
-                for op in timeline.tool_operations
-                if op.get("tool_name") in ["Write", "Edit", "MultiEdit"]
-            ]
+            edit_operations = [op for op in timeline.tool_operations
+                              if op.get("tool_name") in ["Write", "Edit", "MultiEdit"]]
 
             if steps > len(edit_operations):
-                print(
-                    f"❌ Cannot undo {steps} steps. Only {len(edit_operations)} operations available."
-                )
+                print(f"❌ Cannot undo {steps} steps. Only {len(edit_operations)} operations available.")
                 return
 
             # Go back N steps from the end
-            target_op = (
-                edit_operations[-(steps + 1)]
-                if steps < len(edit_operations)
-                else edit_operations[0]
-            )
-            target_uuid = target_op.get("uuid")
+            target_op = edit_operations[-(steps+1)] if steps < len(edit_operations) else edit_operations[0]
+            target_uuid = target_op.get('uuid')
 
             if target_uuid:
                 state = timeline.checkout_by_uuid(target_uuid)
@@ -290,9 +244,7 @@ def undo(
 @app.command()
 def show(
     uuid: str = typer.Argument(..., help="UUID to show details for"),
-    project_path: Optional[Path] = typer.Argument(
-        None, help="Project path (auto-detects if omitted)"
-    ),
+    project_path: Optional[Path] = typer.Argument(None, help="Project path (auto-detects if omitted)"),
 ):
     """Show detailed information about a specific operation."""
     timeline = get_timeline(project_path)
@@ -303,7 +255,7 @@ def show(
         full_uuid = uuid
 
         for op in timeline.tool_operations:
-            op_uuid = op.get("uuid", "")
+            op_uuid = op.get('uuid', '')
             if op_uuid == uuid or op_uuid.startswith(uuid):
                 target_op = op
                 full_uuid = op_uuid
@@ -321,13 +273,13 @@ def show(
         print(f"   Timestamp: {target_op.get('timestamp', '')[:19]}")
 
         # Show operation details
-        tool_input = target_op.get("tool_input", {})
-        if target_op.get("tool_name") == "Edit":
-            old_str = tool_input.get("old_string", "")[:50]
-            new_str = tool_input.get("new_string", "")[:50]
+        tool_input = target_op.get('tool_input', {})
+        if target_op.get('tool_name') == 'Edit':
+            old_str = tool_input.get('old_string', '')[:50]
+            new_str = tool_input.get('new_string', '')[:50]
             print(f"   Changes: {old_str} → {new_str}")
-        elif target_op.get("tool_name") == "Write":
-            content = tool_input.get("content", "")[:100]
+        elif target_op.get('tool_name') == 'Write':
+            content = tool_input.get('content', '')[:100]
             print(f"   Content: {content}...")
 
     finally:
@@ -336,15 +288,9 @@ def show(
 
 @app.command()
 def diff(
-    project_path: Optional[Path] = typer.Argument(
-        None, help="Project path (auto-detects if omitted)"
-    ),
-    uuid_range: Optional[str] = typer.Option(
-        None, "--range", help="Compare UUIDs (uuid1..uuid2)"
-    ),
-    uuid: Optional[str] = typer.Option(
-        None, "--uuid", help="Show diff for specific UUID"
-    ),
+    project_path: Optional[Path] = typer.Argument(None, help="Project path (auto-detects if omitted)"),
+    uuid_range: Optional[str] = typer.Option(None, "--range", help="Compare UUIDs (uuid1..uuid2)"),
+    uuid: Optional[str] = typer.Option(None, "--uuid", help="Show diff for specific UUID"),
 ):
     """Show differences between operations or current vs previous."""
     timeline = get_timeline(project_path)
@@ -354,17 +300,15 @@ def diff(
             # Show what changed at specific UUID
             diff_info = timeline.get_operation_diff(uuid)
             if diff_info:
-                print(
-                    f"🔍 Changes at {uuid[:8]} ({diff_info['operation']} on {diff_info['file_path']})"
-                )
-                for line in diff_info["diff"]:
+                print(f"🔍 Changes at {uuid[:8]} ({diff_info['operation']} on {diff_info['file_path']})")
+                for line in diff_info['diff']:
                     print(line)
             else:
                 print(f"❌ No operation found for UUID {uuid[:8]}")
         elif uuid_range:
             # Compare two UUIDs
-            if ".." in uuid_range:
-                uuid1, uuid2 = uuid_range.split("..", 1)
+            if '..' in uuid_range:
+                uuid1, uuid2 = uuid_range.split('..', 1)
                 from_state = timeline.checkout_by_uuid(uuid1)
                 to_state = timeline.checkout_by_uuid(uuid2)
 
@@ -390,21 +334,16 @@ def diff(
                 print(f"❌ Range format should be: uuid1..uuid2")
         else:
             # Show recent changes (last operation)
-            edit_operations = [
-                op
-                for op in timeline.tool_operations
-                if op.get("tool_name") in ["Write", "Edit", "MultiEdit"]
-            ]
+            edit_operations = [op for op in timeline.tool_operations
+                              if op.get("tool_name") in ["Write", "Edit", "MultiEdit"]]
             if edit_operations:
                 last_op = edit_operations[-1]
-                uuid = last_op.get("uuid")
+                uuid = last_op.get('uuid')
                 if uuid:
                     diff_info = timeline.get_operation_diff(uuid)
                     if diff_info:
-                        print(
-                            f"🔍 Recent changes ({diff_info['operation']} on {Path(diff_info['file_path']).name})"
-                        )
-                        for line in diff_info["diff"][:10]:  # Limit output
+                        print(f"🔍 Recent changes ({diff_info['operation']} on {Path(diff_info['file_path']).name})")
+                        for line in diff_info['diff'][:10]:  # Limit output
                             print(line)
                     else:
                         print(f"❌ Cannot show diff for recent operation")
@@ -415,6 +354,53 @@ def diff(
 
     finally:
         timeline.clear_cache()
+
+
+@app.command()
+def timeline(
+    project_path: Optional[Path] = typer.Argument(
+        None, help="Project path (auto-detects if omitted)"
+    ),
+    since: bool = typer.Option(
+        False, "--since", help="Show changes since last user message (checkpoint view)"
+    ),
+    sessions: bool = typer.Option(
+        False, "--sessions", help="Show multi-session timeline"
+    ),
+):
+    """Show conversation timeline with git-like visualization."""
+    # Skip execution in test mode
+    import os
+    if os.environ.get("CLAUDE_PARSER_TEST_MODE"):
+        return
+
+    timeline_service = get_timeline(project_path)
+
+    try:
+        from .domain.services import TimelineVisualizer
+        visualizer = TimelineVisualizer()
+
+        if sessions:
+            # Multi-session view
+            output = visualizer.create_session_timeline(timeline_service.conversations)
+            print(output)
+        elif since:
+            # Checkpoint view - since last user message
+            newest_conv = timeline_service.conversations[0]
+            last_user = timeline_service.find_last_user_message()
+            if last_user:
+                output = visualizer.create_checkpoint_view(newest_conv, last_user["timestamp"])
+                print(output)
+            else:
+                print("❌ No user messages found for checkpoint view")
+        else:
+            # Full conversation timeline
+            newest_conv = timeline_service.conversations[0]
+            output = visualizer.create_conversation_timeline(newest_conv)
+            print(output)
+
+    finally:
+        timeline_service.clear_cache()
 
 
 if __name__ == "__main__":

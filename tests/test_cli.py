@@ -1,6 +1,7 @@
 """TDD tests for claude-parser CLI - Write tests FIRST!"""
 
 import orjson
+from pathlib import Path
 
 import pytest
 from typer.testing import CliRunner
@@ -21,7 +22,7 @@ def sample_jsonl(tmp_path):
         "uuid": "test-001",
         "sessionId": "test-session",
         "timestamp": "2025-08-29T00:00:00Z",
-        "message": {"role": "user", "content": "Test message"},
+        "message": {"role": "user", "content": "Test message"}
     }
     file.write_text(orjson.dumps(data).decode() + "\n")
     return str(file)
@@ -30,7 +31,6 @@ def sample_jsonl(tmp_path):
 def test_cli_import():
     """Test that CLI module can be imported."""
     from claude_parser.cli import app
-
     assert app is not None
 
 
@@ -50,9 +50,7 @@ def test_parse_with_stats(runner, sample_jsonl):
     result = runner.invoke(app, ["parse", sample_jsonl, "--stats"])
     assert result.exit_code == 0
     # Should show statistics
-    assert any(
-        word in result.output.lower() for word in ["token", "statistic", "total"]
-    )
+    assert any(word in result.output.lower() for word in ["token", "statistic", "total"])
 
 
 def test_find_command(runner, monkeypatch):
@@ -61,7 +59,8 @@ def test_find_command(runner, monkeypatch):
 
     # Mock the find function
     monkeypatch.setattr(
-        "claude_parser.find_current_transcript", lambda: "/path/to/transcript.jsonl"
+        "claude_parser.find_current_transcript",
+        lambda: "/path/to/transcript.jsonl"
     )
 
     result = runner.invoke(app, ["find"])
@@ -88,10 +87,11 @@ def test_projects_command(runner, monkeypatch):
     # Mock project list
     mock_projects = [
         {"name": "project1", "original_path": "/path/to/project1"},
-        {"name": "project2", "original_path": "/path/to/project2"},
+        {"name": "project2", "original_path": "/path/to/project2"}
     ]
     monkeypatch.setattr(
-        "claude_parser.discovery.list_all_projects", lambda: mock_projects
+        "claude_parser.discovery.list_all_projects",
+        lambda: mock_projects
     )
 
     result = runner.invoke(app, ["projects"])
@@ -108,9 +108,9 @@ def test_export_command(runner, sample_jsonl):
     assert result.exit_code == 0
 
     # Output should be valid JSON lines
-    lines = result.output.strip().split("\n")
+    lines = result.output.strip().split('\n')
     for line in lines:
-        if line and line.startswith("{"):  # Skip non-JSON lines
+        if line and line.startswith('{'):  # Skip non-JSON lines
             data = orjson.loads(line)
             assert "text" in data or "content" in data
 
@@ -133,7 +133,6 @@ def test_watch_command_mocked(runner, sample_jsonl, monkeypatch):
     def mock_watch(file, callback, **kwargs):
         # Simulate calling the callback
         callback_called.append(True)
-
         # Create a mock conversation and messages
         class MockMessage:
             type = "user"

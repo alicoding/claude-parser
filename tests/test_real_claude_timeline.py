@@ -28,8 +28,8 @@ class TestRealClaudeTimeline:
 
         # Should have multiple sessions
         summary = timeline.get_multi_session_summary()
-        assert summary["total_sessions"] >= 2
-        assert summary["total_operations"] >= 4
+        assert summary['total_sessions'] >= 2
+        assert summary['total_operations'] >= 4
 
         timeline.clear_cache()
 
@@ -40,16 +40,13 @@ class TestRealClaudeTimeline:
         summary = timeline.get_multi_session_summary()
 
         # Should have exactly 2 sessions from our test
-        assert summary["total_sessions"] == 2
-        assert "0c9f3362-4b85-4861-a604-6ef1578e2aa2" in summary["sessions"]
-        assert "94aeb5b2-3063-496a-9965-9e2dfcd59043" in summary["sessions"]
+        assert summary['total_sessions'] == 2
+        assert '0c9f3362-4b85-4861-a604-6ef1578e2aa2' in summary['sessions']
+        assert '94aeb5b2-3063-496a-9965-9e2dfcd59043' in summary['sessions']
 
         # Both sessions should have modified hello.py
-        for session_data in summary["sessions"].values():
-            assert (
-                "/private/tmp/claude-parser-test-project/hello.py"
-                in session_data["files_modified"]
-            )
+        for session_data in summary['sessions'].values():
+            assert '/private/tmp/claude-parser-test-project/hello.py' in session_data['files_modified']
 
         timeline.clear_cache()
 
@@ -58,22 +55,19 @@ class TestRealClaudeTimeline:
         timeline = RealClaudeTimeline(test_project_path)
 
         # Get Edit operations (not Read)
-        edit_operations = [
-            op for op in timeline.tool_operations if op.get("tool_name") == "Edit"
-        ]
+        edit_operations = [op for op in timeline.tool_operations
+                          if op.get("tool_name") == "Edit"]
 
-        assert (
-            len(edit_operations) >= 2
-        )  # Should have Edit operations from both sessions
+        assert len(edit_operations) >= 2  # Should have Edit operations from both sessions
 
         # Test checkout by UUID
         first_edit = edit_operations[0]
-        uuid = first_edit.get("uuid")
+        uuid = first_edit.get('uuid')
         assert uuid is not None
 
         state = timeline.checkout_by_uuid(uuid)
         assert state is not None
-        assert "hello.py" in state
+        assert 'hello.py' in state
 
         timeline.clear_cache()
 
@@ -82,26 +76,23 @@ class TestRealClaudeTimeline:
         timeline = RealClaudeTimeline(test_project_path)
 
         # Should have Read and Edit operations
-        tools_found = set(op.get("tool_name") for op in timeline.tool_operations)
-        assert "Read" in tools_found
-        assert "Edit" in tools_found
+        tools_found = set(op.get('tool_name') for op in timeline.tool_operations)
+        assert 'Read' in tools_found
+        assert 'Edit' in tools_found
 
         # Each operation should have required fields
         for operation in timeline.tool_operations:
-            assert "uuid" in operation
-            assert "sessionId" in operation
-            assert "timestamp" in operation
-            assert "tool_name" in operation
-            assert "tool_input" in operation
+            assert 'uuid' in operation
+            assert 'sessionId' in operation
+            assert 'timestamp' in operation
+            assert 'tool_name' in operation
+            assert 'tool_input' in operation
 
         # Should have file_path for file operations
-        file_operations = [
-            op
-            for op in timeline.tool_operations
-            if op.get("tool_name") in ["Read", "Edit", "Write", "MultiEdit"]
-        ]
+        file_operations = [op for op in timeline.tool_operations
+                          if op.get('tool_name') in ['Read', 'Edit', 'Write', 'MultiEdit']]
         for op in file_operations:
-            assert "file_path" in op
+            assert 'file_path' in op
 
         timeline.clear_cache()
 
@@ -110,11 +101,11 @@ class TestRealClaudeTimeline:
         timeline = RealClaudeTimeline(test_project_path)
 
         # Operations should be sorted by timestamp
-        timestamps = [op.get("timestamp", "") for op in timeline.tool_operations]
+        timestamps = [op.get('timestamp', '') for op in timeline.tool_operations]
         assert timestamps == sorted(timestamps)
 
         # Should have operations from both sessions interleaved correctly
-        session_ids = [op.get("sessionId") for op in timeline.tool_operations]
+        session_ids = [op.get('sessionId') for op in timeline.tool_operations]
         unique_sessions = list(set(session_ids))
         assert len(unique_sessions) == 2
 
@@ -129,9 +120,9 @@ class TestRealClaudeTimeline:
         assert len(edit_ops) >= 2
 
         for op in edit_ops:
-            assert op["tool_name"] == "Edit"
-            assert "uuid" in op
-            assert "sessionId" in op
+            assert op['tool_name'] == 'Edit'
+            assert 'uuid' in op
+            assert 'sessionId' in op
 
         timeline.clear_cache()
 
@@ -140,14 +131,14 @@ class TestRealClaudeTimeline:
         timeline = RealClaudeTimeline(test_project_path)
 
         # Get operations from first session
-        first_session_id = timeline.tool_operations[0].get("sessionId")
+        first_session_id = timeline.tool_operations[0].get('sessionId')
         session_ops = timeline.get_session_operations(first_session_id)
 
         assert len(session_ops) >= 2  # Should have Read + Edit from session
 
         # All operations should be from the same session
         for op in session_ops:
-            assert op.get("sessionId") == first_session_id
+            assert op.get('sessionId') == first_session_id
 
         timeline.clear_cache()
 
@@ -184,14 +175,13 @@ class TestRealClaudeTimelineIntegration:
 
         # Step 3: Navigation should work
         summary = timeline.get_multi_session_summary()
-        assert summary["total_sessions"] >= 2
+        assert summary['total_sessions'] >= 2
 
         # Step 4: UUID checkout should work
-        edit_ops = [
-            op for op in timeline.tool_operations if op.get("tool_name") == "Edit"
-        ]
+        edit_ops = [op for op in timeline.tool_operations
+                   if op.get("tool_name") == "Edit"]
         if edit_ops:
-            uuid = edit_ops[0].get("uuid")
+            uuid = edit_ops[0].get('uuid')
             state = timeline.checkout_by_uuid(uuid)
             assert state is not None
 

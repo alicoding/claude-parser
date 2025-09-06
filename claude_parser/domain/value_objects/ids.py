@@ -5,10 +5,10 @@ SOLID: Immutable value objects with validation.
 95/5: Uses uuid library for UUID validation and generation.
 """
 
-import re
+from typing import NewType, Union
 from dataclasses import dataclass
-from typing import Union
 from uuid import UUID, uuid4
+import re
 
 
 @dataclass(frozen=True)
@@ -22,7 +22,6 @@ class SessionId:
         session = SessionId("8f64b245-7268-4ecd-9b90-34037f3c5b75")
         new_session = SessionId.generate()
     """
-
     value: str
 
     def __post_init__(self):
@@ -42,10 +41,10 @@ class SessionId:
             return True
         except ValueError:
             # Fall back to basic validation for session-like strings
-            return bool(re.match(r"^[a-zA-Z0-9\-_]{3,}$", value))
+            return bool(re.match(r'^[a-zA-Z0-9\-_]{3,}$', value))
 
     @classmethod
-    def generate(cls) -> "SessionId":
+    def generate(cls) -> 'SessionId':
         """Generate new random session ID."""
         return cls(str(uuid4()))
 
@@ -64,7 +63,6 @@ class MessageUuid:
         msg_id = MessageUuid("msg-123")
         uuid_id = MessageUuid("550e8400-e29b-41d4-a716-446655440000")
     """
-
     value: str
 
     def __post_init__(self):
@@ -83,10 +81,10 @@ class MessageUuid:
             return True
         except ValueError:
             # Fall back to msg-* pattern or similar
-            return bool(re.match(r"^[a-zA-Z0-9\-_]{1,}$", value))
+            return bool(re.match(r'^[a-zA-Z0-9\-_]{1,}$', value))
 
     @classmethod
-    def generate(cls) -> "MessageUuid":
+    def generate(cls) -> 'MessageUuid':
         """Generate new random message UUID."""
         return cls(str(uuid4()))
 
@@ -105,7 +103,6 @@ class AgentId:
         main_agent = AgentId("main")
         sub_agent = AgentId("sub-456")
     """
-
     value: str
 
     def __post_init__(self):
@@ -113,7 +110,7 @@ class AgentId:
         if not self.value:
             raise ValueError("Agent ID cannot be empty")
 
-        if not re.match(r"^[a-zA-Z0-9\-_]{1,50}$", self.value):
+        if not re.match(r'^[a-zA-Z0-9\-_]{1,50}$', self.value):
             raise ValueError(f"Invalid agent ID format: {self.value}")
 
     def __str__(self) -> str:

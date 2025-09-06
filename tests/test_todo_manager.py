@@ -1,5 +1,5 @@
 """Test TodoManager - Integration tests for facade pattern."""
-
+import pytest
 from claude_parser.domain.todo import TodoManager
 
 
@@ -11,11 +11,11 @@ def test_manager_integration(tmp_path, monkeypatch):
     manager = TodoManager(session_id="test-integration")
 
     # Parse some todos
-    todo_json = """[
+    todo_json = '''[
         {"content": "Design API", "status": "completed", "activeForm": "Designed API"},
         {"content": "Implement API", "status": "in_progress", "activeForm": "Implementing API"},
         {"content": "Test API", "status": "pending", "activeForm": "Testing API"}
-    ]"""
+    ]'''
 
     todos = manager.parse(todo_json)
     assert len(todos) == 3

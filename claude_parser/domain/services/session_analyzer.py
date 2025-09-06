@@ -224,7 +224,7 @@ class SessionAnalyzer:
         Returns:
             Formatted banner string with context status
         """
-        from .context_window_manager import ContextWindowManager
+        from .context_window_service import ContextWindowManager
 
         # Use context manager for accurate status
         context_manager = ContextWindowManager(stats.context_limit)

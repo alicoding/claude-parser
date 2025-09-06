@@ -24,7 +24,13 @@ except ImportError:
 
 from .. import load
 from ..domain.entities.conversation import Conversation
-from ..models.base import Message
+from ..models import Message
+from .uuid_tracker import UUIDCheckpointReader
+from .uuid_tracker import UUIDCheckpointReader
+from .uuid_tracker import UUIDCheckpointReader
+from .uuid_tracker import UUIDCheckpointReader
+from .uuid_tracker import UUIDCheckpointReader
+from .uuid_tracker import UUIDCheckpointReader
 from .uuid_tracker import UUIDCheckpointReader
 
 

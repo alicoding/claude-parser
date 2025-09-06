@@ -2,15 +2,13 @@
 
 Orchestrates Parser, Storage, and Display (DDD).
 """
-
-from typing import Dict, List, Optional, Union
-
+from typing import List, Dict, Optional, Union
 from rich.console import Console
 from rich.progress import Progress
 
-from .display import TodoDisplay
 from .parser import TodoParser
 from .storage import TodoStorage
+from .display import TodoDisplay
 
 
 class TodoManager:
@@ -57,7 +55,10 @@ class TodoManager:
 
             # Rich Progress bar (95% library)
             with Progress() as p:
-                task = p.add_task("[cyan]Progress", total=progress["total"])
+                task = p.add_task(
+                    f"[cyan]Progress",
+                    total=progress["total"]
+                )
                 p.update(task, completed=progress["completed"])
 
     @staticmethod

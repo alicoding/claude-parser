@@ -30,6 +30,10 @@ class Conversation:
         self._filter = MessageFilter(messages)
         self._navigator = MessageNavigator(messages)
         self._session_analyzer = SessionAnalyzer(messages)
+        # Initialize delegates
+        self._filter = MessageFilter(messages)
+        self._navigator = MessageNavigator(messages)
+        self._session_analyzer = SessionAnalyzer(messages)
 
     # Core Properties
     @property
@@ -145,6 +149,24 @@ class Conversation:
     ) -> List[Message]:
         """Get messages between two timestamps."""
         return self._navigator.between_timestamps(start_timestamp, end_timestamp)
+
+    def get_messages_between_uuids(self, start_uuid: str, end_uuid: str) -> List[AssistantMessage]:
+        """Get assistant messages between two UUIDs."""
+        # Find start and end indices
+        start_idx = end_idx = -1
+        for i, msg in enumerate(self._messages):
+            if msg.uuid == start_uuid:
+                start_idx = i
+            elif msg.uuid == end_uuid:
+                end_idx = i
+                break
+
+        if start_idx == -1 or end_idx == -1:
+            return []
+
+        # Get messages between the UUIDs and filter for assistant messages
+        messages_between = self._messages[start_idx + 1:end_idx]
+        return [msg for msg in messages_between if isinstance(msg, AssistantMessage)]
 
     def get_thread_from(self, uuid: str) -> List[Message]:
         """Get thread of messages starting from UUID (simplified implementation)."""

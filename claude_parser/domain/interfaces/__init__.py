@@ -1,5 +1,5 @@
-"""Domain interfaces and protocols."""
+"""Domain interfaces for dependency injection and abstraction."""
 
-from .protocols import MessageFilter, MessageRepository
+from .project_discovery import ProjectDiscoveryInterface
 
-__all__ = ["MessageFilter", "MessageRepository"]
+__all__ = ["ProjectDiscoveryInterface"]

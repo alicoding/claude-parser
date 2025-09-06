@@ -10,4 +10,4 @@ from .message_filter import MessageFilter
 from .message_navigator import MessageNavigator
 from .session_analyzer import SessionAnalyzer
 
-__all__ = ["MessageFilter", "MessageNavigator", "SessionAnalyzer"]
+__all__ = ['MessageFilter', 'MessageNavigator', 'SessionAnalyzer']

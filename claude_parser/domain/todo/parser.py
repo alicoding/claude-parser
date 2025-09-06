@@ -2,10 +2,8 @@
 
 95% library (orjson), 5% glue.
 """
-
-from typing import Dict, List, Union
-
 import orjson
+from typing import List, Dict, Union
 
 
 class TodoParser:

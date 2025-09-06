@@ -4,8 +4,9 @@ Time analysis for conversations - SOLID Single Responsibility.
 Focused solely on temporal patterns and distributions.
 """
 
+from typing import Dict, List, Optional
 from collections import defaultdict
-from typing import Dict, List
+import pendulum
 
 from ..domain.entities.conversation import Conversation
 
@@ -46,7 +47,7 @@ class TimeAnalyzer:
 
         for msg in self.conversation.messages:
             if msg.parsed_timestamp:
-                date_str = msg.parsed_timestamp.format("YYYY-MM-DD")
+                date_str = msg.parsed_timestamp.format('YYYY-MM-DD')
                 distribution[date_str] += 1
 
         return dict(distribution)
@@ -89,9 +90,9 @@ class TimeAnalyzer:
 
             msg_type = str(msg.type).lower()
 
-            if "user" in msg_type:
+            if 'user' in msg_type:
                 last_user_time = msg.parsed_timestamp
-            elif "assistant" in msg_type and last_user_time:
+            elif 'assistant' in msg_type and last_user_time:
                 # Calculate response time
                 response_time = msg.parsed_timestamp - last_user_time
                 response_times.append(response_time.total_seconds())

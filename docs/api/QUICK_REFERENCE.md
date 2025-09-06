@@ -35,7 +35,7 @@ exit_success()
 
 ### ✅ Available Now - Watch with UUID Checkpoints
 
-```python  
+```python
 # Watch Domain with Native UUID Tracking (No byte positions!)
 from claude_parser.watch import watch, watch_async
 
@@ -54,7 +54,7 @@ import asyncio
 async def async_watch():
     async for conv, new_msgs in watch_async("session.jsonl", after_uuid="msg-456"):
         process(new_msgs)
-        
+
 asyncio.run(async_watch())
 ```
 
@@ -85,6 +85,12 @@ exit_success()
 | Hooks | hook_input() | 1 | < 1ms | 100% |
 | Hooks | exit_*() | 1 | < 1ms | 100% |
 | Watch | watch() | 1 | < 100ms | 100% |
+| Watch | watch_async() | 1 | < 100ms | 100% |
+| Memory | MemoryExporter | 3 | < 10ms | 100% |
+| UUID | Checkpoints | 1 | < 1ms | 100% |
+| Watch | watch_async() | 1 | < 100ms | 100% |
+| Memory | MemoryExporter | 3 | < 10ms | 100% |
+| UUID | Checkpoints | 1 | < 1ms | 100% |
 | Watch | watch_async() | 1 | < 100ms | 100% |
 | Memory | MemoryExporter | 3 | < 10ms | 100% |
 | UUID | Checkpoints | 1 | < 1ms | 100% |

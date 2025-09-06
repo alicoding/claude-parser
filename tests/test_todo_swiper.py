@@ -1,10 +1,8 @@
 """Test TodoSwiper - Tinder-like todo history navigation."""
-
+import pytest
 import tempfile
-from pathlib import Path
-
 import orjson
-
+from pathlib import Path
 from claude_parser.domain.todo import TodoSwiper
 
 
@@ -14,7 +12,7 @@ def test_swiper_navigation():
     history = [
         [{"content": "Task 3", "status": "completed"}],  # Most recent
         [{"content": "Task 2", "status": "completed"}],
-        [{"content": "Task 1", "status": "completed"}],  # Oldest
+        [{"content": "Task 1", "status": "completed"}]   # Oldest
     ]
 
     swiper = TodoSwiper(history)
@@ -49,7 +47,7 @@ def test_swiper_display_format():
     history = [
         [
             {"content": "Design API", "status": "completed"},
-            {"content": "Test API", "status": "completed"},
+            {"content": "Test API", "status": "completed"}
         ]
     ]
 
@@ -77,64 +75,28 @@ def test_incremental_todo_progression():
     history = [
         # Latest: all completed (3/3)
         [
-            {
-                "content": "Design API",
-                "status": "completed",
-                "activeForm": "Designing API",
-            },
+            {"content": "Design API", "status": "completed", "activeForm": "Designing API"},
             {"content": "Test API", "status": "completed", "activeForm": "Testing API"},
-            {
-                "content": "Deploy API",
-                "status": "completed",
-                "activeForm": "Deploying API",
-            },
+            {"content": "Deploy API", "status": "completed", "activeForm": "Deploying API"}
         ],
         # Previous: 2/3 completed
         [
-            {
-                "content": "Design API",
-                "status": "completed",
-                "activeForm": "Designing API",
-            },
+            {"content": "Design API", "status": "completed", "activeForm": "Designing API"},
             {"content": "Test API", "status": "completed", "activeForm": "Testing API"},
-            {
-                "content": "Deploy API",
-                "status": "in_progress",
-                "activeForm": "Deploying API",
-            },
+            {"content": "Deploy API", "status": "in_progress", "activeForm": "Deploying API"}
         ],
         # Earlier: 1/3 completed
         [
-            {
-                "content": "Design API",
-                "status": "completed",
-                "activeForm": "Designing API",
-            },
-            {
-                "content": "Test API",
-                "status": "in_progress",
-                "activeForm": "Testing API",
-            },
-            {
-                "content": "Deploy API",
-                "status": "pending",
-                "activeForm": "Deploying API",
-            },
+            {"content": "Design API", "status": "completed", "activeForm": "Designing API"},
+            {"content": "Test API", "status": "in_progress", "activeForm": "Testing API"},
+            {"content": "Deploy API", "status": "pending", "activeForm": "Deploying API"}
         ],
         # Initial: 0/3 completed
         [
-            {
-                "content": "Design API",
-                "status": "pending",
-                "activeForm": "Designing API",
-            },
+            {"content": "Design API", "status": "pending", "activeForm": "Designing API"},
             {"content": "Test API", "status": "pending", "activeForm": "Testing API"},
-            {
-                "content": "Deploy API",
-                "status": "pending",
-                "activeForm": "Deploying API",
-            },
-        ],
+            {"content": "Deploy API", "status": "pending", "activeForm": "Deploying API"}
+        ]
     ]
 
     swiper = TodoSwiper(history)
@@ -173,14 +135,10 @@ def test_content_similarity_grouping():
         # Same project, different completion states
         [{"content": "Task A"}, {"content": "Task B"}, {"content": "Task C"}],
         [{"content": "Task A"}, {"content": "Task B"}],  # Same project, fewer tasks
-        [
-            {"content": "Task A"},
-            {"content": "Task B"},
-            {"content": "Task C"},
-            {"content": "Task D"},
-        ],  # Same project, more tasks
+        [{"content": "Task A"}, {"content": "Task B"}, {"content": "Task C"}, {"content": "Task D"}],  # Same project, more tasks
+
         # Different project
-        [{"content": "Different Task X"}, {"content": "Different Task Y"}],
+        [{"content": "Different Task X"}, {"content": "Different Task Y"}]
     ]
 
     grouped = TodoSwiper._group_by_content_similarity(snapshots)
@@ -213,21 +171,13 @@ def test_transcript_parsing_integration():
                         "name": "TodoWrite",
                         "input": {
                             "todos": [
-                                {
-                                    "content": "Setup project",
-                                    "status": "pending",
-                                    "activeForm": "Setting up project",
-                                },
-                                {
-                                    "content": "Write tests",
-                                    "status": "pending",
-                                    "activeForm": "Writing tests",
-                                },
+                                {"content": "Setup project", "status": "pending", "activeForm": "Setting up project"},
+                                {"content": "Write tests", "status": "pending", "activeForm": "Writing tests"}
                             ]
-                        },
+                        }
                     }
                 ]
-            },
+            }
         },
         {
             "type": "assistant",
@@ -238,21 +188,13 @@ def test_transcript_parsing_integration():
                         "name": "TodoWrite",
                         "input": {
                             "todos": [
-                                {
-                                    "content": "Setup project",
-                                    "status": "completed",
-                                    "activeForm": "Setting up project",
-                                },
-                                {
-                                    "content": "Write tests",
-                                    "status": "in_progress",
-                                    "activeForm": "Writing tests",
-                                },
+                                {"content": "Setup project", "status": "completed", "activeForm": "Setting up project"},
+                                {"content": "Write tests", "status": "in_progress", "activeForm": "Writing tests"}
                             ]
-                        },
+                        }
                     }
                 ]
-            },
+            }
         },
         {
             "type": "assistant",
@@ -263,28 +205,20 @@ def test_transcript_parsing_integration():
                         "name": "TodoWrite",
                         "input": {
                             "todos": [
-                                {
-                                    "content": "Setup project",
-                                    "status": "completed",
-                                    "activeForm": "Setting up project",
-                                },
-                                {
-                                    "content": "Write tests",
-                                    "status": "completed",
-                                    "activeForm": "Writing tests",
-                                },
+                                {"content": "Setup project", "status": "completed", "activeForm": "Setting up project"},
+                                {"content": "Write tests", "status": "completed", "activeForm": "Writing tests"}
                             ]
-                        },
+                        }
                     }
                 ]
-            },
-        },
+            }
+        }
     ]
 
     # Write to temporary transcript file
-    with tempfile.NamedTemporaryFile(mode="wb", delete=False, suffix=".jsonl") as f:
+    with tempfile.NamedTemporaryFile(mode='wb', delete=False, suffix='.jsonl') as f:
         for entry in transcript_data:
-            f.write(orjson.dumps(entry) + b"\n")
+            f.write(orjson.dumps(entry) + b'\n')
         temp_path = f.name
 
     try:
@@ -320,19 +254,17 @@ def test_content_overlap_calculation():
         # 100% overlap
         [{"content": "Task A"}, {"content": "Task B"}],
         [{"content": "Task A"}, {"content": "Task B"}],
+
         # 50% overlap (should group)
         [{"content": "Task A"}, {"content": "Task B"}],
         [{"content": "Task A"}, {"content": "Task C"}],
+
         # 25% overlap (should NOT group)
-        [
-            {"content": "Task A"},
-            {"content": "Task B"},
-            {"content": "Task C"},
-            {"content": "Task D"},
-        ],
+        [{"content": "Task A"}, {"content": "Task B"}, {"content": "Task C"}, {"content": "Task D"}],
         [{"content": "Task A"}],
+
         # 0% overlap (should NOT group)
-        [{"content": "Task X"}, {"content": "Task Y"}],
+        [{"content": "Task X"}, {"content": "Task Y"}]
     ]
 
     grouped = TodoSwiper._group_by_content_similarity(snapshots)
@@ -352,88 +284,28 @@ def test_backlog_system_integration():
     epic_progression = [
         # Final state: Epic complete
         [
-            {
-                "content": "Research libraries",
-                "status": "completed",
-                "activeForm": "Researching libraries",
-            },
-            {
-                "content": "Design architecture",
-                "status": "completed",
-                "activeForm": "Designing architecture",
-            },
-            {
-                "content": "Implement core features",
-                "status": "completed",
-                "activeForm": "Implementing core features",
-            },
-            {
-                "content": "Write comprehensive tests",
-                "status": "completed",
-                "activeForm": "Writing comprehensive tests",
-            },
-            {
-                "content": "Deploy to production",
-                "status": "completed",
-                "activeForm": "Deploying to production",
-            },
+            {"content": "Research libraries", "status": "completed", "activeForm": "Researching libraries"},
+            {"content": "Design architecture", "status": "completed", "activeForm": "Designing architecture"},
+            {"content": "Implement core features", "status": "completed", "activeForm": "Implementing core features"},
+            {"content": "Write comprehensive tests", "status": "completed", "activeForm": "Writing comprehensive tests"},
+            {"content": "Deploy to production", "status": "completed", "activeForm": "Deploying to production"}
         ],
         # Mid-development: Testing phase
         [
-            {
-                "content": "Research libraries",
-                "status": "completed",
-                "activeForm": "Researching libraries",
-            },
-            {
-                "content": "Design architecture",
-                "status": "completed",
-                "activeForm": "Designing architecture",
-            },
-            {
-                "content": "Implement core features",
-                "status": "completed",
-                "activeForm": "Implementing core features",
-            },
-            {
-                "content": "Write comprehensive tests",
-                "status": "in_progress",
-                "activeForm": "Writing comprehensive tests",
-            },
-            {
-                "content": "Deploy to production",
-                "status": "pending",
-                "activeForm": "Deploying to production",
-            },
+            {"content": "Research libraries", "status": "completed", "activeForm": "Researching libraries"},
+            {"content": "Design architecture", "status": "completed", "activeForm": "Designing architecture"},
+            {"content": "Implement core features", "status": "completed", "activeForm": "Implementing core features"},
+            {"content": "Write comprehensive tests", "status": "in_progress", "activeForm": "Writing comprehensive tests"},
+            {"content": "Deploy to production", "status": "pending", "activeForm": "Deploying to production"}
         ],
         # Early development: Implementation phase
         [
-            {
-                "content": "Research libraries",
-                "status": "completed",
-                "activeForm": "Researching libraries",
-            },
-            {
-                "content": "Design architecture",
-                "status": "completed",
-                "activeForm": "Designing architecture",
-            },
-            {
-                "content": "Implement core features",
-                "status": "in_progress",
-                "activeForm": "Implementing core features",
-            },
-            {
-                "content": "Write comprehensive tests",
-                "status": "pending",
-                "activeForm": "Writing comprehensive tests",
-            },
-            {
-                "content": "Deploy to production",
-                "status": "pending",
-                "activeForm": "Deploying to production",
-            },
-        ],
+            {"content": "Research libraries", "status": "completed", "activeForm": "Researching libraries"},
+            {"content": "Design architecture", "status": "completed", "activeForm": "Designing architecture"},
+            {"content": "Implement core features", "status": "in_progress", "activeForm": "Implementing core features"},
+            {"content": "Write comprehensive tests", "status": "pending", "activeForm": "Writing comprehensive tests"},
+            {"content": "Deploy to production", "status": "pending", "activeForm": "Deploying to production"}
+        ]
     ]
 
     swiper = TodoSwiper(epic_progression)

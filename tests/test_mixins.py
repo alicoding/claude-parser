@@ -38,9 +38,7 @@ class AssertionMixin:
     def assert_optional_fields_none(self, obj: Any, fields: List[str]):
         """Assert optional fields are None when not provided."""
         for field in fields:
-            assert getattr(obj, field) is None, (
-                f"Optional field should be None: {field}"
-            )
+            assert getattr(obj, field) is None, f"Optional field should be None: {field}"
 
     def assert_field_type(self, obj: Any, field: str, expected_type: type):
         """Assert field has expected type."""
@@ -55,10 +53,10 @@ class FileTestMixin:
 
     def create_temp_jsonl(self, messages: List[Dict]) -> Path:
         """Create a temporary JSONL file with messages."""
-        with tempfile.NamedTemporaryFile(mode="wb", suffix=".jsonl", delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode='wb', suffix='.jsonl', delete=False) as f:
             for msg in messages:
                 f.write(orjson.dumps(msg))
-                f.write(b"\n")
+                f.write(b'\n')
             return Path(f.name)
 
     def create_temp_directory(self) -> Path:
@@ -74,7 +72,6 @@ class FileTestMixin:
         """Clean up temporary directory and contents."""
         if path and path.exists():
             import shutil
-
             shutil.rmtree(path)
 
 
@@ -84,37 +81,37 @@ class MessageTestMixin:
     def create_user_message(self, content: str = "test", **overrides) -> Dict:
         """Create a user message with defaults."""
         defaults = {
-            "type": "user",
-            "uuid": TestDefaults.USER_UUID,
-            "timestamp": TestDefaults.TIMESTAMP,
-            "sessionId": TestDefaults.SESSION_ID,
-            "message": {"role": "user", "content": [{"type": "text", "text": content}]},
+            'type': 'user',
+            'uuid': TestDefaults.USER_UUID,
+            'timestamp': TestDefaults.TIMESTAMP,
+            'sessionId': TestDefaults.SESSION_ID,
+            'message': {'role': 'user', 'content': [{'type': 'text', 'text': content}]}
         }
         return {**defaults, **overrides}
 
     def create_assistant_message(self, content: str = "response", **overrides) -> Dict:
         """Create an assistant message with defaults."""
         defaults = {
-            "type": "assistant",
-            "uuid": TestDefaults.ASSISTANT_UUID,
-            "timestamp": TestDefaults.TIMESTAMP,
-            "sessionId": TestDefaults.SESSION_ID,
-            "model": TestDefaults.MODEL,
-            "message": {
-                "role": "assistant",
-                "content": [{"type": "text", "text": content}],
-            },
+            'type': 'assistant',
+            'uuid': TestDefaults.ASSISTANT_UUID,
+            'timestamp': TestDefaults.TIMESTAMP,
+            'sessionId': TestDefaults.SESSION_ID,
+            'model': TestDefaults.MODEL,
+            'message': {
+                'role': 'assistant',
+                'content': [{'type': 'text', 'text': content}]
+            }
         }
         return {**defaults, **overrides}
 
     def create_summary_message(self, content: str = "summary", **overrides) -> Dict:
         """Create a summary message with defaults."""
         defaults = {
-            "type": "summary",
-            "uuid": "summary-001",
-            "timestamp": TestDefaults.TIMESTAMP,
-            "sessionId": TestDefaults.SESSION_ID,
-            "message": {"summary": content},
+            'type': 'summary',
+            'uuid': 'summary-001',
+            'timestamp': TestDefaults.TIMESTAMP,
+            'sessionId': TestDefaults.SESSION_ID,
+            'message': {'summary': content}
         }
         return {**defaults, **overrides}
 
@@ -125,19 +122,28 @@ class HookTestMixin:
     def create_hook_data(self, hook_type: str, **overrides) -> Dict:
         """Create hook data for any hook type."""
         base = {
-            "sessionId": TestDefaults.SESSION_ID,
-            "transcriptPath": TestDefaults.TRANSCRIPT_PATH,
-            "cwd": TestDefaults.PROJECT_PATH,
-            "hookEventName": hook_type,
+            'sessionId': TestDefaults.SESSION_ID,
+            'transcriptPath': TestDefaults.TRANSCRIPT_PATH,
+            'cwd': TestDefaults.PROJECT_PATH,
+            'hookEventName': hook_type
         }
 
         # Add type-specific fields
         if hook_type == "PreToolUse":
-            base.update({"toolName": "Read", "toolInput": {"file": "test.py"}})
+            base.update({
+                'toolName': 'Read',
+                'toolInput': {'file': 'test.py'}
+            })
         elif hook_type == "PostToolUse":
-            base.update({"toolName": "Read", "toolResponse": "File content here"})
+            base.update({
+                'toolName': 'Read',
+                'toolResponse': 'File content here'
+            })
         elif hook_type == "UserPromptSubmit":
-            base.update({"userPrompt": "test prompt", "gitBranch": "main"})
+            base.update({
+                'userPrompt': 'test prompt',
+                'gitBranch': 'main'
+            })
 
         return {**base, **overrides}
 
@@ -157,13 +163,11 @@ class ConversationTestMixin:
         assert conversation.metadata is not None
         if conversation.session_id:
             self.assert_valid_uuid(conversation.session_id)
-        assert hasattr(conversation, "messages")
-        assert hasattr(conversation, "assistant_messages")
-        assert hasattr(conversation, "user_messages")
+        assert hasattr(conversation, 'messages')
+        assert hasattr(conversation, 'assistant_messages')
+        assert hasattr(conversation, 'user_messages')
 
-    def assert_message_counts(
-        self, conversation, user_count: int, assistant_count: int
-    ):
+    def assert_message_counts(self, conversation, user_count: int, assistant_count: int):
         """Assert expected message counts."""
         assert len(conversation.user_messages) == user_count
         assert len(conversation.assistant_messages) == assistant_count
@@ -174,9 +178,9 @@ class ConversationTestMixin:
             return
 
         for i in range(1, len(messages)):
-            prev_msg = messages[i - 1]
+            prev_msg = messages[i-1]
             curr_msg = messages[i]
-            if hasattr(prev_msg, "timestamp") and hasattr(curr_msg, "timestamp"):
+            if hasattr(prev_msg, 'timestamp') and hasattr(curr_msg, 'timestamp'):
                 assert prev_msg.timestamp <= curr_msg.timestamp, (
                     "Messages not in chronological order"
                 )
@@ -188,7 +192,6 @@ class PerformanceTestMixin:
     def measure_time(self, func, *args, **kwargs):
         """Measure execution time of a function."""
         import time
-
         start = time.perf_counter()
         result = func(*args, **kwargs)
         elapsed = time.perf_counter() - start
@@ -205,10 +208,10 @@ class PerformanceTestMixin:
 
 # Export for use in tests
 __all__ = [
-    "AssertionMixin",
-    "FileTestMixin",
-    "MessageTestMixin",
-    "HookTestMixin",
-    "ConversationTestMixin",
-    "PerformanceTestMixin",
+    'AssertionMixin',
+    'FileTestMixin',
+    'MessageTestMixin',
+    'HookTestMixin',
+    'ConversationTestMixin',
+    'PerformanceTestMixin',
 ]

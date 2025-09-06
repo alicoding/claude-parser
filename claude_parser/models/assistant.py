@@ -3,14 +3,14 @@ Assistant message model.
 
 SOLID: Single Responsibility - Assistant messages only
 DDD: Value object for assistant messages
+Framework: msgspec for serialization, domain logic preserved
 """
 
-from typing import Optional
-
-from pydantic import Field
+from typing import Optional, Dict, Any
+import msgspec
 
 from ..utils import has_message_dict, get_message_content
-from .base import BaseMessage, MessageType
+from ..msgspec_models import BaseMessage
 
 
 class AssistantMessage(BaseMessage):
@@ -86,3 +86,8 @@ class AssistantMessage(BaseMessage):
                 if isinstance(block, dict) and block.get("type") == "tool_use"
             ]
         return []
+
+    @property
+    def parsed_timestamp(self) -> Optional[str]:
+        """DRY: Shared timestamp parsing logic."""
+        return self.timestamp

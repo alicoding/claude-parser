@@ -31,6 +31,7 @@ __all__ = [
     "json_output",
     "advanced",
     "halt",
+    "halt",
 ]
 
 # Version
