@@ -4,6 +4,7 @@ Session Discovery - Find all Claude sessions
 @COMPOSITION: Returns plain dicts
 """
 
+import os
 from pathlib import Path
 from typing import List, Dict, Any
 from more_itertools import first
@@ -12,7 +13,8 @@ from .session import load_session
 
 def discover_all_sessions() -> List[Dict[str, Any]]:
     """Discover all sessions as plain dicts"""
-    claude_projects = Path.home() / ".claude/projects"
+    claude_path = os.getenv("CLAUDE_PROJECTS_PATH", "~/.claude/projects")
+    claude_projects = Path(claude_path).expanduser()
     if not claude_projects.exists():
         return []
     

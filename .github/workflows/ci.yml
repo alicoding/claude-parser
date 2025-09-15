@@ -46,6 +46,8 @@ jobs:
           fi
 
       - name: Run Python tests
+        env:
+          CLAUDE_PROJECTS_PATH: ${{ github.workspace }}/test-data/claude-projects
         run: |
           poetry run pytest -v --tb=short --junit-xml=test-results.xml || true
           # Check if tests actually passed despite exit code

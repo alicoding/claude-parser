@@ -4,6 +4,7 @@ Session Loading - Core loading functionality
 @COMPOSITION: Returns plain dicts
 """
 
+import os
 from pathlib import Path
 from typing import Optional, Dict, Any
 from more_itertools import first
@@ -23,7 +24,8 @@ def load_session(identifier: Optional[str] = None) -> Optional[Dict[str, Any]]:
         # No path - use CWD encoding with framework delegation
         cwd = str(Path.cwd())
         encoded_path = cwd.replace('/', '-')
-        project_dir = Path.home() / ".claude/projects" / encoded_path
+        claude_path = os.getenv("CLAUDE_PROJECTS_PATH", "~/.claude/projects")
+        project_dir = Path(claude_path).expanduser() / encoded_path
         
         if not project_dir.exists():
             return None
