@@ -268,9 +268,8 @@ jobs:
           generate_release_notes: true
           tag_name: v${{ github.run_number }}
 
-      # Uncomment when ready to publish to PyPI
-      # - name: Publish to PyPI
-      #   if: steps.version.outputs.should_release == 'true'
-      #   run: |
-      #     poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
-      #     poetry publish
+      - name: Publish to PyPI
+        if: steps.version.outputs.should_release == 'true'
+        run: |
+          poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
+          poetry publish

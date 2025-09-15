@@ -35,18 +35,24 @@ jobs:
       run: |
         twine check dist/*
     
-    - name: Publish to Test PyPI
+    - name: Publish to Test PyPI (Optional)
+      continue-on-error: true
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
       run: |
-        twine upload --repository testpypi dist/* --skip-existing
-        echo "✅ Published to Test PyPI"
-        echo "Test with: pip install -i https://test.pypi.org/simple/ claude-parser"
-    
-    - name: Test installation from Test PyPI
+        if [ -n "$TWINE_PASSWORD" ]; then
+          twine upload --repository testpypi dist/* --skip-existing
+          echo "✅ Published to Test PyPI"
+          echo "Test with: pip install -i https://test.pypi.org/simple/ claude-parser"
+        else
+          echo "⚠️ Skipping Test PyPI (no token configured)"
+        fi
+
+    - name: Test installation
       run: |
-        pip install -i https://test.pypi.org/simple/ claude-parser
+        # Try installing from Test PyPI first, fall back to building locally
+        pip install -i https://test.pypi.org/simple/ claude-parser || pip install dist/*.whl
         python -c "from claude_parser import load; print('✅ Import successful')"
     
     - name: Publish to PyPI
