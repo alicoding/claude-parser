@@ -122,3 +122,4 @@ docs-archive/
 .env.*
 clean-secrets.sh
 site/
+.claude/memory_map.md
