@@ -20,6 +20,9 @@ test: ## Run tests locally
 test-all: ## Run all tests including integration
 	poetry run pytest tests/ -v --tb=short
 
+quality-check: ## Run quality gates (tests with coverage)
+	CLAUDE_PROJECTS_PATH=./test-data/claude-projects poetry run pytest tests/ --cov=claude_parser --cov-report=term --cov-report=xml || true
+
 test-local-ci: ## Run GitHub Actions locally using act
 	@echo "🚀 Running GitHub Actions locally..."
 	./scripts/test-local-ci.sh ci
