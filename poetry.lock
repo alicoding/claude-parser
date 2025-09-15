@@ -891,29 +891,6 @@ files = [
 ]
 
 [[package]]
-name = "msgspec"
-version = "0.19.0+1.gbc60e96"
-description = "A fast serialization and validation library, with builtin support for JSON, MessagePack, YAML, and TOML."
-optional = false
-python-versions = ">=3.9"
-groups = ["main"]
-files = []
-develop = false
-
-[package.extras]
-dev = ["attrs", "coverage", "eval-type-backport ; python_version < \"3.10\"", "furo", "ipython", "msgpack", "mypy", "pre-commit", "pyright", "pytest", "pyyaml", "sphinx", "sphinx-copybutton", "sphinx-design", "tomli ; python_version < \"3.11\"", "tomli_w"]
-doc = ["furo", "ipython", "sphinx", "sphinx-copybutton", "sphinx-design"]
-test = ["attrs", "eval-type-backport ; python_version < \"3.10\"", "msgpack", "pytest", "pyyaml", "tomli ; python_version < \"3.11\"", "tomli_w"]
-toml = ["tomli ; python_version < \"3.11\"", "tomli_w"]
-yaml = ["pyyaml"]
-
-[package.source]
-type = "git"
-url = "https://github.com/jcrist/msgspec.git"
-reference = "main"
-resolved_reference = "bc60e96772c5e8a3babff967d86a9e7dfcdbfb1b"
-
-[[package]]
 name = "mypy"
 version = "1.18.1"
 description = "Optional static typing for Python"
@@ -2109,4 +2086,4 @@ dev = ["black (>=19.3b0) ; python_version >= \"3.6\"", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10"
-content-hash = "5f8a5344277743bf24299aff3722f767b446bdf6a9e6ea096cfd63f444ac947f"
+content-hash = "20702c8e3c7d1f0f1eaec38fa71f10c0af3208e1f730ffeb1c5676490f9e5c62"
