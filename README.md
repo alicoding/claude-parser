@@ -1,311 +1,266 @@
-# Claude Parser 🎯
+# Claude Parser v2.0.0 🚀
 
-> **Git-like interface for navigating Claude Code conversations and file operations**
+[![PyPI version](https://badge.fury.io/py/claude-parser.svg)](https://badge.fury.io/py/claude-parser)
+[![Documentation](https://img.shields.io/badge/docs-mkdocs-blue)](https://alicoding.github.io/claude-parser/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Transform your Claude Code workflow with intelligent multi-session navigation, UUID-based file restoration, and git-style commands.
+> **Git-like disaster recovery for Claude Code conversations**
 
-## ✨ Features
+Claude Parser treats every Claude API call as a git commit, enabling powerful recovery and analysis capabilities when things go wrong.
 
-- **🔀 Multi-Session Support**: Track operations across concurrent Claude Code sessions
-- **⚡ Git-Like Interface**: Familiar `cg` commands for navigation and undo operations
-- **🎯 Auto-Detection**: Automatically finds your Claude Code projects
-- **📝 UUID Navigation**: Jump to any specific operation state
-- **🔄 File Restoration**: Restore files to exact state at any point
-- **📊 Session Intelligence**: View which sessions modified which files
+## 🎉 What's New in v2.0.0
+
+### Major Changes
+- **🎯 Complete API Redesign** - Clean, intuitive Python API with 30+ functions
+- **📚 15 Domain Architecture** - Organized into focused, composable modules
+- **🔧 CG Commands** - Full Git-like CLI for disaster recovery
+- **🪝 CH Hook System** - Composable hooks for Claude Code integrations
+- **📊 DuckDB Backend** - Efficient JSONL querying without intermediate storage
+- **🏗️ LNCA Compliant** - Every file <80 LOC, 100% framework delegation
+- **📖 Full Documentation** - Complete API reference, user guides, and examples
+
+### Breaking Changes from v1
+- New import structure: `from claude_parser import load_session` (not `from claude_parser.main`)
+- Removed god objects - now uses focused domain modules
+- All functions return plain dicts, not custom objects
+- Pydantic schema normalization handles all JSONL variations
 
 ## 🚀 Quick Start
 
-### System Requirements
-- **Supported**: macOS, Linux (Unix-like systems)
-- **Requirements**: Claude Code installed with active projects
-- **Python**: 3.9+ with pip
-
 ### Installation
-
 ```bash
 pip install claude-parser
 ```
 
-### Verify Setup
+### Basic Usage
 
-```bash
-# Check if Claude Code projects exist
-ls ~/.claude/projects
-# Should show directories like: -Volumes-Dev-my-project
+```python
+from claude_parser import load_latest_session, analyze_session
 
-# Test the cg command
-cg status
-# Should show your current project status
+# Load your most recent Claude session
+session = load_latest_session()
+print(f"Found session with {len(session['messages'])} messages")
+
+# Analyze the session
+analysis = analyze_session(session)
+print(f"Total tokens: {analysis['total_tokens']}")
+print(f"Estimated cost: ${analysis['estimated_cost']:.2f}")
 ```
 
-## 🎮 Commands
+### Disaster Recovery with CG Commands
 
-### Core Navigation
 ```bash
-cg status              # Show current project and session info
-cg log                 # View operation history across all sessions
-cg log --file app.py   # Show history for specific file
-cg checkout <uuid>     # Restore to specific operation state
+# Oh no! Claude deleted important files!
+python -m claude_parser.cli.cg find "important_file.py"
+
+# Found it! Now restore it
+python -m claude_parser.cli.cg checkout /path/to/important_file.py
+
+# See what happened
+python -m claude_parser.cli.cg reflog
+
+# Jump back to before the disaster
+python -m claude_parser.cli.cg reset abc123
 ```
 
-### Undo & Time Travel
+## 🎯 Core Features
+
+### Git-like Commands (CG)
+- `cg status` - Current session state
+- `cg log` - Conversation history
+- `cg find <pattern>` - Search across all sessions
+- `cg blame <file>` - Who last modified a file
+- `cg checkout <file>` - Restore deleted files
+- `cg reflog` - Operation history
+- `cg show <uuid>` - Operation details
+- `cg reset <uuid>` - Time travel to any point
+
+### Composable Hooks (CH)
 ```bash
-cg undo 3              # Go back 3 operations (any file, any session)
-cg undo --to <uuid>    # Go back to specific UUID
-cg reset <uuid>        # Reset to operation (like git reset)
+# Run hooks with custom executors
+python -m claude_parser.cli.ch run --executor my_executor
+
+# Or set default executor
+export CLAUDE_HOOK_EXECUTOR=my_executor
 ```
 
-### Multi-Session Intelligence
-```bash
-cg status --sessions   # Show all sessions working on this project
-cg log --sessions      # History with session information
-cg diff <uuid1>..<uuid2>  # Compare states across sessions
+### Python SDK
+
+```python
+from claude_parser import (
+    # Session Management
+    load_session, load_latest_session, discover_all_sessions,
+
+    # Analytics
+    analyze_session, analyze_tool_usage, analyze_token_usage,
+    calculate_session_cost, calculate_context_window,
+
+    # File Operations
+    restore_file_content, generate_file_diff, compare_files,
+
+    # Navigation
+    find_message_by_uuid, get_message_sequence, get_timeline_summary,
+
+    # Discovery
+    discover_claude_files, discover_current_project_files,
+
+    # Filtering (NEW in v2!)
+    filter_messages_by_type, filter_messages_by_tool,
+    search_messages_by_content, exclude_tool_operations
+)
 ```
 
-### Information & Analysis
-```bash
-cg show <uuid>         # Detailed view of specific operation
-cg diff                # Show recent changes
-cg branch              # List available branches
+## 📊 Real-World Use Cases
+
+### 1. Disaster Recovery
+```python
+from claude_parser import load_latest_session, restore_file_content
+
+session = load_latest_session()
+content = restore_file_content("/deleted/important.py", session)
+with open("recovered.py", "w") as f:
+    f.write(content)
 ```
 
-## 🔄 Real-World Workflow
+### 2. Cost Analysis
+```python
+from claude_parser import load_latest_session, calculate_session_cost
 
-### Scenario: Multi-Session File Conflicts
-
-```bash
-# You're working on app.py, Claude session A modifies it
-# Meanwhile, Claude session B also modifies app.py
-# Now you want to see what happened:
-
-cg status --sessions
-# 📊 Multi-Session Summary
-#    Sessions: 2
-#    Operations: 8
-#    🔀 Session abc12345: 4 ops → app.py, config.py
-#    🔀 Session def67890: 4 ops → app.py, utils.py
-
-# View the timeline for app.py across both sessions
-cg log --file app.py
-# 📅 Timeline for app.py (6 operations)
-#    1. a1b2c3d4 (Write) [abc12345] 2025-01-04T10:15:30
-#    2. e5f6g7h8 (Edit) [abc12345] 2025-01-04T10:16:45
-#    3. i9j0k1l2 (Edit) [def67890] 2025-01-04T10:17:20
-#    ...
-
-# Go back to before the conflict
-cg undo 3
-# ✅ Undid 3 changes. Restored app.py to state before conflicts
-
-# Or jump to specific operation
-cg checkout e5f6g7h8
-# ✅ Restored to UUID e5f6g7h8 - Edit app.py (Session: abc12345)
+session = load_latest_session()
+cost = calculate_session_cost(
+    input_tokens=100000,
+    output_tokens=50000,
+    model="claude-3-5-sonnet-20241022"
+)
+print(f"This session cost: ${cost['total_cost']:.2f}")
 ```
 
-### Scenario: "What Changed Recently?"
+### 3. Message Filtering
+```python
+from claude_parser import load_latest_session, MessageType
+from claude_parser.filtering import filter_messages_by_type
 
-```bash
-# After a complex Claude session, see what happened
-cg status
-# 📊 Timeline Summary (12 operations from 1 session)
-# 📂 Project: /Users/dev/my-app
-#   📄 app.py: 5 operations
-#   📄 config.py: 3 operations
-#   📄 utils.py: 4 operations
+session = load_latest_session()
+user_messages = filter_messages_by_type(session['messages'], MessageType.USER)
+print(f"You sent {len(user_messages)} messages")
+```
 
-# See recent changes
-cg log --oneline
-# a1b2c3d4 Write app.py
-# e5f6g7h8 Edit config.py
-# i9j0k1l2 MultiEdit utils.py
-# ...
+### 4. Real-time Monitoring
+```python
+from claude_parser.watch import watch
 
-# Undo the last 2 operations across all files
-cg undo 2
-# ✅ Undid 2 changes across app.py and utils.py
+def on_assistant(message):
+    print(f"Claude says: {message['content'][:100]}...")
+
+watch("~/.claude/projects/current/session.jsonl", on_assistant=on_assistant)
 ```
 
 ## 🏗️ Architecture
 
-Claude Parser leverages your existing Claude Code setup:
-
+### Clean Domain Organization (15 modules)
 ```
-~/.claude/projects/     ← Your Claude Code transcripts
-       ↓
-   Discovery Service    ← Finds all sessions for project
-       ↓
-   RealClaudeTimeline  ← Processes JSONL into git-like commits
-       ↓
-   Navigation Service   ← UUID-based state restoration
-       ↓
-   cg Commands         ← Git-like CLI interface
-```
-
-### Multi-Session Intelligence
-
-```mermaid
-graph TD
-    A[Claude Session A] --> D[Project Directory]
-    B[Claude Session B] --> D
-    C[Claude Session C] --> D
-    D --> E[Discovery Service]
-    E --> F[Timeline Aggregation]
-    F --> G[Chronological Operations]
-    G --> H[cg Commands]
+claude_parser/
+├── analytics/      # Session and tool analysis
+├── cli/           # CG and CH commands
+├── discovery/     # File and project discovery
+├── filtering/     # Message filtering (NEW!)
+├── hooks/         # Hook system and API
+├── loaders/       # Session loading
+├── messages/      # Message utilities (NEW!)
+├── models/        # Data models (NEW!)
+├── navigation/    # Timeline and UUID navigation
+├── operations/    # File operations
+├── queries/       # DuckDB SQL queries
+├── session/       # Session management
+├── storage/       # DuckDB engine
+├── tokens/        # Token counting and billing
+└── watch/         # Real-time monitoring (NEW!)
 ```
 
-## 📚 Advanced Usage
-
-### Branch Operations
-```bash
-# List branches (from git repository in timeline)
-cg branch
-# * main
-#   feature-branch
-#   session-experiment
-
-# Create branch at current operation
-cg branch new-feature
-
-# Switch branches
-cg checkout feature-branch
-```
-
-### Detailed Analysis
-```bash
-# Compare two specific operations
-cg diff abc12345..def67890
-# Shows exact file changes between UUIDs
-
-# Show what specific operation did
-cg show abc12345
-# 🔍 Operation abc12345
-#    Type: Edit
-#    File: app.py
-#    Session: abc12345
-#    Changes: +5 lines, -2 lines
-
-# Export operation history
-cg log --format=json > operations.json
-```
-
-## 🔧 Configuration
-
-### Project Detection
-Claude Parser automatically detects your current project by:
-1. Looking for `~/.claude/projects/` directory matching current path
-2. Using current working directory for project identification
-3. Aggregating all JSONL files for that project
-
-### Custom Paths
-```bash
-# Work with specific project
-cg --project /path/to/project status
-
-# Use different Claude directory (if non-standard setup)
-cg --claude-dir /custom/claude/path status
-```
-
-## 🧪 Testing Your Setup
-
-```bash
-# Verify Claude Code integration
-ls ~/.claude/projects
-# Should show encoded project directories
-
-# Test with actual Claude-generated data
-cd /your/project
-cg status
-# Should show operations from your Claude Code sessions
-
-# Test multi-session detection
-cg log --sessions
-# Should show all Claude sessions that worked on this project
-```
-
-## 🚧 Platform Support
-
-### Currently Supported
-- ✅ **macOS**: Full support with `~/.claude/projects`
-- ✅ **Linux**: Full support with `~/.claude/projects`
-
-### Coming Soon
-- ⏳ **Windows**: Support for Windows Claude Code paths
-- ⏳ **Custom paths**: Configurable Claude directory locations
-
-## 🐛 Troubleshooting
-
-### "No Claude Code sessions found"
-```bash
-# Check Claude directory exists
-ls ~/.claude/projects
-# If empty or missing, run Claude Code first to generate projects
-
-# Check current directory is a Claude project
-pwd
-# Make sure you're in a directory that Claude Code has worked on
-```
-
-### "Cannot restore to UUID"
-```bash
-# Verify UUID exists
-cg log | grep <uuid>
-# UUID should appear in operation history
-
-# Check UUID format
-cg log --format=full
-# Copy exact UUID from output
-```
-
-### Multi-Session Issues
-```bash
-# Check all sessions detected
-cg status --sessions
-# Should show multiple sessions if you've had concurrent Claude work
-
-# Verify session isolation
-cg log --sessions
-# Each operation should show session ID in brackets [abc12345]
-```
-
-## 🤝 Contributing
-
-Claude Parser follows the 95/5 principle: 95% library code, 5% glue code.
-
-### Development Setup
-```bash
-git clone https://github.com/your-org/claude-parser
-cd claude-parser
-pip install -e ".[dev]"
-pytest tests/
-```
-
-### Testing with Real Data
-```bash
-# Test against your actual Claude Code projects
-cd /your/claude/project
-python -m claude_parser.cli status --sessions
-
-# Run integration tests
-pytest tests/test_real_claude_timeline.py -v
-```
+### LNCA Principles
+- **<80 LOC per file** - Optimized for LLM comprehension
+- **100% Framework Delegation** - No custom loops or error handling
+- **Single Source of Truth** - One file per feature
+- **Pydantic Everything** - Schema normalization for all JSONL variations
 
 ## 📖 Documentation
 
-- [Command Reference](docs/cg-command-reference.md) - Complete `cg` command guide
-- [Multi-Session Guide](docs/multi-session-guide.md) - Handling concurrent Claude sessions
-- [Architecture](docs/architecture.md) - Technical implementation details
-- [API Reference](docs/api-reference.md) - Python API usage
+Full documentation available at: https://alicoding.github.io/claude-parser/
 
-## 📄 License
+- [Getting Started Guide](https://alicoding.github.io/claude-parser/user-guide/getting-started/)
+- [CLI Commands Reference](https://alicoding.github.io/claude-parser/cli/commands/)
+- [API Reference](https://alicoding.github.io/claude-parser/api/complete-reference/)
+- [Architecture Overview](https://alicoding.github.io/claude-parser/architecture/system-design/)
 
-MIT License - see LICENSE file for details.
+## 🔄 Migration from v1
 
-## 🏆 Credits
+### Old v1 Code
+```python
+# v1 - Complex imports, god objects
+from claude_parser.main import ClaudeParser
+parser = ClaudeParser()
+parser.load_and_analyze_everything()  # God object doing too much
+```
 
-Built with the 95/5 principle using:
-- **GitPython** - Git repository operations
-- **typer** - CLI framework
-- **rich** - Terminal output formatting
-- **pathlib** - Cross-platform path handling
-- **orjson** - Fast JSON processing
+### New v2 Code
+```python
+# v2 - Clean, focused functions
+from claude_parser import load_latest_session, analyze_session
+session = load_latest_session()
+analysis = analyze_session(session)  # One function, one purpose
+```
+
+### Key Differences
+1. **No more god objects** - Each function does one thing well
+2. **Plain dicts everywhere** - No custom classes to learn
+3. **Explicit imports** - Import only what you need
+4. **Better error handling** - Framework delegation (Pydantic/Typer)
+5. **More features** - Filtering, watching, complete hook system
+
+## 🚢 Deployment
+
+### PyPI Release
+```bash
+# Build and upload to PyPI
+python -m build
+twine upload dist/*
+```
+
+### Documentation
+Documentation auto-deploys to GitHub Pages on every push to main.
+
+## 🤝 Contributing
+
+We welcome contributions! Please ensure:
+- Files stay under 80 lines of code
+- Use framework delegation (no custom loops)
+- Add tests for new features
+- Update documentation
+
+## 📜 License
+
+MIT License - See [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Built for the Claude Code community
+- Inspired by git's powerful recovery capabilities
+- Designed with LNCA principles for LLM-native development
+
+## 📊 Stats
+
+- **15** specialized domains
+- **30+** public functions
+- **<80** lines per file
+- **100%** framework delegation
+- **0** custom error handling
+
+---
+
+**Ready to never lose code again?** Install v2.0.0 and experience the power of Git-like recovery for Claude Code!
+
+```bash
+pip install claude-parser==2.0.0
+```
+
+[Documentation](https://alicoding.github.io/claude-parser/) | [GitHub](https://github.com/alicoding/claude-parser) | [PyPI](https://pypi.org/project/claude-parser/)

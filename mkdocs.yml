@@ -1,0 +1,73 @@
+site_name: Claude Parser Documentation
+site_description: Git-like interface for Claude Code disaster recovery
+site_author: Claude Parser Team
+site_url: https://alicoding.github.io/claude-parser/
+repo_url: https://github.com/alicoding/claude-parser
+repo_name: alicoding/claude-parser
+
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.expand
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: true
+            show_type_annotations: true
+            show_signature_annotations: true
+            members_order: source
+            docstring_style: google
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.snippets
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - User Guide:
+      - Getting Started: user-guide/getting-started.md
+      - Usage Examples: user-guide/usage.md
+  - CLI Reference:
+      - All Commands: cli/commands.md
+      - CG Commands: cli/cg-commands.md
+  - API Reference:
+      - Complete Reference: api/complete-reference.md
+      - Core API: api/reference.md
+      - Auto-Generated: api/generated.md
+      - Legacy CG: api/cg-commands.md
+  - Architecture:
+      - System Design: architecture/system-design.md
+      - Overview: architecture/overview.md
+  - Anthropic Claude Code:
+      - CLI Reference: anthropic/cli-reference.md
+      - Hooks: anthropic/hook.md

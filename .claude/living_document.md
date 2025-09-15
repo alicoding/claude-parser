@@ -1,7 +1,7 @@
 # claude-parser - Living Document (CONDENSED)
 Generated: 2025-09-10T18:03:15
-Updated: 2025-01-14T11:15:00
-@NEURAL_TIMESTAMP: 2025-01-14T11:15:00Z
+Updated: 2025-09-15T01:55:00
+@NEURAL_TIMESTAMP: 2025-09-15T01:55:00Z
 
 ## 📚 Documentation Index
 - **Architecture**: `.claude/docs/architecture_map.md`
@@ -37,6 +37,16 @@ Updated: 2025-01-14T11:15:00
 - @FRAMEWORK_BYPASS → `patterns.yml:47`
 
 ## 📝 Decision Memory (Key Points Only)
+- **2025-09-15**: @SECURITY_CLEANUP → Removed secrets-to-remove.txt with API keys from repo, archived old docs
+- **2025-09-15**: @V2_RELEASE_READY → Prepared complete v2.0.0 release with docs, GitHub Actions, comprehensive README
+- **2025-09-15**: @CORRECT_CLAUDE_PATH → Fixed documentation - actual path is ~/.claude/projects/ NOT ~/.claude/code/conversations/
+- **2025-09-15**: @COMPLETE_DOMAIN_MAPPING → Discovered 15 total domains (was missing 4: filtering, watch, messages, models)
+- **2025-09-15**: @CH_COMMAND_DISCOVERED → Composable hook runner CLI for pluggable executors
+- **2025-09-15**: @DOCUMENTATION_COMPLETE → Full MkDocs + LlamaIndex auto-generation system operational!
+- **2025-09-15**: @CG_DISASTER_TESTING → Completed CG refactoring with Pydantic schema normalization
+- **2025-09-15**: @LOC_ENFORCEMENT_COMPLIANCE → Split 347-line cg.py into <80 LOC modular files
+- **2025-09-15**: @ZERO_CUSTOM_CODE_COMPLIANCE → All CG commands use framework delegation only
+- **2025-09-15**: @PYDANTIC_SCHEMA_MODELS → schema_models.py for JSONL normalization instead of custom parsing
 - **2025-01-14**: Neural tags in hooks - no verbose messages → `patterns.yml:45-51`
 - **2025-01-14**: @MEMORY_MAP pattern - pathways not content
 - **2025-01-14**: Living doc pruning - 5292→341 words (94% reduction)
@@ -45,7 +55,7 @@ Updated: 2025-01-14T11:15:00
 - **2025-09-11**: Checkpoint detection - 28 LOC using existing SDK
 
 ## 🏗️ Current Architecture
-- **Hooks v3**: HookRequest API with pluggy
+- **Hooks v3**: HookRequest API with dynamic import_module (NOT pluggy)
 - **Core Modules**: 85% LNCA compliant
 - **Performance**: 2-3 second response (was >2min)
 - **Token Counting**: Fixed user vs assistant separation

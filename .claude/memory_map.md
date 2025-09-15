@@ -1,5 +1,5 @@
 # 🧠 claude-parser Memory Map
-@NEURAL_TIMESTAMP: 2025-01-14T15:00:00Z
+@NEURAL_TIMESTAMP: 2025-09-15T01:56:00Z
 @MEMORY_MAP @NEURAL_MIND_MAP @PATHWAY_NAVIGATION
 
 ## Core Navigation Pathways
@@ -82,31 +82,62 @@
 - `@MISSING_MIND_MAP` → patterns.yml:100
 - `@CONTENT_STORAGE` → patterns.yml:101
 
+## Documentation System (COMPLETE 2025-09-15)
+- `@DOCS_API` → docs/api/generated.md:**LlamaIndex-generated API reference**
+- `@DOCS_ARCHITECTURE` → docs/architecture/overview.md:**System design documentation**
+- `@DOCS_USER_GUIDE` → docs/user-guide/usage.md:**Getting started guide**
+- `@DOCS_INSTALLATION` → docs/installation.md:**Setup instructions**
+- `@DOCS_GENERATOR` → **100% framework delegation via LlamaIndex QueryEngine**
+- `@DOCS_AUTOMATION` → **Post-commit hooks for incremental updates**
+
+## Filtering Domain (DISCOVERED 2025-09-15)
+- `@FILTER_MESSAGES` → filtering/filters.py:**Message filtering functions**
+  - filter_messages_by_type() → Filter by user/assistant/system
+  - filter_messages_by_tool() → Filter by tool usage
+  - search_messages_by_content() → Content search
+  - filter_hook_events_by_type() → Hook event filtering
+  - filter_pure_conversation() → Get conversation without tools
+  - exclude_tool_operations() → Remove tool messages
+
+## Watch Domain (DISCOVERED 2025-09-15)
+- `@WATCH_CORE` → watch/core.py:**Real-time file monitoring**
+  - watch() → Watch JSONL files for changes with callbacks
+
+## Messages Domain
+- `@MESSAGES` → messages/:**Message processing utilities**
+
+## Models Domain
+- `@MODELS` → models/:**Data models and utilities**
+
+## CH Command (DISCOVERED 2025-09-15)
+- `@CLI_CH` → cli/ch.py:**Composable hook runner**
+  - `ch run --executor <module>` → Execute hooks with pluggable executors
+  - Reads from stdin, outputs per Anthropic spec
+  - Environment var: CLAUDE_HOOK_EXECUTOR
+
+## Complete Domain List (15 total)
+1. analytics/ - Session and tool analysis
+2. cli/ - CG and CH commands
+3. discovery/ - File and project discovery
+4. filtering/ - Message filtering (**NEW**)
+5. hooks/ - Hook system and API
+6. loaders/ - Session and file loading
+7. messages/ - Message utilities (**NEW**)
+8. models/ - Data models (**NEW**)
+9. navigation/ - Timeline and UUID navigation
+10. operations/ - File operations and restoration
+11. queries/ - DuckDB SQL queries
+12. session/ - Session management
+13. storage/ - DuckDB engine
+14. tokens/ - Token counting and billing
+15. watch/ - Real-time monitoring (**NEW**)
+
 ## Recent Discoveries
-- `@CH_HOOK_ISSUE_FIXED` → 2025-01-14: Fixed logger output to comply with Anthropic JSON spec
-- `@STEVEDORE_FIXED` → Installed stevedore dependency (2025-01-14)
-- `@DISCORD_FILES_MISSING` → discord_conversation.py imports discord_notifier/blocker but files don't exist
-- `@CG_ADVANCED_COMMANDS` → 2025-01-14: find ✓, blame ✓, reflog ✓, show ✓
-- `@QUERY_UTILS_CREATED` → queries/query_utils.py - Solves schema mismatch DRY violation
-- `@CG_REFACTORED` → Split into cg.py, cg_advanced.py, cg_reflog.py for LOC compliance
-- `@AUDIT_ON_READ_ADDED` → patterns.md:75 - Enforces violation detection on every Read
-- `@MY_MISTAKE` → I created then deleted discord files - they need to be restored from Claude history
-- `@DISCOVERY_DRY_VIOLATION` → 2025-01-14: discovery/core.py reimplements loaders/discovery.py
-- `@MEMORY_MAP_LOC_VIOLATION` → memory_map.md itself is 110 lines - needs splitting
+- `@V2_RELEASE_READY` → 2025-09-15: Complete v2.0.0 release package with docs, GitHub Actions, README
+- `@CORRECT_CLAUDE_PATH` → 2025-09-15: Actual Claude path is ~/.claude/projects/ NOT ~/.claude/code/conversations/
+- `@CG_DISASTER_TESTING` → 2025-09-15: Testing "oh shit" recovery scenarios
+- `@PYDANTIC_SCHEMA_NORMALIZATION` → 2025-09-15: Framework delegation for JSONL parsing
+- `@DOCUMENTATION_COMPLETE` → 2025-09-15: Full MkDocs + LlamaIndex auto-generation working!
+- `@COMPLETE_DOMAIN_MAPPING` → 2025-09-15: Discovered 4 unmapped domains (filtering, watch, messages, models)
 
-## Update Triggers
-- On file creation/deletion
-- On function rename
-- On module restructure
-- Every @SYNC_LNCA execution
-
-## JSONL Schema Fields
-- `uuid` → Unique message identifier
-- `parentUuid` → Message chain navigation
-- `timestamp` → ISO timestamp ordering
-- `message.content[].name` → Tool name (Write/Edit/MultiEdit)
-- `message.content[].input.file_path` → Target file
-- `toolUseResult.content` → Full file content for restoration
-- `toolUseResult.oldString/newString` → Track changes
-- `message.usage.input_tokens/output_tokens` → Token tracking
-- **Power**: Every tool operation is reversible via JSONL!
+See: `.claude/docs/memory_map_extended.md` for full details

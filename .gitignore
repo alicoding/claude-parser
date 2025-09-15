@@ -106,3 +106,14 @@ jsonl-prod-data-for-test/*
 full_failures.jsonl
 test_failures.jsonl
 jsonl-prod-data-for-test/
+
+# Archived documentation
+docs-archive/
+
+# Sensitive files
+*.secrets
+*secret*
+*.env
+.env.*
+clean-secrets.sh
+site/

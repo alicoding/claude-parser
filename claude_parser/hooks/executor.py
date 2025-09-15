@@ -77,6 +77,4 @@ def execute_with_executor(executor_name: str) -> int:
         return 1
 
     # @UTIL_FIRST: Use HookRequest's complete() method for aggregation
-    exit_code = request.complete(results)
-
-    return exit_code
+    return request.complete(results)
