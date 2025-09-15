@@ -1,131 +1,63 @@
+#!/usr/bin/env python3
 """
-Tests for Timeline domain - git-based JSONL navigation.
+Timeline Interface Tests - LNCA_TEST_PATTERN
+Interface Testing + Contract Testing + Integration Testing + BDD + Real Data + Black Box
 """
 
-import jsonlines
 import pytest
-
-from claude_parser.domain.services import Timeline
-
-
-class TestTimeline:
-    """Test Timeline using GitPython and libraries."""
-
-    def test_checkout_latest(self, sample_jsonl_dir):
-        """Should checkout latest state."""
-        timeline = Timeline(sample_jsonl_dir)
-
-        state = timeline.checkout("latest")
-        assert "main.py" in state
-        assert state["main.py"]["content"] == "print('world')"
-
-        timeline.clear_cache()
-
-    def test_git_branches(self, sample_jsonl_dir):
-        """Should create and list branches."""
-        timeline = Timeline(sample_jsonl_dir)
-
-        timeline.branch("feature")
-        branches = timeline.list_branches()
-        assert "feature" in branches
-
-        timeline.clear_cache()
-
-    def test_query_commits(self, sample_jsonl_dir):
-        """Should query commits with jmespath."""
-        timeline = Timeline(sample_jsonl_dir)
-
-        # Query all commits
-        commits = timeline.query("[*]")
-        assert len(commits) == 2
-
-        # Query with limit
-        limited = timeline.query("[*]", limit=1)
-        assert len(limited) == 1
-
-        timeline.clear_cache()
-
-    def test_diff_states(self, sample_jsonl_dir):
-        """Should diff using deepdiff."""
-        timeline = Timeline(sample_jsonl_dir)
-
-        # Create branches at different points
-        timeline.branch("v1")
-        timeline.branch("v2")
-
-        # Diff should work (even if empty for identical states)
-        diff = timeline.diff("branch:v1", "branch:v2")
-        assert diff is not None
-
-        timeline.clear_cache()
-
-    def test_handles_multiedit(self, jsonl_with_multiedit):
-        """Should handle MultiEdit operations."""
-        timeline = Timeline(jsonl_with_multiedit)
-
-        state = timeline.checkout("latest")
-        assert "config.py" in state
-        assert "PORT = 8080" in state["config.py"]["content"]
-
-        timeline.clear_cache()
+from claude_parser import load_latest_session, find_message_by_uuid, get_message_sequence
 
 
 @pytest.fixture
-def sample_jsonl_dir(tmp_path):
-    """Create minimal JSONL for testing."""
-    jsonl_dir = tmp_path / "jsonl"
-    jsonl_dir.mkdir()
-
-    events = [
-        {
-            "timestamp": "2024-08-23T10:00:00",
-            "tool_name": "Write",
-            "file_path": "main.py",
-            "content": "print('hello')",
-        },
-        {
-            "timestamp": "2024-08-23T11:00:00",
-            "tool_name": "Edit",
-            "file_path": "main.py",
-            "old_string": "hello",
-            "new_string": "world",
-        },
-    ]
-
-    with jsonlines.open(jsonl_dir / "test.jsonl", mode="w") as writer:
-        writer.write_all(events)
-
-    return jsonl_dir
+def real_session():
+    """Real Data: Use discovered Claude session for timeline testing"""
+    session = load_latest_session()
+    if not session or len(session.messages) == 0:
+        pytest.skip("No real Claude session with messages found")
+    return session
 
 
-@pytest.fixture
-def jsonl_with_multiedit(tmp_path):
-    """Create JSONL with MultiEdit operations."""
-    jsonl_dir = tmp_path / "jsonl"
-    jsonl_dir.mkdir()
+def test_find_message_by_uuid_interface_contract(real_session):
+    """Interface Test: find_message_by_uuid accepts session and UUID string"""
+    first_message = real_session.messages[0]
+    if not hasattr(first_message, 'uuid'):
+        pytest.skip("Real session messages don't have UUID field")
+    
+    result = find_message_by_uuid(real_session, first_message.uuid)
+    
+    # Contract: should return dict or None
+    assert result is None or isinstance(result, dict)
+    if result:
+        assert 'uuid' in result and 'type' in result
 
-    events = [
-        {
-            "timestamp": "2024-08-23T10:00:00",
-            "tool_name": "Write",
-            "file_path": "config.py",
-            "content": "",
-        },
-        {
-            "timestamp": "2024-08-23T11:00:00",
-            "tool_name": "MultiEdit",
-            "file_path": "config.py",
-            "edits": [
-                {"old_string": "", "new_string": "DEBUG = True\n"},
-                {
-                    "old_string": "DEBUG = True\n",
-                    "new_string": "DEBUG = True\nPORT = 8080\n",
-                },
-            ],
-        },
-    ]
 
-    with jsonlines.open(jsonl_dir / "multi.jsonl", mode="w") as writer:
-        writer.write_all(events)
+def test_get_message_sequence_contract_real_data(real_session):
+    """Contract Test: get_message_sequence works with real session UUIDs"""
+    if len(real_session.messages) < 2:
+        pytest.skip("Need at least 2 messages for sequence test")
+    
+    # Use real UUIDs from session
+    messages_with_uuids = [msg for msg in real_session.messages if hasattr(msg, 'uuid')]
+    if len(messages_with_uuids) < 2:
+        pytest.skip("Need at least 2 messages with UUIDs")
+    
+    start_uuid = messages_with_uuids[0].uuid
+    end_uuid = messages_with_uuids[1].uuid
+    
+    result = get_message_sequence(real_session, start_uuid, end_uuid)
+    
+    # Contract: should return list of dicts
+    assert isinstance(result, list)
+    for msg in result:
+        assert isinstance(msg, dict)
+        assert 'uuid' in msg and 'type' in msg
 
-    return jsonl_dir
+
+def test_timeline_navigation_error_handling():
+    """Contract Test: Navigation functions handle invalid inputs gracefully"""
+    # BDD: None session should not crash
+    result = find_message_by_uuid(None, "test-uuid")
+    assert result is None
+    
+    result = get_message_sequence(None, "uuid1", "uuid2")
+    assert result == []

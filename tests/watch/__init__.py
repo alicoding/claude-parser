@@ -1,1 +1,0 @@
-"""Watch domain tests."""

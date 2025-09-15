@@ -1,32 +1,9 @@
-"""Claude Parser SDK - Watch Domain.
-
-Provides file watching for real-time JSONL monitoring.
-95% use case: One line starts watching.
-
-Sync Example:
-    from claude_parser.watch import watch
-
-    def on_new(conv, new_messages):
-        print(f"Got {len(new_messages)} new messages")
-
-    watch("session.jsonl", on_new)  # Blocks, monitors forever
-
-Async Example:
-    from claude_parser.watch import watch_async
-
-    async for conv, new_messages in watch_async("session.jsonl"):
-        print(f"Got {len(new_messages)} new messages")
+#!/usr/bin/env python3
+"""
+Watch Domain - @BOUNDED_CONTEXT_ISOLATION
+SRP: File watching and real-time monitoring operations only
 """
 
-# Import from new clean architecture
-from .watch_service import watch_async, watch, stream_for_sse, create_sse_stream
+from .core import *
 
-__all__ = [
-    "watch",
-    "watch_async",
-    "stream_for_sse",
-    "create_sse_stream",
-]
-
-# Version
-__version__ = "2.0.0"
+# Note: watch module exports will be determined by core.py content

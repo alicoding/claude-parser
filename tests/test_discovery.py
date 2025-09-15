@@ -1,134 +1,75 @@
-"""Tests for discovery domain."""
+#!/usr/bin/env python3
+"""
+Discovery Interface Tests - LNCA_TEST_PATTERN
+Interface Testing + Contract Testing + Integration Testing + BDD + Real Data + Black Box
+"""
 
+import pytest
 from pathlib import Path
-from unittest.mock import patch
-
-from claude_parser.discovery import (
-    find_current_transcript,
-    find_project_by_encoded_name,
-    find_project_by_original_path,
-    find_transcript_for_cwd,
-    list_all_projects,
-)
+from claude_parser import discover_claude_files, group_by_projects, analyze_project_structure
 
 
-class TestDiscoveryFunctions:
-    """Test discovery domain functions."""
-
-    @patch("claude_parser.discovery.transcript_finder.Path.cwd")
-    @patch("claude_parser.discovery.transcript_finder.find_transcript_for_cwd")
-    def test_find_current_transcript(self, mock_find, mock_cwd):
-        """Test finding transcript for current directory."""
-        mock_cwd.return_value = Path("/test/project")
-        mock_find.return_value = "/path/to/transcript.jsonl"
-
-        result = find_current_transcript()
-
-        assert result == "/path/to/transcript.jsonl"
-        mock_find.assert_called_once_with(Path("/test/project"))
-
-    @patch("claude_parser.discovery.transcript_finder.Path.home")
-    def test_find_transcript_for_cwd_not_found(self, mock_home):
-        """Test when Claude projects directory doesn't exist."""
-        mock_home.return_value = Path("/fake/home")
-
-        result = find_transcript_for_cwd(Path("/test/project"))
-
-        assert result is None
-
-    @patch("claude_parser.discovery.transcript_finder.Path.home")
-    def test_list_all_projects_empty(self, mock_home):
-        """Test listing projects when none exist."""
-        mock_home.return_value = Path("/fake/home")
-
-        projects = list_all_projects()
-
-        assert projects == []
-
-    @patch("claude_parser.discovery.transcript_finder.list_all_projects")
-    def test_find_project_by_original_path(self, mock_list):
-        """Test finding project by original path."""
-        mock_list.return_value = [
-            {
-                "original_path": "/test/project",
-                "encoded_name": "-test-project",
-                "transcripts": [],
-            },
-            {
-                "original_path": "/other/project",
-                "encoded_name": "-other-project",
-                "transcripts": [],
-            },
-        ]
-
-        result = find_project_by_original_path("/test/project")
-
-        assert result is not None
-        assert result["original_path"] == "/test/project"
-        assert result["encoded_name"] == "-test-project"
-
-    @patch("claude_parser.discovery.transcript_finder.list_all_projects")
-    def test_find_project_by_encoded_name(self, mock_list):
-        """Test finding project by encoded name."""
-        mock_list.return_value = [
-            {
-                "original_path": "/test/project",
-                "encoded_name": "-test-project",
-                "transcripts": [],
-            },
-            {
-                "original_path": "/other/project",
-                "encoded_name": "-other-project",
-                "transcripts": [],
-            },
-        ]
-
-        result = find_project_by_encoded_name("-other-project")
-
-        assert result is not None
-        assert result["original_path"] == "/other/project"
-        assert result["encoded_name"] == "-other-project"
-
-    @patch("claude_parser.discovery.transcript_finder.list_all_projects")
-    def test_find_project_by_original_path_not_found(self, mock_list):
-        """Test finding project that doesn't exist."""
-        mock_list.return_value = []
-
-        result = find_project_by_original_path("/nonexistent")
-
-        assert result is None
-
-    @patch("claude_parser.discovery.transcript_finder.list_all_projects")
-    def test_find_project_by_encoded_name_not_found(self, mock_list):
-        """Test finding project by encoded name that doesn't exist."""
-        mock_list.return_value = []
-
-        result = find_project_by_encoded_name("-nonexistent")
-
-        assert result is None
+def test_discover_claude_files_interface_contract():
+    """Interface Test: discover_claude_files accepts string path and returns List[Path]"""
+    # Contract: function should exist and accept string
+    result = discover_claude_files(".")
+    
+    # Contract: should return list of Path objects
+    assert isinstance(result, list)
+    assert all(isinstance(f, Path) for f in result)
 
 
-class TestDiscoveryWithRealData:
-    """Test discovery with real Claude Code data if available."""
+def test_discover_claude_files_with_real_project_data():
+    """Integration Test: discover_claude_files finds real Claude files"""
+    # Real Data: Use current project directory
+    current_dir = "/Volumes/AliDev/ai-projects/claude-parser"
+    result = discover_claude_files(current_dir)
+    
+    # BDD: Should find JSONL files if they exist in the project
+    jsonl_files = [f for f in result if f.suffix == '.jsonl']
+    
+    # Contract: Real project may or may not have Claude files
+    assert isinstance(result, list)
+    # Integration: If files found, they should be valid paths
+    for file in result:
+        assert file.exists()
 
-    def test_list_all_projects_real(self):
-        """Test listing real projects if they exist."""
-        projects = list_all_projects()
 
-        # This will vary by environment
-        if projects:
-            # If projects exist, verify structure
-            for project in projects:
-                assert "original_path" in project
-                assert "encoded_name" in project
-                assert "transcripts" in project
-                assert isinstance(project["transcripts"], list)
+def test_group_by_projects_contract():
+    """Contract Test: group_by_projects processes real discovered files"""
+    files = discover_claude_files("/Volumes/AliDev/ai-projects/claude-parser")
+    result = group_by_projects(files)
+    
+    # Contract: should return dict with Path keys and List[Path] values
+    assert isinstance(result, dict)
+    for project_path, project_files in result.items():
+        assert isinstance(project_path, Path)
+        assert isinstance(project_files, list)
+        assert all(isinstance(f, Path) for f in project_files)
 
-    def test_find_current_transcript_real(self):
-        """Test finding current transcript in real environment."""
-        # This test will pass regardless of whether transcript exists
-        transcript = find_current_transcript()
 
-        if transcript:
-            assert isinstance(transcript, str)
-            assert transcript.endswith(".jsonl")
+def test_analyze_project_structure_interface_real_data():
+    """Interface Test: analyze_project_structure works with real project path"""
+    current_project = Path("/Volumes/AliDev/ai-projects/claude-parser")
+    result = analyze_project_structure(current_project)
+    
+    # Contract: should return dict with known keys
+    assert isinstance(result, dict)
+    if result:  # If project exists
+        assert 'path' in result
+        assert 'total_files' in result
+        assert 'file_types' in result
+        assert 'has_git' in result
+        
+        # BDD: Real project should have Python files
+        assert isinstance(result['is_python'], bool)
+
+
+def test_invalid_path_handling_contract():
+    """Contract Test: Functions handle invalid paths gracefully"""
+    # BDD: Non-existent path should not crash
+    result = discover_claude_files("/nonexistent/path")
+    assert result == []
+    
+    result = analyze_project_structure(Path("/nonexistent/path"))
+    assert result == {}

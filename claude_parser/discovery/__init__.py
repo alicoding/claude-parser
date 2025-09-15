@@ -1,26 +1,9 @@
+#!/usr/bin/env python3
 """
-Discovery domain - Find Claude Code transcript paths.
-
-95/5 Principle:
-- Simple factory function for current CWD
-- Rich options for advanced discovery patterns
+Discovery Domain - @BOUNDED_CONTEXT_ISOLATION
+SRP: File discovery and project structure analysis only
 """
 
-# Import from new clean architecture
-from .discovery_service import (
-    find_current_transcript,
-    find_transcript_for_cwd,
-    find_all_transcripts_for_cwd,
-    list_all_projects,
-    find_project_by_original_path,
-    find_project_by_encoded_name,
-)
+from .core import discover_claude_files, group_by_projects, analyze_project_structure, discover_current_project_files
 
-__all__ = [
-    "find_current_transcript",
-    "find_transcript_for_cwd",
-    "find_all_transcripts_for_cwd",
-    "list_all_projects",
-    "find_project_by_original_path",
-    "find_project_by_encoded_name",
-]
+__all__ = ['discover_claude_files', 'group_by_projects', 'analyze_project_structure', 'discover_current_project_files']

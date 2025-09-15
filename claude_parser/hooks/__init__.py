@@ -1,38 +1,40 @@
-"""Claude Parser SDK - Hooks Domain.
-
-Provides helpers for Claude Code hook scripts.
-95% use case: 3 lines to handle any hook.
-
-Example:
-    from claude_parser.hooks import hook_input, exit_block, exit_success
-
-    data = hook_input()
-    if data.tool_name == "Write": exit_block("No writes")
-    exit_success()
+#!/usr/bin/env python3
+"""
+Claude Parser Hooks SDK - @UTIL_FIRST Implementation
+Semantic public API with internal util delegation
 """
 
-# Core imports (95% API)
-from .exits import exit_block, exit_error, exit_success
-from .input import hook_input
-
-# Advanced imports (5% API)
-from .json_output import advanced, halt, json_output
-from .models import HookData
+from .app import app
+from .models import HookEvent
+from .handlers import handle_pre_tool_use, handle_post_tool_use, handle_user_prompt
+from .api import (
+    parse_hook_input,
+    allow_operation,
+    block_operation, 
+    request_approval,
+    add_context,
+    execute_hook
+)
+from .extraction import extract_hook_events
+from .request import HookRequest
 
 __all__ = [
-    # Core 95% API
-    "hook_input",
-    "exit_success",
-    "exit_block",
-    "exit_error",
-    # Model
-    "HookData",
-    # Advanced 5% API
-    "json_output",
-    "advanced",
-    "halt",
-    "halt",
+    # CLI Interface
+    "app",
+    # Semantic API (@SEMANTIC_INTERFACE)
+    "parse_hook_input",
+    "allow_operation",
+    "block_operation",
+    "request_approval", 
+    "add_context",
+    "execute_hook",
+    # Hook Event Extraction
+    "extract_hook_events",
+    # Shared Components
+    "HookEvent",
+    "handle_pre_tool_use",
+    "handle_post_tool_use", 
+    "handle_user_prompt",
+    # New HookRequest API
+    "HookRequest"
 ]
-
-# Version
-__version__ = "2.0.0"

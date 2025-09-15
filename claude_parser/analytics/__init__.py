@@ -1,34 +1,11 @@
-"""Analytics engine for Claude Parser.
-
-Provides token counting, aggregations, and visualizations
-for Claude conversations.
-
-Example:
-    from claude_parser import load
-    from claude_parser.analytics import ConversationAnalytics
-
-    conv = load("conversation.jsonl")
-    analytics = ConversationAnalytics(conv)
-
-    # Get token counts
-    stats = analytics.get_statistics()
-    print(f"Total tokens: {stats['total_tokens']}")
+#!/usr/bin/env python3
+"""
+Analytics Domain - @BOUNDED_CONTEXT_ISOLATION
+SRP: Session analytics and data analysis operations only
 """
 
-from .analyzer import (
-    ConversationAnalytics,
-    ConversationStats,
-    MessageStatisticsCalculator,
-    TimeAnalyzer,
-    ToolUsageAnalyzer,
-    TokenCounter,
-)
+from .core import analyze_session
+from .projects import analyze_project_contexts
+from .tools import analyze_tool_usage
 
-__all__ = [
-    "ConversationAnalytics",
-    "ConversationStats",
-    "MessageStatisticsCalculator",
-    "TimeAnalyzer",
-    "ToolUsageAnalyzer",
-    "TokenCounter",
-]
+__all__ = ['analyze_session', 'analyze_project_contexts', 'analyze_tool_usage']

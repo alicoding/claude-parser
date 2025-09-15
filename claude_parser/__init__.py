@@ -1,80 +1,53 @@
+#!/usr/bin/env python3
 """
-Claude Parser - Parse Claude Code JSONL files with ease.
-
-The 95/5 principle: 95% of users just need one line:
-    conv = load("session.jsonl")
-
-For the remaining 5%, full power is available through the classes.
-
-Architecture:
-- Domain Driven Design (DDD) with clean separation of concerns
-- SOLID principles throughout the codebase
-- Uses central JSON service for maximum performance and consistency
+Claude Parser - LNCA Architecture
+Published package - clean API, zero backward compatibility
 """
 
-# Import DDD application layer (95/5 factory functions)
+# LNCA Core API - 100% Framework Delegation
+from .main import load_session, load_latest_session, discover_all_sessions
+from .analytics import analyze_session, analyze_project_contexts, analyze_tool_usage  
+from .discovery import discover_claude_files, group_by_projects, analyze_project_structure, discover_current_project_files
+from .operations import restore_file_content, generate_file_diff, compare_files, backup_file
+from .navigation import find_message_by_uuid, get_message_sequence, get_timeline_summary
+from .tokens import count_tokens, analyze_token_usage, estimate_cost, token_status
+from .tokens.context import calculate_context_window
+from .tokens.billing import calculate_session_cost
+from .session import SessionManager
 
-# Import analytics tools
-from .analytics.analyzer import ConversationAnalytics, TokenCounter
-from .application.conversation_service import (
-    analyze,
-    extract_assistant_messages_between,
-    load,
-    load_large,
-    load_many,
-)
+# Version info
+__version__ = "2.0.0"
 
-# Import discovery tools
-from .discovery import find_current_transcript, find_transcript_for_cwd
+# Message types for filtering
+class MessageType:
+    USER = "user"
+    ASSISTANT = "assistant" 
+    SYSTEM = "system"
 
-# Import export tools (new!)
-from .export import ProjectConversationExporter
+# Published API functions
+def load_many(*paths):
+    """Load multiple JSONL files"""
+    from pathlib import Path
+    # 100% framework delegation: Use filter instead of manual loop + append
+    sessions = list(filter(None, (
+        load_session(str(Path(path).expanduser())) 
+        for path in paths
+    )))
+    return sessions
 
-# Import domain entities
-from .domain.entities.conversation import Conversation
-from .domain.value_objects.metadata import ConversationMetadata
+def find_current_transcript():
+    """Find current Claude transcript (alias for load_latest_session)"""
+    return load_latest_session()
 
-# Import models (structured data objects)
-from .models import (
-    AssistantMessage,
-    ContentBlock,
-    Message,
-    Summary,
-    SystemMessage,
-    ToolResultContent,
-    ToolUseContent,
-    UserMessage,
-)
-
-# Export all the important classes and functions
+# Clean exports - API only
 __all__ = [
-    # Main API (95% use case) - DDD application layer
-    "load",
-    "load_large",
-    "load_many",
-    "analyze",
-    "extract_assistant_messages_between",
-    # Discovery tools (95% use case)
-    "find_current_transcript",
-    "find_transcript_for_cwd",
-    # Core classes (5% use case) - DDD domain layer
-    "Conversation",
-    "ConversationMetadata",
-    # Message types (structured data objects)
-    "MessageType",
-    "Message",
-    "UserMessage",
-    "AssistantMessage",
-    "ContentBlock",
-    "ToolUseContent",
-    "ToolResultContent",
-    "Summary",
-    "SystemMessage",
-    # Analytics tools
-    "TokenCounter",
-    "ConversationAnalytics",
-    # Export tools (new!)
-    "ProjectConversationExporter",
+    'load_session', 'load_latest_session', 'discover_all_sessions', 
+    'analyze_session', 'analyze_project_contexts', 'analyze_tool_usage',
+    'discover_claude_files', 'group_by_projects', 'analyze_project_structure', 'discover_current_project_files',
+    'restore_file_content', 'generate_file_diff', 'compare_files', 'backup_file',
+    'find_message_by_uuid', 'get_message_sequence', 'get_timeline_summary',
+    'count_tokens', 'analyze_token_usage', 'estimate_cost', 'token_status',
+    'calculate_context_window', 'calculate_session_cost',
+    'load_many', 'find_current_transcript', 
+    'MessageType', '__version__'
 ]
-
-__version__ = "0.1.0"
