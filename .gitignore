@@ -110,6 +110,11 @@ jsonl-prod-data-for-test/
 # Archived documentation
 docs-archive/
 
+# Internal Claude documentation (not for public repo)
+.claude/
+*.claude/
+**/claude_parser/.claude/
+
 # Sensitive files
 *.secrets
 *secret*
