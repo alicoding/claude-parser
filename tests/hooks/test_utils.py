@@ -10,6 +10,32 @@ from unittest.mock import patch
 from typing import Dict, Any, List
 from claude_parser.hooks import HookRequest, parse_hook_input
 
+# Real hook data samples for testing
+REAL_HOOK_SAMPLES = {
+    "PostToolUse": {
+        "hookEventName": "PostToolUse",
+        "sessionId": "abc-123",
+        "transcriptPath": "/test.jsonl",
+        "toolName": "TodoWrite",
+        "toolInput": {
+            "todos": [
+                {"content": "Fix bug", "status": "pending", "activeForm": "Fixing bug"}
+            ]
+        },
+        "toolResponse": "Todos updated successfully"
+    },
+    "PreToolUse": {
+        "hookEventName": "PreToolUse",
+        "sessionId": "def-456",
+        "transcriptPath": "/test.jsonl",
+        "toolName": "Write",
+        "toolInput": {
+            "file_path": "/test.py",
+            "content": "# Test content"
+        }
+    }
+}
+
 
 def create_hook_request(hook_data: Dict[str, Any]) -> HookRequest:
     """Create HookRequest from test data - @SINGLE_SOURCE_TRUTH

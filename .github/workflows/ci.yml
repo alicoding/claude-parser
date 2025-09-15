@@ -57,22 +57,6 @@ jobs:
           else
             echo "Tests failed"
             exit 1
-          fi --junit-xml=test-results.xml || true
-          # Check if tests actually passed despite exit code
-          if grep -q 'failures="0"' test-results.xml && grep -q 'errors="0"' test-results.xml; then
-            echo "All tests passed successfully"
-            exit 0
-          else
-            echo "Tests failed"
-            exit 1
-          fi --junit-xml=test-results.xml || true
-          # Check if tests actually passed despite exit code
-          if grep -q 'failures="0"' test-results.xml && grep -q 'errors="0"' test-results.xml; then
-            echo "All tests passed successfully"
-            exit 0
-          else
-            echo "Tests failed"
-            exit 1
           fi
 
       - name: Check Python code quality
