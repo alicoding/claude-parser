@@ -64,8 +64,9 @@ def exclude_tool_operations(messages: List) -> Iterator:
         # Check content for additional patterns
         content = get_text(msg)
 
-        # For assistant messages, check if it's a tool_use
-        if msg.get('type') == 'assistant' and '"type": "tool_use"' in content:
+        # BUG FIX: Don't filter assistant messages with tool_use in content
+        # Only filter if it's a tool result or hook event
+        if msg.get('type') == 'tool_result':
             return False
 
         # Exclude interrupt messages

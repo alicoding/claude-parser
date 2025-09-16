@@ -1,3 +1,31 @@
+## [2.0.1] - 2025-09-15
+
+# Changelog
+
+All notable changes to claude-parser will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+<!-- towncrier release notes start -->
+
+
+
+### Security Fixes
+
+- Removed test credentials and sensitive data from production package (test_folder/, test-archive/) (#1)
+
+### Removed
+
+- Cleaned up empty directories (domain/, application/, infrastructure/, utils/) reducing package size (#4)
+
+### Changed
+
+- get_latest_claude_message() now returns simple string instead of complex nested object for better API UX (#3)
+
+### Fixed
+
+- Fixed Discord stop hook bug where get_latest_claude_message() returned None for messages with tool_use content (#2)
 # Changelog
 
 All notable changes to claude-parser will be documented in this file.

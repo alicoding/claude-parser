@@ -16,7 +16,7 @@ from .tokens.billing import calculate_session_cost
 from .session import SessionManager
 
 # Version info
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 
 # Message types for filtering
 class MessageType:

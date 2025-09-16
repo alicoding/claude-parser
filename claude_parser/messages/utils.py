@@ -39,8 +39,22 @@ def get_text(msg: Dict[str, Any]) -> str:
     if msg.get('message') and isinstance(msg['message'], dict):
         msg_content = msg['message'].get('content')
         if isinstance(msg_content, str):
+            # Try to parse as JSON first (same logic as above)
+            if msg_content.startswith('[') and msg_content.endswith(']'):
+                try:
+                    import json
+                    parsed = json.loads(msg_content)
+                    if isinstance(parsed, list):
+                        for item in parsed:
+                            if isinstance(item, dict) and item.get('type') == 'text':
+                                return item.get('text', '')
+                        # If we parsed JSON but found no text type, return empty
+                        return ''
+                except json.JSONDecodeError:
+                    pass
+            # Return as-is if not JSON or parsing failed
             return msg_content
-    
+
     return ''
 
 

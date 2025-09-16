@@ -50,17 +50,31 @@ class HookRequest:
         return self._conversation
 
     def get_latest_claude_message(self):
-        """Get Claude's latest message - @UTIL_FIRST delegation
+        """Get Claude's latest message content as simple string
 
-        100% framework delegation to existing navigation utilities.
+        @SEMANTIC_INTERFACE: Returns just the message text, not internal structure
+        @NO_IMPLEMENTATION_EXPOSURE: Hides complexity from plugin developers
         """
         if not self.conversation:
             return None
 
-        # Delegate to existing navigation utility
+        # Get the full message object
         from ..navigation.core import get_latest_assistant_message
+        from ..messages.utils import get_text
+
         messages = self.conversation.get('messages', [])
-        return get_latest_assistant_message(messages)
+        latest_msg = get_latest_assistant_message(messages)
+
+        if not latest_msg:
+            return None
+
+        # The message structure has nested content in message.content
+        # get_text already handles this, we just need to pass it correctly
+        text_content = get_text(latest_msg)
+
+        # If we got a JSON string starting with [{"type":"text"...
+        # get_text will parse it and extract the text
+        return text_content
 
     def complete(self, results: List[Tuple[str, Optional[str]]]) -> int:
         """Aggregate results and output, return exit code
