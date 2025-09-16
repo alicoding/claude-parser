@@ -1,3 +1,0 @@
-Original content from Claude
-This file will be modified and then restored
-Line 3: Testing cg checkout functionality
