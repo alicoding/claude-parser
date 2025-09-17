@@ -1,4 +1,4 @@
-# Claude Parser v2.0.0 🚀
+# Claude Parser v2.1.0 🚀
 
 [![PyPI version](https://badge.fury.io/py/claude-parser.svg)](https://badge.fury.io/py/claude-parser)
 [![Documentation](https://img.shields.io/badge/docs-mkdocs-blue)](https://alicoding.github.io/claude-parser/)
@@ -8,9 +8,15 @@
 
 Claude Parser treats every Claude API call as a git commit, enabling powerful recovery and analysis capabilities when things go wrong.
 
-## 🎉 What's New in v2.0.0
+## 🎉 What's New in v2.1.0
 
-### Major Changes
+### New Features
+- **🔍 Export Domain** - Export conversations to different formats for indexing
+- **📚 LlamaIndex Export** - `export_for_llamaindex()` for semantic search
+- **🛠️ Fixed Discovery** - `discover_claude_files()` now properly returns file paths
+- **📦 Complete API** - All filtering functions now properly exported
+
+## 📋 v2.0.0 Major Changes
 - **🎯 Complete API Redesign** - Clean, intuitive Python API with 30+ functions
 - **📚 15 Domain Architecture** - Organized into focused, composable modules
 - **🔧 CG Commands** - Full Git-like CLI for disaster recovery
@@ -106,7 +112,10 @@ from claude_parser import (
 
     # Filtering (NEW in v2!)
     filter_messages_by_type, filter_messages_by_tool,
-    search_messages_by_content, exclude_tool_operations
+    search_messages_by_content, exclude_tool_operations,
+
+    # Export (NEW in v2.1!)
+    export_for_llamaindex  # Export conversations for semantic search
 )
 ```
 
@@ -155,26 +164,44 @@ def on_assistant(message):
 watch("~/.claude/projects/current/session.jsonl", on_assistant=on_assistant)
 ```
 
+### 5. Export for Semantic Search (NEW in v2.1!)
+```python
+from claude_parser import export_for_llamaindex
+
+# Export conversations to LlamaIndex format
+docs = export_for_llamaindex("session.jsonl")
+# Returns: [{"text": "message", "metadata": {...}}, ...]
+
+# Use with semantic search services
+for doc in docs:
+    print(f"Text: {doc['text'][:50]}...")
+    print(f"Speaker: {doc['metadata']['speaker']}")
+```
+
 ## 🏗️ Architecture
 
-### Clean Domain Organization (15 modules)
+### Clean Domain Organization (19 modules)
 ```
 claude_parser/
-├── analytics/      # Session and tool analysis
+├── analytics/     # Session and tool analysis
+├── api/           # API utilities
 ├── cli/           # CG and CH commands
+├── core/          # Core utilities
 ├── discovery/     # File and project discovery
-├── filtering/     # Message filtering (NEW!)
+├── export/        # Export formats (NEW in v2.1!)
+├── extensions/    # Extension system
+├── filtering/     # Message filtering
 ├── hooks/         # Hook system and API
 ├── loaders/       # Session loading
-├── messages/      # Message utilities (NEW!)
-├── models/        # Data models (NEW!)
+├── messages/      # Message utilities
+├── models/        # Data models
 ├── navigation/    # Timeline and UUID navigation
 ├── operations/    # File operations
 ├── queries/       # DuckDB SQL queries
 ├── session/       # Session management
 ├── storage/       # DuckDB engine
 ├── tokens/        # Token counting and billing
-└── watch/         # Real-time monitoring (NEW!)
+└── watch/         # Real-time monitoring
 ```
 
 ### LNCA Principles
@@ -229,6 +256,33 @@ twine upload dist/*
 ### Documentation
 Documentation auto-deploys to GitHub Pages on every push to main.
 
+## 🗺️ Export Format Roadmap
+
+### Currently Available (v2.1)
+- ✅ **LlamaIndex** - `export_for_llamaindex()` - For semantic search indexing
+
+### Planned Export Formats
+- 🔜 **Mem0** - Long-term memory for AI agents
+- 🔜 **ChromaDB** - Vector database format
+- 🔜 **Pinecone** - Cloud vector database
+- 🔜 **Markdown** - Human-readable conversation logs
+- 🔜 **JSON-LD** - Structured data with context
+- 🔜 **OpenAI Messages** - Direct OpenAI API format
+- 🔜 **Anthropic Messages** - Direct Anthropic API format
+- 🔜 **LangChain Documents** - LangChain document format
+- 🔜 **Haystack Documents** - Haystack NLP framework
+
+### Export Domain Architecture
+```python
+claude_parser/export/
+├── __init__.py        # Export registry
+├── llamaindex.py      # LlamaIndex format (DONE)
+├── mem0.py           # Mem0 format (TODO)
+├── chroma.py         # ChromaDB format (TODO)
+├── markdown.py       # Markdown format (TODO)
+└── ...               # More formats
+```
+
 ## 🤝 Contributing
 
 We welcome contributions! Please ensure:
@@ -249,18 +303,18 @@ MIT License - See [LICENSE](LICENSE) file for details.
 
 ## 📊 Stats
 
-- **15** specialized domains
-- **30+** public functions
+- **19** specialized domains
+- **35+** public functions
 - **<80** lines per file
 - **100%** framework delegation
 - **0** custom error handling
 
 ---
 
-**Ready to never lose code again?** Install v2.0.0 and experience the power of Git-like recovery for Claude Code!
+**Ready to never lose code again?** Install v2.1.0 and experience the power of Git-like recovery for Claude Code!
 
 ```bash
-pip install claude-parser==2.0.0
+pip install claude-parser==2.1.0
 ```
 
 [Documentation](https://alicoding.github.io/claude-parser/) | [GitHub](https://github.com/alicoding/claude-parser) | [PyPI](https://pypi.org/project/claude-parser/)

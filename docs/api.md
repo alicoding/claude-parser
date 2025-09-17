@@ -1,23 +1,9 @@
-To generate API documentation for the Claude Parser project, you can follow these steps:
+To generate API documentation, you can follow these steps:
 
-1. **Documentation Tool**: Choose a documentation tool like Sphinx, MkDocs, or similar that suits your project requirements.
+1. Document each module, function, and class in your codebase using docstrings that describe their purpose, parameters, and return values.
+2. Utilize tools like Sphinx or MkDocs to automatically generate documentation from the docstrings.
+3. Organize the documentation into sections based on the different components of your project, such as hooks, tokens, CLI commands, etc.
+4. Include examples and usage scenarios to help users understand how to interact with the API.
+5. Provide information on any configuration settings, environment variables, or dependencies required to use the API.
 
-2. **Setup Documentation**: Initialize the documentation tool in the project directory and configure it to generate documentation from the source code.
-
-3. **Documenting Modules**: Use the tool to automatically generate documentation from the Python source files in the project. This will include information about modules, classes, functions, and their docstrings.
-
-4. **Include Descriptions**: Ensure that the generated documentation includes descriptions of modules, classes, functions, and their parameters. This will help users understand the purpose and usage of each component.
-
-5. **API Endpoints**: If the project includes API endpoints, document them with details on request/response formats, parameters, and expected outputs.
-
-6. **Hooks and Handlers**: Document the hooks and handlers used in the project, including their purpose, input parameters, and expected behavior.
-
-7. **Settings and Configurations**: Include documentation for settings and configurations used in the project, such as API keys, database URLs, and other important settings.
-
-8. **Token Analysis**: Document the token analysis functions, including details on estimating costs, analyzing token usage, and status tracking.
-
-9. **Analytics and Tools**: Provide documentation for the analytics functions, tool usage analysis, and any other data analysis operations in the project.
-
-10. **CLI Commands**: Document the CLI commands available in the project, including their usage, options, and expected outcomes.
-
-By following these steps and ensuring comprehensive documentation across all aspects of the project, you can generate detailed API documentation that will be helpful for users and developers interacting with the Claude Parser project.
+Additionally, you can install Sphinx using pip, navigate to the root directory of your project, initialize Sphinx, modify the `conf.py` file to include paths to your Python modules, write docstrings in reStructuredText format, use Sphinx directives like `autodoc` to generate documentation, run the Sphinx build command, and find the generated HTML documentation in the specified output directory. By customizing the generated documentation with additional details as needed, you can create comprehensive API documentation for your Python project.

@@ -42,12 +42,20 @@ def discover_claude_files(search_path: str = None) -> List[Path]:
             for pattern in ["*.jsonl", "*.claude", "*.transcript"]:
                 files.extend(search_dir.rglob(pattern))
             return sorted(files, key=lambda p: p.stat().st_mtime, reverse=True)
+        else:
+            # Non-existent path returns empty list
+            return []
 
-    # Default: discover all sessions
+    # Default: discover all sessions and extract file paths
     sessions = discover_all_sessions()
-    # Extract file paths from session data
-    # Sessions are dicts with metadata, need to extract paths
-    return []  # Simplified for now
+    # Extract transcript_path from each session's metadata
+    paths = []
+    for session in sessions:
+        if session and 'metadata' in session:
+            transcript_path = session['metadata'].get('transcript_path')
+            if transcript_path:
+                paths.append(Path(transcript_path))
+    return paths
 
 
 def group_by_projects(files: List[Path]) -> Dict[Path, List[Path]]:

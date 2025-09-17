@@ -1,3 +1,29 @@
+## [2.1.0] - 2025-09-16
+
+### Added
+
+- **Export Domain**: New `export/` module for converting conversations to different formats (#5)
+  - `export_for_llamaindex()` - Export conversations to LlamaIndex document format for semantic search
+  - Returns list of documents with `text` and `metadata` fields
+  - Filters out tool operations, keeping only pure conversation
+  - **Batching Support**: Optional `batch_size` parameter for memory-efficient processing
+  - Uses `more_itertools.chunked()` for 100% framework delegation
+- **Complete API Export**: All filtering functions now properly exported from main module (#6)
+  - `filter_messages_by_type()`, `filter_messages_by_tool()`, `search_messages_by_content()`, `exclude_tool_operations()`
+
+### Fixed
+
+- **discover_claude_files()**: Now properly returns file paths instead of empty list (#7)
+  - Extracts `transcript_path` from session metadata
+  - Returns empty list for non-existent search paths
+  - Enables downstream services to find and index conversations
+
+### Documentation
+
+- Updated README with export functionality and roadmap for future formats
+- Added 10+ planned export formats: Mem0, ChromaDB, Pinecone, Markdown, JSON-LD, OpenAI, Anthropic, LangChain, Haystack
+- Corrected architecture diagram to show all 19 domains (was showing 15)
+
 ## [2.0.1] - 2025-09-15
 
 # Changelog

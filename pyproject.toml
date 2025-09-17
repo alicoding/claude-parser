@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "claude-parser"
-version = "2.0.1"
+version = "2.1.0"
 description = "Parse and analyze Claude Code JSONL exports"
 authors = ["Your Name <you@example.com>"]
 readme = "README.md"
