@@ -16,6 +16,7 @@ from .tokens.billing import calculate_session_cost
 from .session import SessionManager
 from .export import export_for_llamaindex
 from .filtering import filter_messages_by_type, filter_messages_by_tool, search_messages_by_content, exclude_tool_operations
+from .messages.utils import get_message_content, get_text
 
 # Version info
 __version__ = "2.1.0"

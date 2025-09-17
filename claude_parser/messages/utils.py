@@ -88,3 +88,26 @@ def is_hook_message(msg: Dict[str, Any]) -> bool:
 def is_tool_operation(msg: Dict[str, Any]) -> bool:
     """Check if message is a tool operation"""
     return bool(msg.get('tool_use_id') or msg.get('tool_result'))
+
+
+def get_message_content(msg: Dict[str, Any]) -> str:
+    """Safely extract content from message, handling None values.
+
+    @FRAMEWORK_FIRST: Handles the bug where msg['message'] = None
+    """
+    # Direct content field
+    if 'content' in msg:
+        content = msg['content']
+        if isinstance(content, str):
+            return content
+        elif isinstance(content, list):
+            # Handle content blocks
+            return get_text(msg)
+
+    # Nested message field - MUST check for None explicitly
+    if 'message' in msg and msg['message'] is not None:
+        nested = msg['message']
+        if isinstance(nested, dict):
+            return nested.get('content', '')
+
+    return ''
