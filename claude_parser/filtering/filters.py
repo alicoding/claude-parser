@@ -43,7 +43,7 @@ def filter_pure_conversation(messages: List) -> Iterator:
         if msg.get('is_meta', False):
             return False
         # Skip compact summaries
-        if msg.get('is_compact_summary', False):
+        if msg.get('isCompactSummary', False):
             return False
         # Skip hook messages using util
         if is_hook_message(msg):

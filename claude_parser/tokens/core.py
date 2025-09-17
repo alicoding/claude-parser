@@ -67,11 +67,25 @@ def analyze_token_usage(session_data: Dict[str, Any], model: str = None) -> Dict
     }
 
 
+def count_session_tokens(session_data: Dict[str, Any], model: str = None) -> int:
+    """Current context window token count - 100% framework delegation"""
+    from ..filtering.filters import filter_pure_conversation
+
+    # Use existing utility to filter current context (excludes compact summaries)
+    messages = session_data.get('messages', [])
+    current_messages = list(filter_pure_conversation(messages))
+    current_session = {'messages': current_messages}
+
+    # 100% delegation to existing analyze_token_usage
+    analysis = analyze_token_usage(current_session, model)
+    return analysis['total_tokens']
+
+
 def estimate_cost(total_tokens: int, model: str = None) -> float:
     """100% Pydantic settings: Estimate API cost using configured prices"""
     # 100% Pydantic settings delegation: Use configured default model
     model = model or settings.token.default_model
-    
+
     # 100% Pydantic settings delegation: Use configured cost mapping
     cost_per_1k = settings.token.cost_per_1k
     rate = cost_per_1k.get(model, settings.token.default_cost)

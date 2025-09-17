@@ -10,7 +10,7 @@ from .analytics import analyze_session, analyze_project_contexts, analyze_tool_u
 from .discovery import discover_claude_files, group_by_projects, analyze_project_structure, discover_current_project_files
 from .operations import restore_file_content, generate_file_diff, compare_files, backup_file
 from .navigation import find_message_by_uuid, get_message_sequence, get_timeline_summary
-from .tokens import count_tokens, analyze_token_usage, estimate_cost, token_status
+from .tokens import count_tokens, analyze_token_usage, count_session_tokens, estimate_cost, token_status
 from .tokens.context import calculate_context_window
 from .tokens.billing import calculate_session_cost
 from .session import SessionManager
@@ -48,7 +48,7 @@ __all__ = [
     'discover_claude_files', 'group_by_projects', 'analyze_project_structure', 'discover_current_project_files',
     'restore_file_content', 'generate_file_diff', 'compare_files', 'backup_file',
     'find_message_by_uuid', 'get_message_sequence', 'get_timeline_summary',
-    'count_tokens', 'analyze_token_usage', 'estimate_cost', 'token_status',
+    'count_tokens', 'analyze_token_usage', 'count_session_tokens', 'estimate_cost', 'token_status',
     'calculate_context_window', 'calculate_session_cost',
     'filter_messages_by_type', 'filter_messages_by_tool', 'search_messages_by_content', 'exclude_tool_operations',
     'load_many', 'find_current_transcript', 'export_for_llamaindex',
