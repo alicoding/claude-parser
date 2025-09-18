@@ -283,6 +283,56 @@ claude_parser/export/
 └── ...               # More formats
 ```
 
+## 🚀 Roadmap
+
+### v3.0.0 - UI-Ready API (Coming Soon)
+Complete redesign for zero-boilerplate UI development.
+
+#### Core/Feature Layer Separation
+- ✅ Audit complete - identified all internal vs public functions
+- ✅ Framework delegation mapped (humanize, babel, arrow, rich)
+- 🔜 `claude_parser.core` - Low-level utilities for advanced users
+- 🔜 `claude_parser` - High-level UI-ready functions
+
+#### Display-Ready Functions
+```python
+# Coming in v3.0.0
+from claude_parser import (
+    get_session_summary,         # "436 messages, 3 hours, $12.45"
+    get_formatted_messages,       # Markdown-formatted conversation
+    get_token_breakdown,          # "45,678 tokens ($12.45)"
+    get_file_changes_display,     # Formatted diff with colors
+    export_as_html,              # Complete HTML report
+)
+
+# One-liner, zero parsing needed:
+print(get_session_summary(session))  # That's it!
+```
+
+#### Planned Features
+- **Session Display**: Pre-formatted messages with timestamps, roles, emojis
+- **Analytics Dashboard**: Human-readable metrics (not raw numbers)
+- **File Operations**: Formatted diffs, file lists with status icons
+- **Export Formats**: HTML, Markdown, JSON, PDF - all display-ready
+- **Smart Defaults**: "No messages found" instead of empty arrays
+- **Number Formatting**: "$12.45" not 0.01245, "45,678" not 45678
+- **Time Formatting**: "2:34 PM" not timestamps, "3 hours ago" not seconds
+
+#### Framework Delegation
+All formatting delegated to specialized libraries:
+- `humanize` - Number and size formatting
+- `babel` - Currency formatting
+- `arrow` - Time and date formatting
+- `rich` - Terminal colors and tables
+- `emoji` - Status indicators (✅ ❌ ⚠️)
+- `tabulate` - Markdown/HTML tables
+- `jinja2` - HTML report generation
+
+### v2.2.0 - Bug Fixes (Next Release)
+- ✅ Fixed token counting to match UI (v2.1.1)
+- ✅ Fixed None message field handling
+- 🔜 Additional message extraction improvements
+
 ## 🤝 Contributing
 
 We welcome contributions! Please ensure:
